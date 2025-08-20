@@ -58,6 +58,7 @@ const App = () => {
                 <TooltipProvider>
                 <Sonner />
                 <BrowserRouter
+                  basename={import.meta.env.PROD ? '/dungeon-whisperer-app' : '/'}
                   future={{
                     v7_startTransition: true,
                     v7_relativeSplatPath: true
