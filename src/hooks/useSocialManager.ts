@@ -268,7 +268,7 @@ export const useSocialManager = () => {
       friends: [],
       friendRequests: [],
       isLoading: false,
-      loadFriends: async () => {},
+      loadFriends: async () => { /* No-op when not authenticated */ },
       sendFriendRequest: async () => false,
       sendFriendRequestByUserId: async () => false,
       acceptFriendRequest: async () => false,

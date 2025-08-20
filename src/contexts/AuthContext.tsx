@@ -36,10 +36,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     let mounted = true;
-    let timeoutId: NodeJS.Timeout;
-
     // Set a timeout to ensure loading doesn't hang indefinitely
-    timeoutId = setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       if (mounted) {
         setLoading(false);
       }

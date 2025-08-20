@@ -47,7 +47,7 @@ export const EnvironmentError: React.FC<EnvironmentErrorProps> = ({ error, onRet
             </div>
           )}
 
-          <div className="rounded bg-muted p-3 text-xs font-mono">
+          <div className="rounded bg-muted p-3 font-mono text-xs">
             {error.message}
           </div>
 

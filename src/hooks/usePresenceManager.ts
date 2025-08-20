@@ -318,9 +318,9 @@ export const usePresenceManager = (channelName = 'global_presence') => {
       presenceState: {},
       onlineUsers: [],
       isConnected: false,
-      setUserStatus: async () => {},
+      setUserStatus: async () => { /* No-op when not authenticated */ },
       getOnlineFriends: () => [],
-      updateUserPresence: async () => {}
+      updateUserPresence: async () => { /* No-op when not authenticated */ }
     };
   }
 

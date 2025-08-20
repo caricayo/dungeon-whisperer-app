@@ -91,7 +91,7 @@ export const UsernameSetupModal = ({ isOpen }: UsernameSetupModalProps) => {
   };
 
   return (
-    <Dialog open={isOpen} modal={true} onOpenChange={() => {}}>
+    <Dialog open={isOpen} modal={true} onOpenChange={undefined}>
       <DialogContent className="sm:max-w-[425px]" onEscapeKeyDown={(e) => e.preventDefault()} onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Set Your Username</DialogTitle>

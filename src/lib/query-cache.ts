@@ -109,7 +109,7 @@ class QueryCache {
 
     // Remove existing entry if it exists
     if (this.cache.has(key)) {
-      const existing = this.cache.get(key)!;
+      const existing = this.cache.get(key);
       this.currentSize -= existing.size;
     }
 

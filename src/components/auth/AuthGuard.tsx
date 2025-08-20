@@ -8,21 +8,27 @@ interface AuthGuardProps {
 
 export function AuthGuard({ children }: AuthGuardProps): React.ReactElement | null {
   const navigate = useNavigate();
-  const location = useLocation();
+  const _location = useLocation();
   
   // Add error boundary for auth context
-  let user, loading;
+  let user, loading, authError = false;
   try {
     const auth = useAuth();
     user = auth.user;
     loading = auth.loading;
-  } catch (err) {
-    // If auth context fails, redirect to auth page
-    navigate('/auth', { replace: true });
-    return null;
+  } catch (_err) {
+    // If auth context fails, set error flag
+    authError = true;
+    user = null;
+    loading = false;
   }
 
   useEffect(() => {
+    if (authError) {
+      navigate('/auth', { replace: true });
+      return;
+    }
+    
     if (loading) return;
     
     // Redirect unauthenticated users to auth page
@@ -30,7 +36,7 @@ export function AuthGuard({ children }: AuthGuardProps): React.ReactElement | nu
       navigate('/auth', { replace: true });
       return;
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, authError]);
 
   // Show loading while checking auth
   if (loading) {

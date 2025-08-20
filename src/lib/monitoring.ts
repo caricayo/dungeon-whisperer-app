@@ -118,7 +118,7 @@ class ApplicationMonitoring {
       this.metrics.set(key, []);
     }
     
-    const metricArray = this.metrics.get(key)!;
+    const metricArray = this.metrics.get(key);
     metricArray.push(metric);
     
     // Keep only the most recent metrics

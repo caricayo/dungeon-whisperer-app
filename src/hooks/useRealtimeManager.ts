@@ -342,7 +342,7 @@ export const useRealtimeManager = (
       totalCount: 0,
       unhealthyCount: 0,
       isReconnecting: false,
-      attemptReconnection: () => {}
+      attemptReconnection: () => { /* No-op when not authenticated */ }
     };
   }
 
