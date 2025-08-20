@@ -413,65 +413,57 @@ export const useMultiplayerSessions = () => {
     }
   }, [user, toast]);
 
-  // Create multiplayer session
+  // Create multiplayer session using new RPC function
   const createMultiplayerSession = useCallback(async (name: string, customPrompt = '', maxPlayers = 6) => {
     if (!user) return null;
 
     try {
-      // Get user's current world
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('current_world')
-        .eq('id', user.id)
-        .single();
-
-      const currentWorld = profile?.current_world || 1;
-      const sessionId = crypto.randomUUID();
+      debugLog('🎮 Creating multiplayer session with RPC function:', name);
       
-      // Create the session with world
-      const { error: sessionError } = await supabase
-        .from('sessions')
-        .insert({
-          id: sessionId,
-          user_id: user.id,
-          name,
-          custom_prompt: customPrompt,
-          is_multiplayer: true,
-          max_players: maxPlayers,
-          current_player_count: 1,
-          world: currentWorld,
-          messages: []
-        });
-
-      if (sessionError) throw sessionError;
-
-      // Add creator as DM participant
-      const { error: participantError } = await supabase
-        .from('session_participants')
-        .insert({
-          session_id: sessionId,
-          user_id: user.id,
-          role: 'dm',
-          permissions: { can_invite: true }
-        });
-
-      if (participantError) throw participantError;
-
-      toast({
-        title: "Multiplayer Session Created",
-        description: `"${name}" is ready for adventurers to join!`,
+      // Use the new RPC function for creating multiplayer sessions
+      const { data, error } = await supabase.rpc('create_multiplayer_session', {
+        session_name: name,
+        custom_prompt: customPrompt || null,
+        max_players: maxPlayers
       });
 
+      if (error) {
+        debugError('🎮 RPC error creating session:', error);
+        throw error;
+      }
+
+      if (!data?.success) {
+        const errorMsg = data?.error || 'Failed to create session';
+        debugError('🎮 Session creation failed:', errorMsg);
+        throw new Error(errorMsg);
+      }
+
+      debugLog('✅ Multiplayer session created successfully:', data);
+
+      toast({
+        title: "🎉 Multiplayer Session Created!",
+        description: `"${data.session_name}" is ready for ${data.max_players} adventurers!`,
+      });
+
+      // Reload multiplayer data to show the new session
       await loadMultiplayerData();
       
-      // Return both sessionId and a flag to trigger invite flow
-      return { sessionId, shouldInvite: true };
+      // Return sessionId and trigger invite flow
+      return { 
+        sessionId: data.session_id, 
+        shouldInvite: true,
+        joinUrl: data.join_url,
+        sessionName: data.session_name
+      };
 
     } catch (error) {
-      debugError('Error creating multiplayer session:', error);
+      debugError('❌ Error creating multiplayer session:', error);
+      
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      
       toast({
-        title: "Creation Failed",
-        description: "Could not create multiplayer session. Please try again.",
+        title: "Session Creation Failed",
+        description: errorMessage,
         variant: "destructive",
       });
       return null;
