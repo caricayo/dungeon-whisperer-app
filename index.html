@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://xnitbccvdoauywudnwsi.supabase.co">
+    
+    <!-- Fonts with display=swap for performance -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Primary Meta Tags -->
+    <title>D&D Assistant - AI-Powered Dungeon Master Companion</title>
+    <meta name="title" content="D&D Assistant - AI-Powered Dungeon Master Companion">
+    <meta name="description" content="Revolutionary AI-powered D&D assistant with voice chat, image generation, and immersive storytelling. Perfect for DMs and players seeking enhanced tabletop experiences." />
+    <meta name="keywords" content="D&D, dungeons and dragons, AI assistant, dungeon master, RPG, tabletop gaming, voice chat, AI storytelling, campaign management" />
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="author" content="D&D Assistant Team" />
+    <meta name="theme-color" content="hsl(220, 13%, 6%)" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://dnd-assistant.app/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dnd-assistant.app/">
+    <meta property="og:title" content="D&D Assistant - AI-Powered Dungeon Master Companion">
+    <meta property="og:description" content="Revolutionary AI-powered D&D assistant with voice chat, image generation, and immersive storytelling.">
+    <meta property="og:image" content="https://dnd-assistant.app/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="D&D Assistant">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://dnd-assistant.app/">
+    <meta property="twitter:title" content="D&D Assistant - AI-Powered Dungeon Master Companion">
+    <meta property="twitter:description" content="Revolutionary AI-powered D&D assistant with voice chat, image generation, and immersive storytelling.">
+    <meta property="twitter:image" content="https://dnd-assistant.app/twitter-image.jpg">
+    <meta property="twitter:creator" content="@dndassistant">
+    
+    <!-- Security Headers: Set at server level, not via meta tags -->
+    
+    <!-- PWA Meta -->
+    <meta name="application-name" content="D&D Assistant">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="D&D Assistant">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "D&D Assistant",
+      "description": "AI-powered Dungeon Master companion for immersive tabletop gaming",
+      "url": "https://dnd-assistant.app",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Web Browser",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "@type": "Offer",
+        "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "D&D Assistant Team",
+        "url": "https://dnd-assistant.app"
+      },
+      "featureList": [
+        "AI-powered storytelling",
+        "Voice chat capabilities", 
+        "Image generation",
+        "Session management",
+        "Multi-user support",
+        "Real-time collaboration"
+      ],
+      "screenshot": "https://dnd-assistant.app/screenshot.jpg",
+      "softwareVersion": "2.0.0",
+      "dateModified": "2024-01-15"
+    }
+    </script>
+  </head>
+
+  <body style="background-color: hsl(220, 13%, 6%); margin: 0; padding: 0;">
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded">
+      Skip to main content
+    </a>
+    
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Debug helper for development -->
+    <script>
+      if (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1')) {
+        const script = document.createElement('script');
+        script.src = '/debug-helper.js';
+        script.onload = () => console.log('🛠️ Debug helper loaded for audio troubleshooting');
+        document.head.appendChild(script);
+      }
+    </script>
+    
+    <!-- No script fallback -->
+    <noscript>
+      <div style="text-align: center; padding: 2rem; font-family: system-ui;">
+        <h1>JavaScript Required</h1>
+        <p>D&D Assistant requires JavaScript to function. Please enable JavaScript in your browser settings.</p>
+      </div>
+    </noscript>
+  </body>
+</html>

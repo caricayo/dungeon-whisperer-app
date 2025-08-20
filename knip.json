@@ -1,0 +1,29 @@
+{
+  "entry": [
+    "src/main.tsx",
+    "src/vite-env.d.ts",
+    "vite.config.ts",
+    "tailwind.config.ts",
+    "postcss.config.js",
+    "eslint.config.js"
+  ],
+  "project": [
+    "src/**/*.{ts,tsx}",
+    "supabase/functions/**/*.ts"
+  ],
+  "ignore": [
+    "src/integrations/supabase/types.ts",
+    "**/*.test.{ts,tsx}",
+    "**/*.spec.{ts,tsx}",
+    "tests/**/*"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "includeEntryExports": true,
+  "ignoreDependencies": [
+    "@capacitor/android",
+    "@capacitor/ios",
+    "@capacitor/cli",
+    "lovable-tagger",
+    "vite-bundle-analyzer"
+  ]
+}

@@ -1,0 +1,38 @@
+# Global ownership for security critical files
+/src/lib/security.ts @security-team
+/src/middleware/security.ts @security-team
+/supabase/functions/_shared/security-utils.ts @security-team
+/src/lib/secureErrorHandler.ts @security-team
+/src/lib/validation.ts @security-team
+
+# Authentication and authorization
+/src/contexts/AuthContext.tsx @auth-team
+/src/components/auth/ @auth-team
+/src/hooks/useUserSettingsSecure.ts @auth-team
+/src/hooks/useSecurityMonitor.ts @auth-team
+
+# Database and backend
+/supabase/ @backend-team @security-team
+/src/integrations/supabase/ @backend-team
+
+# Performance critical code
+/src/lib/performance*.ts @performance-team
+/src/hooks/usePerformanceMonitor.ts @performance-team
+
+# Frontend components
+/src/components/ @frontend-team
+/src/pages/ @frontend-team
+
+# Configuration files
+/.github/ @devops-team
+/eslint.config.js @devops-team
+/tsconfig*.json @devops-team
+/vite.config.ts @devops-team
+/package.json @devops-team
+
+# Documentation
+/docs/ @docs-team
+/*.md @docs-team
+
+# Default reviewers for everything else
+* @core-team

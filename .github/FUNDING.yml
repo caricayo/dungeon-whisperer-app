@@ -1,0 +1,29 @@
+# GitHub Sponsors funding configuration
+github: # [your-github-username]
+
+# Open Collective
+open_collective: # [your-open-collective]
+
+# Ko-fi
+ko_fi: # [your-kofi-username]
+
+# Patreon
+patreon: # [your-patreon-username]
+
+# Buy Me a Coffee
+custom: # ["https://www.buymeacoffee.com/yourusername"]
+
+# PayPal
+# paypal: # [your-paypal-username]
+
+# Community Bridge
+# community_bridge: # [your-project-name]
+
+# IssueHunt
+# issuehunt: # [your-username]
+
+# LiberaPay
+# liberapay: # [your-username]
+
+# Tidelift
+# tidelift: # [your-package-name]

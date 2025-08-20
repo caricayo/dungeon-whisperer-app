@@ -1,0 +1,50 @@
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://dnd-assistant.app/sitemap.xml
+
+# Crawl-delay for specific bots
+Crawl-delay: 1
+
+# Block access to admin areas (if any)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+
+# Block access to sensitive files
+Disallow: /*.json$
+Disallow: /*.xml$ 
+Disallow: /*.txt$
+Disallow: /*.log$
+
+# Allow access to public assets
+Allow: /assets/
+Allow: /images/
+Allow: /favicon.ico
+Allow: /manifest.json
+
+# Block search engine caching of dynamic content
+Disallow: /search?
+Disallow: /*?*
+
+# Additional crawling guidelines
+# Cache-delay: 1
+# Request-rate: 1/10s
+
+# Contact information for webmaster
+# Contact: webmaster@dnd-assistant.app
+Allow: /

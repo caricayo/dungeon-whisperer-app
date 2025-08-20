@@ -1,0 +1,289 @@
+/* Fonts loaded via index.html for optimal performance */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Premium D&D Design System - Luxury Fantasy Interface */
+
+@layer base {
+  :root {
+    /* Premium Color Palette - Inspired by luxury brands */
+    --background: 220 13% 6%;
+    --background-secondary: 220 13% 8%;
+    --background-elevated: 220 13% 10%;
+    --foreground: 45 100% 92%;
+    --foreground-muted: 45 50% 75%;
+
+    /* Luxury Surfaces */
+    --card: 220 15% 9%;
+    --card-foreground: 45 95% 90%;
+    --card-elevated: 220 15% 12%;
+
+    --popover: 220 18% 8%;
+    --popover-foreground: 45 95% 90%;
+
+    /* Premium Gold Accent System */
+    --primary: 45 100% 70%;
+    --primary-foreground: 220 15% 10%;
+    --primary-glow: 45 100% 80%;
+    --primary-dark: 45 100% 55%;
+    --primary-rich: 43 100% 65%;
+
+    /* Mystical Purple Secondary */
+    --secondary: 270 35% 25%;
+    --secondary-foreground: 45 90% 85%;
+    --secondary-bright: 270 45% 35%;
+    --secondary-glow: 270 55% 45%;
+
+    /* Sophisticated Muted Tones */
+    --muted: 220 15% 15%;
+    --muted-foreground: 45 25% 70%;
+    --muted-elevated: 220 15% 18%;
+
+    /* Premium Accent Colors */
+    --accent: 200 85% 60%;
+    --accent-foreground: 220 15% 10%;
+    --accent-glow: 200 85% 70%;
+
+    /* Status Colors */
+    --destructive: 0 80% 60%;
+    --destructive-foreground: 45 90% 95%;
+    --success: 140 60% 55%;
+    --success-foreground: 220 15% 10%;
+    --warning: 35 100% 65%;
+    --warning-foreground: 220 15% 10%;
+
+    /* Interactive Elements */
+    --border: 220 20% 18%;
+    --border-elevated: 220 25% 22%;
+    --input: 220 18% 12%;
+    --ring: 45 100% 70%;
+
+    /* Premium Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(45 100% 70%), hsl(43 100% 65%), hsl(45 100% 80%));
+    --gradient-mystical: linear-gradient(135deg, hsl(270 45% 35%), hsl(200 85% 60%), hsl(270 55% 45%));
+    --gradient-background: linear-gradient(180deg, hsl(220 13% 6%), hsl(220 15% 4%));
+    --gradient-card: linear-gradient(145deg, hsl(220 15% 9%), hsl(220 18% 12%));
+    
+    /* Luxury Shadow System */
+    --shadow-premium: 0 25px 50px -12px hsl(220 50% 3% / 0.6);
+    --shadow-magical: 0 0 40px hsl(45 100% 70% / 0.15);
+    --shadow-mystical: 0 0 60px hsl(270 45% 45% / 0.2);
+    --shadow-depth: 0 15px 35px hsl(220 50% 3% / 0.4);
+    --shadow-elevated: 0 8px 25px hsl(220 50% 3% / 0.3);
+    
+    /* Premium Animation System */
+    --transition-premium: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Typography Scale */
+    --font-heading: 'Cinzel', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-display: 'Playfair Display', serif;
+
+    --radius: 0.8rem;
+    --radius-lg: 1.2rem;
+    --radius-xl: 1.6rem;
+
+    /* Sidebar Premium Styling */
+    --sidebar-background: 220 15% 7%;
+    --sidebar-foreground: 45 85% 88%;
+    --sidebar-primary: 45 100% 70%;
+    --sidebar-primary-foreground: 220 15% 10%;
+    --sidebar-accent: 220 18% 12%;
+    --sidebar-accent-foreground: 45 85% 88%;
+    --sidebar-border: 220 25% 16%;
+    --sidebar-ring: 45 100% 70%;
+  }
+
+  /* Dark mode enhancements */
+  .dark {
+    --background: 220 13% 4%;
+    --foreground: 45 100% 95%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Premium Typography Classes */
+  .font-heading {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  /* Enhanced Scrollbar */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-accent/60 rounded-full;
+    background: linear-gradient(180deg, hsl(var(--accent) / 0.6), hsl(var(--accent) / 0.4));
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-accent/80;
+  }
+
+  ::-webkit-scrollbar-corner {
+    @apply bg-muted;
+  }
+
+  /* Premium Animation Keyframes */
+  @keyframes magical-glow {
+    0%, 100% {
+      box-shadow: var(--shadow-magical);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: var(--shadow-magical), 0 0 80px hsl(45 100% 70% / 0.25);
+      transform: scale(1.02);
+    }
+  }
+
+  @keyframes mystical-pulse {
+    0%, 100% {
+      box-shadow: var(--shadow-mystical);
+    }
+    50% {
+      box-shadow: var(--shadow-mystical), 0 0 100px hsl(270 45% 45% / 0.3);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes slide-in-elegant {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0px) scale(1);
+    }
+  }
+
+  @keyframes fade-in-premium {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Premium Animation Classes */
+  .glow-magical {
+    animation: magical-glow 4s ease-in-out infinite;
+  }
+
+  .glow-mystical {
+    animation: mystical-pulse 3s ease-in-out infinite;
+  }
+
+  .float-gentle {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-slide-in {
+    animation: slide-in-elegant 0.6s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in-premium 0.4s ease-out;
+  }
+
+  /* Shimmer animation for enhanced buttons */
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  /* Luxury Background Patterns */
+  .bg-premium-pattern {
+    background: 
+      radial-gradient(circle at 25% 25%, hsl(270 50% 25% / 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, hsl(45 100% 70% / 0.05) 0%, transparent 50%),
+      var(--gradient-background);
+  }
+
+  .bg-card-premium {
+    background: var(--gradient-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--border-elevated));
+  }
+
+  /* Interactive Elements */
+  .interactive-hover {
+    transition: var(--transition-premium);
+  }
+
+  .interactive-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
+  }
+
+  /* Glass Morphism Effect */
+  .glass {
+    background: hsl(var(--card) / 0.7);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  /* Text Gradients */
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-mystical {
+    background: var(--gradient-mystical);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

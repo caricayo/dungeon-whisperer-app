@@ -1,0 +1,12 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" fill="#0a0a0b"/>
+  <g transform="translate(6,6)">
+    <!-- D20 die shape -->
+    <polygon points="10,2 18,8 18,14 10,20 2,14 2,8" 
+             fill="#d4af37" 
+             stroke="#f5d862" 
+             stroke-width="0.5"/>
+    <!-- Center dot -->
+    <circle cx="10" cy="11" r="1.5" fill="#0a0a0b"/>
+  </g>
+</svg>

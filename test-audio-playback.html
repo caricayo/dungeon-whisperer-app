@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Playback Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { background: #d4edda; }
+        .error { background: #f8d7da; }
+        button { padding: 10px 15px; margin: 5px; }
+        .log { background: #f8f9fa; padding: 10px; margin: 10px 0; white-space: pre-wrap; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🔊 Audio Playback Debug Test</h1>
+    <p>This will test the TTS API and audio playback directly</p>
+    
+    <div class="test">
+        <h3>Test 1: Direct TTS API Call</h3>
+        <button onclick="testTtsApi()">Test TTS API</button>
+        <div id="tts-result"></div>
+    </div>
+    
+    <div class="test">
+        <h3>Test 2: Blob Creation & Playback</h3>
+        <button onclick="testAudioPlayback()">Test Audio Playback</button>
+        <div id="playback-result"></div>
+        <audio id="test-audio" controls style="width: 100%; margin-top: 10px;"></audio>
+    </div>
+    
+    <div class="test">
+        <h3>Test 3: User Interaction Check</h3>
+        <button onclick="testUserInteraction()">Test User Interaction</button>
+        <div id="interaction-result"></div>
+    </div>
+    
+    <div id="log-output" class="log"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://xnitbccvdoauywudnwsi.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuaXRiY2N2ZG9hdXl3dWRud3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNjY1NDQsImV4cCI6MjA3MDc0MjU0NH0.tW3Gi-Af-Joqb5QXBTFAUtEvd2qTOog55cp_r7NttFI';
+        
+        function log(message) {
+            const logDiv = document.getElementById('log-output');
+            logDiv.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            console.log(message);
+        }
+
+        async function testTtsApi() {
+            const resultDiv = document.getElementById('tts-result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                log('🎵 Testing TTS API...');
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/dnd-tts`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: 'Hello, this is a test of the TTS system.',
+                        voice: 'alloy',
+                        model: 'tts-1'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                log(`✅ TTS API Success: ${data.audioContent?.length || 0} characters base64`);
+                
+                resultDiv.className = 'test success';
+                resultDiv.innerHTML = `
+                    <strong>✅ TTS API Working</strong><br>
+                    Audio content length: ${data.audioContent?.length || 0} characters<br>
+                    Response keys: ${Object.keys(data).join(', ')}
+                `;
+                
+                // Store for next test
+                window.testAudioContent = data.audioContent;
+                
+            } catch (error) {
+                log(`❌ TTS API Failed: ${error.message}`);
+                resultDiv.className = 'test error';
+                resultDiv.innerHTML = `<strong>❌ TTS API Failed:</strong> ${error.message}`;
+            }
+        }
+
+        async function testAudioPlayback() {
+            const resultDiv = document.getElementById('playback-result');
+            const audioElement = document.getElementById('test-audio');
+            
+            if (!window.testAudioContent) {
+                resultDiv.innerHTML = 'Please run TTS API test first';
+                return;
+            }
+            
+            resultDiv.innerHTML = 'Creating audio blob...';
+            
+            try {
+                log('🔊 Testing audio blob creation...');
+                
+                // Test native fetch API approach (our new method)
+                const dataUrl = `data:audio/mpeg;base64,${window.testAudioContent}`;
+                const response = await fetch(dataUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Fetch failed: ${response.status}`);
+                }
+                
+                const audioBlob = await response.blob();
+                log(`📦 Blob created: ${audioBlob.size} bytes, type: ${audioBlob.type}`);
+                
+                if (audioBlob.size === 0) {
+                    throw new Error('Blob is empty');
+                }
+                
+                const audioUrl = URL.createObjectURL(audioBlob);
+                log(`🔗 Blob URL created: ${audioUrl}`);
+                
+                // Test playback
+                audioElement.src = audioUrl;
+                audioElement.load();
+                
+                audioElement.onloadeddata = () => {
+                    log('✅ Audio loaded successfully');
+                    resultDiv.className = 'test success';
+                    resultDiv.innerHTML = `
+                        <strong>✅ Audio Blob Working</strong><br>
+                        Blob size: ${audioBlob.size} bytes<br>
+                        Blob type: ${audioBlob.type}<br>
+                        Duration: ${audioElement.duration || 'Unknown'} seconds<br>
+                        <button onclick="document.getElementById('test-audio').play()">▶️ Play Audio</button>
+                    `;
+                };
+                
+                audioElement.onerror = (e) => {
+                    log(`❌ Audio loading failed: ${audioElement.error?.message || 'Unknown error'}`);
+                    resultDiv.className = 'test error';
+                    resultDiv.innerHTML = `<strong>❌ Audio Loading Failed:</strong> ${audioElement.error?.message || 'Unknown error'}`;
+                };
+                
+                // Cleanup URL after use
+                setTimeout(() => URL.revokeObjectURL(audioUrl), 60000);
+                
+            } catch (error) {
+                log(`❌ Blob creation failed: ${error.message}`);
+                resultDiv.className = 'test error';
+                resultDiv.innerHTML = `<strong>❌ Blob Creation Failed:</strong> ${error.message}`;
+            }
+        }
+
+        function testUserInteraction() {
+            const resultDiv = document.getElementById('interaction-result');
+            
+            try {
+                log('👆 Testing user interaction status...');
+                
+                const hasUserInteraction = checkUserInteraction();
+                const documentHasFocus = document.hasFocus();
+                const visibilityState = document.visibilityState;
+                
+                log(`👆 User interaction: ${hasUserInteraction}`);
+                log(`🎯 Document focus: ${documentHasFocus}`);
+                log(`👁️ Visibility: ${visibilityState}`);
+                
+                resultDiv.className = hasUserInteraction ? 'test success' : 'test error';
+                resultDiv.innerHTML = `
+                    <strong>${hasUserInteraction ? '✅' : '❌'} User Interaction Status</strong><br>
+                    User interaction: ${hasUserInteraction ? 'YES' : 'NO'}<br>
+                    Document focus: ${documentHasFocus ? 'YES' : 'NO'}<br>
+                    Visibility state: ${visibilityState}<br>
+                    ${!hasUserInteraction ? '<br><em>Click this button again to trigger interaction</em>' : ''}
+                `;
+                
+            } catch (error) {
+                log(`❌ User interaction test failed: ${error.message}`);
+                resultDiv.className = 'test error';
+                resultDiv.innerHTML = `<strong>❌ Test Failed:</strong> ${error.message}`;
+            }
+        }
+
+        function checkUserInteraction() {
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                return ctx !== null && document.hasFocus();
+            } catch {
+                return false;
+            }
+        }
+
+        // Auto-run first test
+        window.addEventListener('load', () => {
+            log('🚀 Audio playback test page loaded');
+            testUserInteraction();
+        });
+    </script>
+</body>
+</html>

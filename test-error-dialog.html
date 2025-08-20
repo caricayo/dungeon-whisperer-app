@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Enhanced Error Dialog</title>
+    <script src="/debug-helper.js"></script>
+    <style>
+        body {
+            font-family: system-ui;
+            margin: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .button {
+            background: #0066cc;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #0052a3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧙‍♂️ Test Enhanced Error Dialog</h1>
+    
+    <div class="test-section">
+        <h2>1. Setup Mystery Data</h2>
+        <button class="button" onclick="setupMysteryData()">Setup Test Mystery Data</button>
+        <p>This will create sample TTS and audio error data to test the enhanced dialog.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test Debug Export</h2>
+        <button class="button" onclick="testExportAllDebugInfo()">Test exportAllDebugInfo()</button>
+        <p>This will test the comprehensive debug export function.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Test Button Functionality</h2>
+        <div style="position: relative; z-index: 1000;">
+            <button class="button" onclick="testButtonClick()">Test Button (High Z-Index)</button>
+            <button class="button" style="position: relative; z-index: 2000;" onclick="testButtonClick()">Test Button (Higher Z-Index)</button>
+        </div>
+        <p>These buttons test if z-index and positioning work correctly.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Current Debug State</h2>
+        <button class="button" onclick="showDebugState()">Show Current Debug State</button>
+        <pre id="debugOutput" style="background: #2a2a2a; padding: 10px; border-radius: 4px; max-height: 300px; overflow-y: auto;"></pre>
+    </div>
+
+    <script>
+        function setupMysteryData() {
+            // Create sample TTS error data
+            window.__tts_mystery_error = {
+                provider: 'elevenlabs',
+                timestamp: new Date().toISOString(),
+                audioDataReceived: false,
+                audioDataLength: 0,
+                browserInfo: {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform
+                },
+                audioSupport: {
+                    canPlayMP3: 'probably'
+                },
+                originalError: 'Test TTS error for debugging',
+                fallbackError: 'Fallback TTS error for testing'
+            };
+
+            // Create sample audio error data
+            window.__audio_mystery_error = {
+                errorName: 'NotAllowedError',
+                audioUrlValid: true,
+                userInteraction: false,
+                documentState: {
+                    hasFocus: true,
+                    visibilityState: 'visible'
+                },
+                audioSupport: {
+                    canPlayMP3: 'probably'
+                }
+            };
+
+            // Add some debug logs
+            window.__debug_errors = window.__debug_errors || [];
+            window.__debug_errors.push(
+                {
+                    type: 'error',
+                    timestamp: new Date().toISOString(),
+                    args: ['TTS Error: Failed to generate audio', 'Provider: elevenlabs']
+                },
+                {
+                    type: 'log',
+                    timestamp: new Date().toISOString(),
+                    args: ['AUDIO: Attempting to play audio blob']
+                },
+                {
+                    type: 'warn',
+                    timestamp: new Date().toISOString(),
+                    args: ['AUDIO: User interaction required for autoplay']
+                }
+            );
+
+            alert('✅ Mystery data setup complete! Check console or run exportAllDebugInfo()');
+        }
+
+        function testExportAllDebugInfo() {
+            if (typeof exportAllDebugInfo === 'function') {
+                try {
+                    exportAllDebugInfo();
+                    alert('✅ Debug export completed! Check console and downloads folder.');
+                } catch (error) {
+                    alert('❌ Error during export: ' + error.message);
+                }
+            } else {
+                alert('❌ exportAllDebugInfo function not found. Debug helper may not be loaded.');
+            }
+        }
+
+        function testButtonClick() {
+            alert('✅ Button click successful! Z-index and positioning working correctly.');
+        }
+
+        function showDebugState() {
+            const output = document.getElementById('debugOutput');
+            const debugState = {
+                ttsError: window.__tts_mystery_error || null,
+                audioError: window.__audio_mystery_error || null,
+                debugLogs: (window.__debug_errors || []).slice(-5), // Last 5 logs
+                exportFunctionAvailable: typeof exportAllDebugInfo === 'function'
+            };
+
+            output.textContent = JSON.stringify(debugState, null, 2);
+        }
+
+        // Auto-show debug state on load
+        setTimeout(() => showDebugState(), 1000);
+    </script>
+</body>
+</html>
