@@ -95,7 +95,8 @@
       "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17120924588)",
       "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17120990334)",
       "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17121117018)",
-      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17121218791)"
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17121218791)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17121478722)"
     ],
     "deny": [],
     "ask": [],
