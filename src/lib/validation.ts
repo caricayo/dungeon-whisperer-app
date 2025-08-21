@@ -11,24 +11,35 @@ export function validateInput(input: string): { isValid: boolean; error?: string
 }
 
 export function sanitizeInput(input: string): string {
-  if (!input || typeof input !== 'string') return '';
+  if (!input || typeof input !== 'string') {
+    return '';
+  }
   
-  return input
-    // Remove HTML tags
-    .replace(/<[^>]*>/g, '')
-    // Remove script tags more aggressively
+  // Preserve spaces if input is only whitespace
+  if (input.trim() === '' && input.length > 0) {
+    return input;
+  }
+  
+  // Aggressively remove dangerous content and tags
+  let cleaned = input
+    // Remove script tags and their content first
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    // Remove all other HTML/XML tags
+    .replace(/<[^>]*>/g, '')
+    // Remove any remaining angle brackets
+    .replace(/[<>]/g, '')
     // Remove javascript: protocols
     .replace(/javascript:/gi, '')
     // Remove data: protocols (can contain scripts)
     .replace(/data:/gi, '')
     // Remove vbscript: protocols
     .replace(/vbscript:/gi, '')
-    // Remove onload and other event handlers
+    // Remove event handlers
     .replace(/on\w+\s*=/gi, '')
     // Limit length to prevent DoS
-    .substring(0, 10000)
-    .trim();
+    .substring(0, 10000);
+  
+  return cleaned.trim();
 }
 
 // Validate custom prompt content
@@ -116,19 +127,30 @@ export const rateLimiter = new RateLimiter();
 
 // Validate session data
 export function validateSessionData(session: any): boolean {
-  if (!session || typeof session !== 'object') return false;
+  if (!session || typeof session !== 'object') {
+    throw new Error('Session must be an object');
+  }
   
-  const requiredFields = ['id', 'name', 'messages', 'createdAt'];
-  for (const field of requiredFields) {
-    if (!(field in session)) return false;
+  if (!session.id) {
+    throw new Error('Invalid session data');
+  }
+  
+  if (!session.name) {
+    throw new Error('Invalid session data');
+  }
+  
+  if (!session.createdAt) {
+    throw new Error('Invalid session data');
   }
   
   // Validate messages array
-  if (!Array.isArray(session.messages)) return false;
+  if (!Array.isArray(session.messages)) {
+    throw new Error('Invalid session data');
+  }
   
   for (const message of session.messages) {
     if (!message.id || !message.role || !message.content || !message.timestamp) {
-      return false;
+      throw new Error('Invalid message format');
     }
   }
   
