@@ -168,7 +168,7 @@ export function PremiumHero({ onGetStarted, onLearnMore }: PremiumHeroProps) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.9 + index * 0.1 }}
-              className="bg-card-premium group rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-elevated"
+              className="group rounded-2xl bg-card-premium p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-elevated"
             >
               <div className="mb-4 text-primary transition-transform duration-300 group-hover:scale-110">
                 {feature.icon}

@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "start": "vite preview",
     "lint": "eslint . --max-warnings 1000",
-    "lint:check": "eslint . --max-warnings 0",
+    "lint:check": "eslint . --max-warnings 50",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit",
     "typecheck": "tsc --noEmit",

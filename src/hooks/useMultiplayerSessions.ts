@@ -122,7 +122,7 @@ export const useMultiplayerSessions = () => {
 
       // Handle sessions result
       if (sessionsResult.status === 'fulfilled' && !sessionsResult.value.error) {
-        const sessionsData = sessionsResult.value.data || [];
+        const sessionsData = sessionsResult.value.data ?? [];
         
         // Get all session IDs for participant query
         const sessionIds = sessionsData.map(s => s.id);
@@ -145,10 +145,10 @@ export const useMultiplayerSessions = () => {
           ]);
           
           if (participantsResult.status === 'fulfilled') {
-            participantsData = participantsResult.value.data || [];
+            participantsData = participantsResult.value.data ?? [];
           }
           if (profilesResult.status === 'fulfilled') {
-            profilesData = profilesResult.value.data || [];
+            profilesData = profilesResult.value.data ?? [];
           }
         }
 
@@ -170,7 +170,7 @@ export const useMultiplayerSessions = () => {
           isMultiplayer: session.is_multiplayer,
           maxPlayers: session.max_players ?? 6,
           currentPlayerCount: session.current_player_count ?? 1,
-          participants: (participantsBySession.get(session.id) || []).map((p: RawParticipantData): SessionParticipant => {
+          participants: (participantsBySession.get(session.id) ?? []).map((p: RawParticipantData): SessionParticipant => {
             const profile = profilesMap.get(p.user_id);
             return {
               id: p.id,
@@ -210,7 +210,7 @@ export const useMultiplayerSessions = () => {
 
       // Handle invites result - much faster with parallel loading
       if (invitesResult.status === 'fulfilled' && !invitesResult.value.error) {
-        const invitesData = invitesResult.value.data || [];
+        const invitesData = invitesResult.value.data ?? [];
         
         // Batch load session and inviter data for all invites
         const sessionIds = invitesData.map(i => i.session_id);
@@ -270,7 +270,7 @@ export const useMultiplayerSessions = () => {
 
       // Handle discoverable sessions result
       if (discoverableResult.status === 'fulfilled' && !discoverableResult.value.error) {
-        const validSessions = discoverableResult.value.data || [];
+        const validSessions = discoverableResult.value.data ?? [];
         setDiscoverableSessions(validSessions);
         debugLog(`Loaded ${validSessions.length} discoverable sessions`);
       } else {
@@ -346,7 +346,7 @@ export const useMultiplayerSessions = () => {
       }
 
       // Load profiles for participants
-      const userIds = participantsData?.map(p => p.user_id) || [];
+      const userIds = participantsData?.map(p => p.user_id) ?? [];
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('id, username, display_name, is_online')
@@ -358,11 +358,11 @@ export const useMultiplayerSessions = () => {
 
       // Combine data
       const profilesMap = new Map(
-        (profilesData || []).map(p => [p.id, p])
+        (profilesData ?? []).map(p => [p.id, p])
       );
 
       const sessions: MultiplayerSession[] = sessionsData.map(session => {
-        const sessionParticipants: SessionParticipant[] = (participantsData || [])
+        const sessionParticipants: SessionParticipant[] = (participantsData ?? [])
           .filter(p => p.session_id === session.id)
           .map(p => {
             const profileData = profilesMap.get(p.user_id);
@@ -414,7 +414,7 @@ export const useMultiplayerSessions = () => {
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
-      const invites: SessionInvite[] = (invitesData || []).map(invite => ({
+      const invites: SessionInvite[] = (invitesData ?? []).map(invite => ({
         id: invite.id,
         sessionId: invite.session_id,
         inviterId: invite.inviter_id,

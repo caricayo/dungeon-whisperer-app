@@ -3,7 +3,7 @@
  * @enterprise High-performance message rendering with virtual scrolling and comprehensive a11y
  */
 
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Virtualizer } from '@tanstack/react-virtual';
 import { MessageBubble } from './MessageBubble';

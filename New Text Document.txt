@@ -1,0 +1,1166 @@
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/AnimatedElements.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    67:11  warning  Generic Object Injection Sink                                                                    security/detect-object-injection
+Warning:    68:11  warning  Generic Object Injection Sink                                                                    security/detect-object-injection
+Warning:   150:11  warning  Generic Object Injection Sink                                                                    security/detect-object-injection
+Warning:   151:11  warning  Generic Object Injection Sink                                                                    security/detect-object-injection
+Warning:   194:19  warning  Generic Object Injection Sink                                                                    security/detect-object-injection
+Warning:   197:7   warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+Warning:   197:7   warning  Classname 'hover:border-' is not a Tailwind CSS class!                                           tailwindcss/no-custom-classname
+Warning:   197:7   warning  Classname '/30' is not a Tailwind CSS class!                                                     tailwindcss/no-custom-classname
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/AppSidebar.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ChunkLoadErrorBoundary.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/CompatibilityChecker.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   15:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ConnectionStatus.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/CreateMultiplayerSession.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:    58:37  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   114:14  warning  'error' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+Warning:   158:16  warning  Invalid Tailwind CSS classnames order                                                                      tailwindcss/classnames-order
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/DemoBanner.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/DnDChatBot.tsx
+Warning:      0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                    @typescript-eslint/prefer-nullish-coalescing
+Warning:     19:3   warning  'Upload' is defined but never used                                                                                                                 @typescript-eslint/no-unused-vars
+Warning:     20:3   warning  'Mic' is defined but never used                                                                                                                    @typescript-eslint/no-unused-vars
+Warning:     22:3   warning  'Video' is defined but never used                                                                                                                  @typescript-eslint/no-unused-vars
+Warning:     23:3   warning  'Clapperboard' is defined but never used                                                                                                           @typescript-eslint/no-unused-vars
+Warning:     24:3   warning  'Film' is defined but never used                                                                                                                   @typescript-eslint/no-unused-vars
+Warning:     26:3   warning  'Menu' is defined but never used                                                                                                                   @typescript-eslint/no-unused-vars
+Warning:     28:3   warning  'Scroll' is defined but never used                                                                                                                 @typescript-eslint/no-unused-vars
+Warning:     35:3   warning  'LogOut' is defined but never used                                                                                                                 @typescript-eslint/no-unused-vars
+Warning:     36:3   warning  'Shield' is defined but never used                                                                                                                 @typescript-eslint/no-unused-vars
+Warning:     48:10  warning  'SystemStatus' is defined but never used                                                                                                           @typescript-eslint/no-unused-vars
+Warning:     49:10  warning  'UsageTracker' is defined but never used                                                                                                           @typescript-eslint/no-unused-vars
+Warning:     50:41  warning  'ErrorInfo' is defined but never used                                                                                                              @typescript-eslint/no-unused-vars
+Warning:     51:48  warning  'Session' is defined but never used                                                                                                                @typescript-eslint/no-unused-vars
+Warning:     58:10  warning  'guardDemoMode' is defined but never used                                                                                                          @typescript-eslint/no-unused-vars
+Warning:     62:7   warning  'generateSystemPrompt' is assigned a value but never used                                                                                          @typescript-eslint/no-unused-vars
+Warning:     66:10  warning  'VoiceSettings' is defined but never used                                                                                                          @typescript-eslint/no-unused-vars
+Warning:     90:45  warning  Unexpected any. Specify a different type                                                                                                           @typescript-eslint/no-explicit-any
+Warning:     93:53  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                          @typescript-eslint/prefer-nullish-coalescing
+Warning:     93:70  warning  Unexpected any. Specify a different type                                                                                                           @typescript-eslint/no-explicit-any
+Warning:    129:6   warning  React Hook useEffect has a missing dependency: 'currentSession'. Either include it or remove the dependency array                                  react-hooks/exhaustive-deps
+Warning:    185:10  warning  'runwayOutOfAttempts' is assigned a value but never used                                                                                           @typescript-eslint/no-unused-vars
+Warning:    185:31  warning  'setRunwayOutOfAttempts' is assigned a value but never used                                                                                        @typescript-eslint/no-unused-vars
+Warning:    215:29  warning  'setAutoScrollEnabled' is assigned a value but never used                                                                                          @typescript-eslint/no-unused-vars
+Warning:    386:39  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                          @typescript-eslint/prefer-nullish-coalescing
+Warning:    391:27  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                          @typescript-eslint/prefer-nullish-coalescing
+Warning:    391:44  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                          @typescript-eslint/prefer-nullish-coalescing
+Warning:    391:60  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                          @typescript-eslint/prefer-nullish-coalescing
+Warning:    529:39  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                          @typescript-eslint/prefer-nullish-coalescing
+Warning:    563:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    566:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    654:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    657:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    671:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    685:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    699:40  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                          @typescript-eslint/prefer-nullish-coalescing
+Warning:    712:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    718:13  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    731:13  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    740:15  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    768:15  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    773:61  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                          @typescript-eslint/prefer-nullish-coalescing
+Warning:    794:63  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                          @typescript-eslint/prefer-nullish-coalescing
+Warning:    795:92  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                          @typescript-eslint/prefer-nullish-coalescing
+Warning:    803:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    818:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    861:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    875:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    880:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    888:11  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    893:11  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    895:11  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:    912:6   warning  React Hook useEffect has missing dependencies: 'currentSession' and 'scrollToBottomWithDelay'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+Warning:   1009:13  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+Warning:   1044:23  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+Warning:   1053:25  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+Warning:   1071:19  warning  Classname 'bg-card-premium/95' is not a Tailwind CSS class!                                                                                        tailwindcss/no-custom-classname
+Warning:   1071:19  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+Warning:   1091:28  warning  Classname 'bg-gradient-primary/10' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+Warning:   1146:29  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+Warning:   1185:35  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+Warning:   1209:35  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+Warning:   1306:49  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:   1310:51  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                  no-console
+Warning:   1391:19  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+Warning:   1391:19  warning  Classname 'bg-card-premium/95' is not a Tailwind CSS class!                                                                                        tailwindcss/no-custom-classname
+Warning:   1414:21  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+Warning:   1489:21  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                                                                    tailwindcss/no-custom-classname
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/EnvironmentError.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ErrorBoundary.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ErrorHandler.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   166:33  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   167:35  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   168:34  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   168:54  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   184:72  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   196:56  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   203:36  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   205:82  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   216:73  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   279:44  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   279:69  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   280:46  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   280:73  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   281:45  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   281:65  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   376:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+Warning:   376:35  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/GenerationLogs.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   31:22  warning  Classname 'text-info' is not a Tailwind CSS class!                                               tailwindcss/no-custom-classname
+Warning:   54:13  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+Warning:   85:23  warning  Classname 'border-border-elevated/50' is not a Tailwind CSS class!                               tailwindcss/no-custom-classname
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/Layout.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/LazyComponents.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/LoadingSpinner.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/MessageUserModal.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/MultiplayerSessionCard.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   47:13  warning  Classname 'border-gradient-to-r' is not a Tailwind CSS class!                                    tailwindcss/no-custom-classname
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/NavigationErrorBoundary.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/NetworkStatus.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/PerformanceOptimizations.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                     @typescript-eslint/prefer-nullish-coalescing
+Warning:   10:18  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+Warning:   12:41  warning  React Hook useMemo was passed a dependency list that is not an array literal. This means we can't statically verify whether you've passed the correct dependencies  react-hooks/exhaustive-deps
+Warning:   12:41  warning  React Hook useMemo has a missing dependency: 'children'. Either include it or remove the dependency array                                                           react-hooks/exhaustive-deps
+Warning:   22:10  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+Warning:   23:22  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/PremiumChatInterface.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    71:10  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+Warning:    73:12  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+Warning:   123:24  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+Warning:   172:22  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+Warning:   195:12  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+Warning:   204:15  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+Warning:   243:15  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/PremiumHero.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    14:9   warning  'navigate' is assigned a value but never used                                                    @typescript-eslint/no-unused-vars
+Warning:    80:11  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+Warning:   138:13  warning  Classname 'border-border-elevated' is not a Tailwind CSS class!                                  tailwindcss/no-custom-classname
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ReadReceiptIndicator.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/SessionInvitePanel.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/SocialPanel.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:     4:10  warning  'Badge' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+Warning:    14:3   warning  'Clock' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+Warning:    18:3   warning  'Calendar' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+Warning:    48:10  warning  'showInvites' is assigned a value but never used                                                           @typescript-eslint/no-unused-vars
+Warning:    48:23  warning  'setShowInvites' is assigned a value but never used                                                        @typescript-eslint/no-unused-vars
+Warning:   110:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                          no-console
+Warning:   111:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                          no-console
+Warning:   112:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                          no-console
+Warning:   114:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                          no-console
+Warning:   119:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                          no-console
+Warning:   185:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error                          no-console
+Warning:   285:61  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   391:75  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   399:48  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/SystemStatus.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                        @typescript-eslint/prefer-nullish-coalescing
+Warning:   61:16  warning  'error' is defined but never used                                                                                      @typescript-eslint/no-unused-vars
+Warning:   77:6   warning  React Hook useEffect has a missing dependency: 'checkServiceHealth'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/TypingIndicator.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/UsageTracker.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                   @typescript-eslint/prefer-nullish-coalescing
+Warning:    65:14  warning  Generic Object Injection Sink                                                                                     security/detect-object-injection
+Warning:    66:11  warning  Generic Object Injection Sink                                                                                     security/detect-object-injection
+Warning:    74:9   warning  Generic Object Injection Sink                                                                                     security/detect-object-injection
+Warning:    75:9   warning  Generic Object Injection Sink                                                                                     security/detect-object-injection
+Warning:    76:41  warning  Generic Object Injection Sink                                                                                     security/detect-object-injection
+Warning:    77:11  warning  Generic Object Injection Sink                                                                                     security/detect-object-injection
+Warning:    87:23  warning  Variable Assigned to Object Injection Sink                                                                        security/detect-object-injection
+Warning:   104:6   warning  React Hook useEffect has a missing dependency: 'loadUsageData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+Warning:   112:19  warning  Variable Assigned to Object Injection Sink                                                                        security/detect-object-injection
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/UsernameSetupModal.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   19:10  warning  'isChecking' is assigned a value but never used                                                  @typescript-eslint/no-unused-vars
+Warning:   63:14  warning  'error' is defined but never used                                                                @typescript-eslint/no-unused-vars
+Warning:   76:11  warning  'success' is assigned a value but never used                                                     @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/VoiceSettings.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/WorldSelector.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:    1:27  warning  'useEffect' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+Warning:   37:50  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/auth/AuthErrorBoundary.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/auth/AuthGuard.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   11:9   warning  '_location' is assigned a value but never used                                                   @typescript-eslint/no-unused-vars
+Warning:   19:12  warning  '_err' is defined but never used                                                                 @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/auth/AuthModal.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    43:14  warning  'error' is defined but never used                                                                @typescript-eslint/no-unused-vars
+Warning:    87:14  warning  'error' is defined but never used                                                                @typescript-eslint/no-unused-vars
+Warning:   113:14  warning  'error' is defined but never used                                                                @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/chat/ChatContainer.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   19:10  warning  'Message' is defined but never used                                                              @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/chat/ChatHeader.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:     9:34  warning  'AvatarImage' is defined but never used                                                                    @typescript-eslint/no-unused-vars
+Warning:    23:3   warning  'onSessionChange' is defined but never used. Allowed unused args must match /^_/u                          @typescript-eslint/no-unused-vars
+Warning:    40:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error                          no-console
+Warning:    60:69  warning  'index' is defined but never used. Allowed unused args must match /^_/u                                    @typescript-eslint/no-unused-vars
+Warning:    63:73  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:    70:81  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:    89:83  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   102:75  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   106:82  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/chat/ChatInput.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:     9:10  warning  'sanitizeInput' is defined but never used                                                        @typescript-eslint/no-unused-vars
+Warning:     9:25  warning  'validateInput' is defined but never used                                                        @typescript-eslint/no-unused-vars
+Warning:   106:25  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/chat/ChatSidebar.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/chat/CoopDecisionBar.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/chat/LoadingIndicator.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/chat/MessageBubble.test.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/chat/MessageBubble.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   36:11  warning  'markMessageAsRead' is assigned a value but never used                                           @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/chat/MessageList.tsx
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   44:9  warning  'messageGroups' is assigned a value but never used                                               @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/mobile/MobileOptimizedButton.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/mobile/ResponsiveContainer.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/accordion.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/alert-dialog.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/alert.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/aspect-ratio.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/avatar.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/badge.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   36:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/breadcrumb.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/button.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   56:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/calendar.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/card.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/carousel.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/chart.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:   142:13  warning  Generic Object Injection Sink                                                                              security/detect-object-injection
+Warning:   187:63  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   350:7   warning  Generic Object Injection Sink                                                                              security/detect-object-injection
+Warning:   351:7   warning  Generic Object Injection Sink                                                                              security/detect-object-injection
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/checkbox.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/collapsible.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/command.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/context-menu.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/demo-guard.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   61:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/dialog.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/drawer.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/dropdown-menu.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/form.tsx
+Warning:     0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   168:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/hover-card.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/input-otp.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   36:44  warning  Variable Assigned to Object Injection Sink                                                       security/detect-object-injection
+Warning:   51:16  warning  Classname 'animate-caret-blink' is not a Tailwind CSS class!                                     tailwindcss/no-custom-classname
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/input.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/label.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/menubar.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/navigation-menu.tsx
+Warning:     0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   119:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/pagination.tsx
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   48:3  warning  Anchors must have content and the content must be accessible by a screen reader                  jsx-a11y/anchor-has-content
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/popover.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/progress.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/radio-group.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/resizable.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/scroll-area.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/select.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/separator.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/sheet.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/sidebar.tsx
+Warning:     0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   760:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/skeleton.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/slider.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/sonner.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   12:7   warning  Classname 'toaster' is not a Tailwind CSS class!                                                                                tailwindcss/no-custom-classname
+Warning:   29:19  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/switch.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/table.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/tabs.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/textarea.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/toast.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   25:23  warning  Classname 'destructive' is not a Tailwind CSS class!                                             tailwindcss/no-custom-classname
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/toaster.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/toggle-group.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/toggle.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   43:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/tooltip.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/components/ui/use-toast.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/contexts/AuthContext.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:    20:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+Warning:   131:58  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   132:54  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   133:49  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/contexts/UserProfileContext.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:    31:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+Warning:    75:41  warning  Prefer using an optional chain expression instead, as it's more concise and easier to read                                      @typescript-eslint/prefer-optional-chain
+Warning:   261:6   warning  React Hook useEffect has a missing dependency: 'updatePresence'. Either include it or remove the dependency array               react-hooks/exhaustive-deps
+Warning:   281:6   warning  React Hook useEffect has a missing dependency: 'loadProfile'. Either include it or remove the dependency array                  react-hooks/exhaustive-deps
+Warning:   290:6   warning  React Hook useEffect has missing dependencies: 'updatePresence' and 'user'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/domains/chat/services/ChatService.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:    10:19  warning  'Session' is defined but never used                                                                        @typescript-eslint/no-unused-vars
+Warning:    10:28  warning  'ChatError' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+Warning:    10:39  warning  'ChatEvent' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+Warning:    79:67  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:    89:48  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   135:20  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   137:15  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   187:32  warning  'userId' is defined but never used. Allowed unused args must match /^_/u                                   @typescript-eslint/no-unused-vars
+Warning:   190:11  warning  'now' is assigned a value but never used                                                                   @typescript-eslint/no-unused-vars
+Warning:   191:11  warning  'windowMs' is assigned a value but never used                                                              @typescript-eslint/no-unused-vars
+Warning:   192:11  warning  'maxRequests' is assigned a value but never used                                                           @typescript-eslint/no-unused-vars
+Warning:   318:39  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   405:39  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   430:29  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/domains/chat/types.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/chat/useChatService.ts
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                                                                                      @typescript-eslint/prefer-nullish-coalescing
+Warning:   49:6  warning  React Hook useEffect has a missing dependency: 'session?.messages'. Either include it or remove the dependency array. If 'setState' needs the current value of 'session.messages', you can also switch to useReducer instead of useState and read 'session.messages' in the reducer  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/use-mobile.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/use-toast.ts
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   18:7  warning  'actionTypes' is assigned a value but only used as a type                                        @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useCachedQueries.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   225:60  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   226:20  warning  'eventType' is assigned a value but never used                                                   @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useChatDiagnostics.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:    19:22  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    25:21  warning  'dbTest' is assigned a value but never used                                                                @typescript-eslint/no-unused-vars
+Warning:    81:23  warning  'functionTest' is assigned a value but never used                                                          @typescript-eslint/no-unused-vars
+Warning:    93:23  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    96:33  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   125:21  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useConnectionStabilizer.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useCoopDecision.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:    33:65  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    34:23  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    35:20  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    45:51  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    46:23  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    47:20  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    65:52  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:    65:81  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:    91:46  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:    91:75  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   107:68  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   107:97  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useDirectMessages.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useEnhancedPresenceManager.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                            @typescript-eslint/prefer-nullish-coalescing
+Warning:    21:29  warning  Unexpected any. Specify a different type                                                                                   @typescript-eslint/no-explicit-any
+Warning:   116:6   warning  React Hook useCallback has a missing dependency: 'setupPresenceChannel'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useErrorHandler.ts
+Warning:   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   9:28  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useMultiplayerEnhancements.ts
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly           @typescript-eslint/prefer-nullish-coalescing
+Warning:   57:6  warning  React Hook useMemo has a missing dependency: 'loading'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useMultiplayerRealtime.ts
+Warning:   0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   5:20  warning  'debugError' is defined but never used                                                           @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useMultiplayerRealtimeSync.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    7:34  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   36:11  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useMultiplayerSessionManager.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:   64:48  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   79:65  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useMultiplayerSessions.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:    50:13  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    65:68  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   108:31  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   109:27  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   150:64  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   150:79  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   292:9   warning  'loadMultiplayerDataFallback' is assigned a value but never used                                           @typescript-eslint/no-unused-vars
+Warning:   353:53  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   353:81  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   436:38  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   520:94  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/usePerformanceMonitor.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                                                                      @typescript-eslint/prefer-nullish-coalescing
+Warning:   106:6   warning  React Hook useCallback has a missing dependency: 'getThreshold'. Either include it or remove the dependency array                                                                                                                                                    react-hooks/exhaustive-deps
+Warning:   181:38  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                             @typescript-eslint/no-explicit-any
+Warning:   224:18  warning  The ref value 'entriesRef.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'entriesRef.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/usePresenceManager.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                 @typescript-eslint/prefer-nullish-coalescing
+Warning:     5:54  warning  'UserProfile' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+Warning:    18:37  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:    25:42  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:    27:50  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:    90:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                               no-console
+Warning:   115:65  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   115:88  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   118:25  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   118:37  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   118:46  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   119:30  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   119:47  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   120:23  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   120:35  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   120:44  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   121:29  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   122:33  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   122:51  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   122:60  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   124:27  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   125:28  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   125:43  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   125:52  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   127:27  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   127:41  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   127:50  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   127:65  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   128:25  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   128:37  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   129:31  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   129:49  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   129:58  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   136:56  warning  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+Warning:   136:79  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   138:28  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   139:38  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   140:26  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   142:42  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   145:34  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   147:32  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   147:47  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   148:28  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   149:40  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   161:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                               no-console
+Warning:   165:11  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                               no-console
+Warning:   188:56  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   194:11  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                               no-console
+Warning:   244:52  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   277:6   warning  React Hook useEffect has missing dependencies: 'isConnected' and 'loading'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+Warning:   302:50  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   308:6   warning  React Hook useCallback has a missing dependency: 'userProfile'. Either include it or remove the dependency array                react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useReadReceipts.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useRealtimeChat.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly               @typescript-eslint/prefer-nullish-coalescing
+Warning:    7:83  warning  Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+Warning:   10:29  warning  Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+Warning:   34:52  warning  Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+Warning:   72:6   warning  React Hook useEffect has a missing dependency: 'sessionId'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useRealtimeManager.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                                                                                     @typescript-eslint/prefer-nullish-coalescing
+Warning:    10:23  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+Warning:    33:11  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+Warning:    48:30  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+Warning:    60:9   warning  The 'defaultOptions' object makes the dependencies of useCallback Hook (at line 203) change on every render. To fix this, wrap the initialization of 'defaultOptions' in its own useMemo() Hook                                                                     react-hooks/exhaustive-deps
+Warning:   120:49  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+Warning:   121:74  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                           @typescript-eslint/prefer-nullish-coalescing
+Warning:   122:49  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                           @typescript-eslint/prefer-nullish-coalescing
+Warning:   122:64  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                           @typescript-eslint/prefer-nullish-coalescing
+Warning:   152:81  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+Warning:   159:22  warning  Variable Assigned to Object Injection Sink                                                                                                                                                                                                                          security/detect-object-injection
+Warning:   166:7   warning  Generic Object Injection Sink                                                                                                                                                                                                                                       security/detect-object-injection
+Warning:   171:27  warning  Generic Object Injection Sink                                                                                                                                                                                                                                       security/detect-object-injection
+Warning:   179:12  warning  Generic Object Injection Sink                                                                                                                                                                                                                                       security/detect-object-injection
+Warning:   180:9   warning  Generic Object Injection Sink                                                                                                                                                                                                                                       security/detect-object-injection
+Warning:   183:7   warning  Generic Object Injection Sink                                                                                                                                                                                                                                       security/detect-object-injection
+Warning:   186:11  warning  Generic Object Injection Sink                                                                                                                                                                                                                                       security/detect-object-injection
+Warning:   210:11  warning  'setupTimeout' is assigned a value but never used                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+Warning:   238:35  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                            @typescript-eslint/no-explicit-any
+Warning:   317:6   warning  React Hook useEffect has missing dependencies: 'defaultOptions.heartbeatIntervalMs', 'defaultOptions.reconnectAfterMs', 'defaultOptions.timeout', 'handleRealtimeEvent', 'loading', and 'processBatchedEvents'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+Warning:   334:6   warning  React Hook useEffect has a missing dependency: 'loading'. Either include it or remove the dependency array                                                                                                                                                          react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useRealtimeSubscriptions.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   10:23  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   15:30  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   36:33  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useReliableRealtime.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                         @typescript-eslint/prefer-nullish-coalescing
+Warning:    10:23  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:    15:29  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:    47:31  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:    84:6   warning  React Hook useCallback has a missing dependency: 'scheduleReconnect'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+Warning:   106:6   warning  React Hook useEffect has a missing dependency: 'cleanup'. Either include it or remove the dependency array              react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useRetry.ts
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                 @typescript-eslint/prefer-nullish-coalescing
+Warning:   65:6  warning  React Hook useCallback has a missing dependency: 'lastError'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useRoomJoinOrchestrator.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:     7:10  warning  'useMultiplayerRealtimeSync' is defined but never used                                           @typescript-eslint/no-unused-vars
+Warning:    16:18  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   113:14  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   130:42  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useSectionHistory.ts
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                  @typescript-eslint/prefer-nullish-coalescing
+Warning:   37:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                no-console
+Warning:   44:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                no-console
+Warning:   51:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                no-console
+Warning:   59:7  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                no-console
+Warning:   67:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error                                no-console
+Warning:   70:6  warning  React Hook useCallback has a missing dependency: 'sectionKey'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useSecurityMonitor.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    30:25  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:    35:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:    64:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Error:   122:45  error    void is not valid as a constituent in a union type                                               @typescript-eslint/no-invalid-void-type
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useSessionJoining.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   52:94  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   83:86  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useSessionJoiningV2.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   30:20  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useSessionManager.test.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useSessionManager.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                         @typescript-eslint/prefer-nullish-coalescing
+Warning:     6:10  warning  'useRetry' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+Warning:    39:11  warning  'handleError' is assigned a value but never used                                                                        @typescript-eslint/no-unused-vars
+Warning:    39:24  warning  'handleSuccess' is assigned a value but never used                                                                      @typescript-eslint/no-unused-vars
+Warning:    50:5   warning  React Hook useMemo has a missing dependency: 'loadSessions'. Either include it or remove the dependency array           react-hooks/exhaustive-deps
+Warning:    59:18  warning  'payload' is defined but never used. Allowed unused args must match /^_/u                                               @typescript-eslint/no-unused-vars
+Warning:    68:18  warning  'payload' is defined but never used. Allowed unused args must match /^_/u                                               @typescript-eslint/no-unused-vars
+Warning:    77:18  warning  'payload' is defined but never used. Allowed unused args must match /^_/u                                               @typescript-eslint/no-unused-vars
+Warning:    82:11  warning  React Hook useMemo has a missing dependency: 'user'. Either include it or remove the dependency array                   react-hooks/exhaustive-deps
+Warning:    95:58  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:    97:51  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   100:17  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   165:34  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   170:28  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   170:45  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   171:40  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   171:58  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   175:45  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   179:47  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   209:68  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   211:51  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   214:17  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   245:52  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   247:45  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   250:17  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   263:6   warning  React Hook useCallback has a missing dependency: 'syncLocalSessions'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+Warning:   283:43  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   355:43  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   537:20  warning  'parseError' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+Warning:   551:58  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   553:28  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   555:19  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   566:50  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   571:32  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   572:27  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   572:35  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   573:55  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   574:55  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   578:42  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   582:36  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   614:74  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   621:32  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   622:27  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   622:35  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   622:66  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   622:97  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   624:42  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   638:47  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   655:33  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   659:35  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   660:41  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   660:57  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   660:70  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   661:54  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   661:73  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   679:49  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   679:70  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   680:65  warning  Unexpected any. Specify a different type                                                                                @typescript-eslint/no-explicit-any
+Warning:   682:30  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   682:79  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   683:36  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   683:48  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   683:63  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   684:49  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   684:67  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   689:31  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   689:45  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   691:47  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   691:69  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   691:84  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator               @typescript-eslint/prefer-nullish-coalescing
+Warning:   741:6   warning  React Hook useEffect has a missing dependency: 'loadSessions'. Either include it or remove the dependency array         react-hooks/exhaustive-deps
+Warning:   799:6   warning  React Hook useEffect has a missing dependency: 'currentSession'. Either include it or remove the dependency array       react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useSocialManager.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                               @typescript-eslint/prefer-nullish-coalescing
+Warning:     5:10  warning  'debugLog' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+Warning:    71:6   warning  React Hook useMemo has missing dependencies: 'loadFriends' and 'loading'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+Warning:   149:21  warning  Unexpected any. Specify a different type                                                                                      @typescript-eslint/no-explicit-any
+Warning:   151:42  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                     @typescript-eslint/prefer-nullish-coalescing
+Warning:   151:57  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                     @typescript-eslint/prefer-nullish-coalescing
+Warning:   151:75  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                     @typescript-eslint/prefer-nullish-coalescing
+Warning:   188:21  warning  Unexpected any. Specify a different type                                                                                      @typescript-eslint/no-explicit-any
+Warning:   190:42  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                     @typescript-eslint/prefer-nullish-coalescing
+Warning:   190:57  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                     @typescript-eslint/prefer-nullish-coalescing
+Warning:   190:75  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                     @typescript-eslint/prefer-nullish-coalescing
+Warning:   216:14  warning  'error' is defined but never used                                                                                             @typescript-eslint/no-unused-vars
+Warning:   232:14  warning  'error' is defined but never used                                                                                             @typescript-eslint/no-unused-vars
+Warning:   252:44  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                     @typescript-eslint/prefer-nullish-coalescing
+Warning:   253:44  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                     @typescript-eslint/prefer-nullish-coalescing
+Warning:   257:6   warning  React Hook useMemo has an unnecessary dependency: 'onlineUsers'. Either exclude it or remove the dependency array             react-hooks/exhaustive-deps
+Warning:   263:6   warning  React Hook useEffect has a missing dependency: 'loadFriends'. Either include it or remove the dependency array                react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useStandardizedRealtime.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly             @typescript-eslint/prefer-nullish-coalescing
+Warning:    11:23  warning  Unexpected any. Specify a different type                                                                    @typescript-eslint/no-explicit-any
+Warning:    22:30  warning  Unexpected any. Specify a different type                                                                    @typescript-eslint/no-explicit-any
+Warning:    87:33  warning  Unexpected any. Specify a different type                                                                    @typescript-eslint/no-explicit-any
+Warning:   144:6   warning  React Hook useEffect has a missing dependency: 'loading'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+Warning:   160:6   warning  React Hook useEffect has a missing dependency: 'loading'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useTypingIndicators.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                  @typescript-eslint/prefer-nullish-coalescing
+Warning:    4:20  warning  'debugError' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+Warning:   17:29  warning  Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+Warning:   47:6   warning  React Hook useCallback has a missing dependency: 'stopTyping'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useUserSettings.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useUserSettingsSecure.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/hooks/useWorldDirectory.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:   45:68  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   58:21  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   60:31  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   80:11  warning  'payload' is defined but never used. Allowed unused args must match /^_/u                                  @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/integrations/supabase/client.ts
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   36:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/integrations/supabase/types.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/bundle-analyzer.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Error:    6:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+Warning:   19:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   20:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   21:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   22:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   23:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   32:11  warning  'potentiallyLargeLibraries' is assigned a value but never used                                   @typescript-eslint/no-unused-vars
+Warning:   39:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Error:   60:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+Warning:   71:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   80:11  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   90:31  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   99:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/crypto.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/debug.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:    5:12  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    5:45  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    5:65  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:    7:35  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:    9:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                          no-console
+Warning:   14:18  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   21:22  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   22:20  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   22:53  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   28:37  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   33:16  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   49:20  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   50:18  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   50:51  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   55:36  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   60:16  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   67:20  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   68:18  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   68:51  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   76:24  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   76:44  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   77:26  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   77:51  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   78:28  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   78:55  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/demo-mode-guard.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Error:     9:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+Warning:   155:28  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   159:43  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/demo-mode.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/displayNameResolver.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/enterprise/ErrorHandler.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   241:23  warning  'error' is defined but never used. Allowed unused args must match /^_/u                          @typescript-eslint/no-unused-vars
+Warning:   251:23  warning  'error' is defined but never used. Allowed unused args must match /^_/u                          @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/enterprise/Logger.ts
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   51:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   65:7  warning  'RemoteTransport' is defined but never used                                                      @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/enterprise/MetricsCollector.ts
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   34:7  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   42:7  warning  'RemoteMetricsBackend' is defined but never used                                                 @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/env.ts
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   68:3  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/logger.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    71:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:    72:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:    73:25  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:    74:28  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:    75:28  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:    76:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:    86:11  warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   131:37  warning  'entry' is defined but never used. Allowed unused args must match /^_/u                          @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/monitoring.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:   368:44  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   371:46  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   385:53  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   397:66  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/performance-monitor.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    6:63  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:    6:73  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   11:21  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   37:46  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   37:56  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   44:21  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Error:   51:23  error    Use the spread operator instead of '.apply()'                                                    prefer-spread
+Error:   54:18  error    Use the spread operator instead of '.apply()'                                                    prefer-spread
+Warning:   61:46  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   61:56  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   67:21  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Error:   69:7   error    Use the spread operator instead of '.apply()'                                                    prefer-spread
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/performance-optimizations.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Error:     7:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+Warning:    39:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:    56:22  warning  Variable Assigned to Object Injection Sink                                                       security/detect-object-injection
+Error:    71:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+Warning:    96:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   108:51  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Error:   125:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+Warning:   138:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Error:   170:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+Warning:   190:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:   216:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/performance.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    35:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+Warning:    84:33  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:    85:44  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:    86:45  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:    87:45  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   103:28  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   107:49  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   126:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                no-console
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/productionSecurityHeaders.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/query-cache.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:     6:26  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:    85:30  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:    93:45  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:    93:59  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:    99:32  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:    99:55  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   125:32  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   125:46  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   210:51  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   213:12  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   214:14  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   221:37  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   227:60  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   282:19  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   285:48  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/secureErrorHandler.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/secureRemoteTransport.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    4:19  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:    7:20  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+Warning:   18:32  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/security.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Error:    68:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+Warning:    70:5   warning  Unsafe Regular Expression                                                                        security/detect-unsafe-regex
+Error:   146:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+Warning:   192:9   warning  Generic Object Injection Sink                                                                    security/detect-object-injection
+Warning:   194:9   warning  Generic Object Injection Sink                                                                    security/detect-object-injection
+Error:   205:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/session-utils.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   29:42  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/settings.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:     4:20  warning  'debugError' is defined but never used                                                           @typescript-eslint/no-unused-vars
+Warning:     6:11  warning  'UserSettings' is defined but never used                                                         @typescript-eslint/no-unused-vars
+Warning:   138:14  warning  'error' is defined but never used                                                                @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/tech-detection.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   59:21  warning  Found non-literal argument to RegExp Constructor                                                 security/detect-non-literal-regexp
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/tts.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:   106:66  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   107:59  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   108:57  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   161:37  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   187:37  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   239:13  warning  'validAudioMimes' is assigned a value but never used                                                       @typescript-eslint/no-unused-vars
+Warning:   281:11  warning  Generic Object Injection Sink                                                                              security/detect-object-injection
+Warning:   313:45  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   314:49  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   341:38  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   342:49  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   343:50  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   344:50  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   354:54  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   355:59  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   362:20  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   380:40  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   381:42  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   475:13  warning  Prefer using an optional chain expression instead, as it's more concise and easier to read                 @typescript-eslint/prefer-optional-chain
+Warning:   542:18  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   601:28  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   602:34  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   607:17  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   607:31  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   618:15  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+Warning:   630:9   warning  Prefer using an optional chain expression instead, as it's more concise and easier to read                 @typescript-eslint/prefer-optional-chain
+Warning:   643:11  warning  Prefer using an optional chain expression instead, as it's more concise and easier to read                 @typescript-eslint/prefer-optional-chain
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/types.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/utils.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/validation.test.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/lib/validation.ts
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:    20:14  warning  Unsafe Regular Expression                                                                        security/detect-unsafe-regex
+Warning:   118:46  warning  Unexpected any. Specify a different type                                                         @typescript-eslint/no-explicit-any
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/main.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   11:10  warning  'env' is defined but never used                                                                  @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/middleware/security.ts
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Error:   65:14  error    Unexpected class with only static properties                                                     @typescript-eslint/no-extraneous-class
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/pages/Auth.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                              @typescript-eslint/prefer-nullish-coalescing
+Error:    29:19  error    React Hook "useAuth" is called conditionally. React Hooks must be called in the exact same order in every component render                                                                   react-hooks/rules-of-hooks
+Warning:    30:12  warning  'err' is defined but never used                                                                                                                                                              @typescript-eslint/no-unused-vars
+Error:    50:3   error    React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+Error:    57:3   error    React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+Warning:   131:14  warning  'err' is defined but never used                                                                                                                                                              @typescript-eslint/no-unused-vars
+Warning:   151:14  warning  'err' is defined but never used                                                                                                                                                              @typescript-eslint/no-unused-vars
+Warning:   173:14  warning  'err' is defined but never used                                                                                                                                                              @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/pages/Dashboard.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/pages/Friends.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                                                                                                    @typescript-eslint/prefer-nullish-coalescing
+Warning:   161:21  warning  Visible, non-interactive elements with click handlers must have at least one keyboard listener                                                                                                     jsx-a11y/click-events-have-key-events
+Warning:   161:21  warning  Avoid non-native interactive elements. If using native HTML is not possible, add an appropriate role and support for tabbing, mouse, keyboard, and touch inputs to an interactive content element  jsx-a11y/no-static-element-interactions
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/pages/Inbox.tsx
+Warning:    0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   17:9  warning  '_navigate' is assigned a value but never used                                                   @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/pages/Index.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/pages/NotFound.tsx
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/pages/RoomJoin.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly                       @typescript-eslint/prefer-nullish-coalescing
+Warning:   26:24  warning  '_setSessionInfo' is assigned a value but never used                                                                  @typescript-eslint/no-unused-vars
+Warning:   45:6   warning  React Hook useEffect has a missing dependency: 'handleJoinSession'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/pages/Sessions.tsx
+Warning:     0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly            @typescript-eslint/prefer-nullish-coalescing
+Warning:    41:11  warning  'joinMultiplayerSession' is assigned a value but never used                                                @typescript-eslint/no-unused-vars
+Warning:    86:11  warning  'source' is assigned a value but never used                                                                @typescript-eslint/no-unused-vars
+Warning:   183:39  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   191:56  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   283:50  warning  'index' is defined but never used. Allowed unused args must match /^_/u                                    @typescript-eslint/no-unused-vars
+Warning:   579:53  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+Warning:   589:60  warning  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/pages/Settings.tsx
+Warning:    0:1   warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+Warning:   23:31  warning  'service' is defined but never used. Allowed unused args must match /^_/u                        @typescript-eslint/no-unused-vars
+Warning:   23:48  warning  'usage' is defined but never used. Allowed unused args must match /^_/u                          @typescript-eslint/no-unused-vars
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/test/setup.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/types/session.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+/home/runner/work/dungeon-whisperer-app/dungeon-whisperer-app/src/vite-env.d.ts
+Warning:   0:1  warning  This rule requires the `strictNullChecks` compiler option to be turned on to function correctly  @typescript-eslint/prefer-nullish-coalescing
+
+✖ 803 problems (18 errors, 785 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+
+Error: Process completed with exit code 1.

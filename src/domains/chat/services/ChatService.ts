@@ -167,7 +167,7 @@ export class ChatService {
           }
         );
 
-        if (!response || !response.data) {
+        if (!response?.data) {
           throw new Error("No response data");
         }
         return response.data as AIResponse;
@@ -319,7 +319,7 @@ export class ChatService {
         }
       );
 
-      if (!response || !response.data) {
+      if (!response?.data) {
         throw new Error('Image generation service error');
       }
 
@@ -407,7 +407,7 @@ export class ChatService {
         }
       );
 
-      if (!response || !response.data) {
+      if (!response?.data) {
         throw new Error('Video generation service error');
       }
 

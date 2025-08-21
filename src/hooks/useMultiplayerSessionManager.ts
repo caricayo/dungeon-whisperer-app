@@ -76,7 +76,7 @@ export const useMultiplayerSessionManager = () => {
         const multiplayerSession: Session = {
           id: joinResult.session.id,
           name: joinResult.session.name,
-          messages: (joinResult.last30Messages || []).map((msg: Message) => ({
+          messages: (joinResult.last30Messages ?? []).map((msg: Message) => ({
             ...msg,
             timestamp: new Date(msg.timestamp)
           })),

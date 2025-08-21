@@ -126,7 +126,7 @@ export const useRealtimeManager = (
   // Event deduplication helper
   const createEventHash = useCallback((payload: RealtimePayload): string => {
     const key = `${payload.table}_${payload.eventType}_${payload.new?.id ?? payload.old?.id}`;
-    const dataHash = JSON.stringify(payload.new ?? (payload.old || {}));
+    const dataHash = JSON.stringify(payload.new ?? (payload.old ?? {}));
     return `${key}_${btoa(dataHash).slice(0, 12)}`;
   }, []);
 
@@ -175,7 +175,7 @@ export const useRealtimeManager = (
     }
 
     // Throttling check with priority support
-    const throttleMs = config.throttleMs || (config.priority === 'high' ? 50 : 100);
+    const throttleMs = config.throttleMs ?? (config.priority === 'high' ? 50 : 100);
     // eslint-disable-next-line security/detect-object-injection
     const lastProcessed = eventBatchRef.current[configKey]?.lastProcessed ?? 0;
     

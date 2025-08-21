@@ -49,7 +49,7 @@ export const usePresenceManager = (channelName = 'global_presence') => {
     if (!user) return;
 
     try {
-      const validStatus = status || (isOnline ? 'online' : 'offline');
+      const validStatus = status ?? (isOnline ? 'online' : 'offline');
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -132,18 +132,18 @@ export const usePresenceManager = (channelName = 'global_presence') => {
         const users = Object.values(newState).flat().filter((p): p is RawPresenceData => Boolean(p && (p.userId ?? p.user_id)));
         // Normalize legacy presence data to new format
         const normalizedUsers = users.map(u => ({
-          userId: u.userId || u.user_id || '',
+          userId: u.userId ?? u.user_id ?? '',
           displayName: u.displayName ?? getDisplayName({ 
-            id: u.userId || u.user_id || '', 
+            id: u.userId ?? u.user_id ?? '', 
             username: u.username, 
-            display_name: u.display_name || u.displayName 
+            display_name: u.display_name ?? u.displayName 
           }),
-          username: u.username || '',
-          avatarUrl: u.avatarUrl || u.avatar_url,
+          username: u.username ?? '',
+          avatarUrl: u.avatarUrl ?? u.avatar_url,
           isOnline: true,
           lastSeen: (u.lastSeen || u.last_seen) ?? new Date().toISOString(),
           status: (u.status as UserPresence['status']) ?? 'online',
-          currentWorld: u.currentWorld || u.current_world
+          currentWorld: u.currentWorld ?? u.current_world
         }));
         setOnlineUsers(normalizedUsers);
         debugLog('Presence sync - online users:', normalizedUsers.length);

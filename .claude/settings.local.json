@@ -83,7 +83,17 @@
       "Bash(for file in \"src/hooks/useCachedQueries.ts\" \"src/hooks/chat/useChatService.ts\" \"src/components/UsageTracker.tsx\")",
       "Bash(done)",
       "Bash(for file in \"src/components/WorldSelector.tsx\" \"src/components/SocialPanel.tsx\" \"src/components/chat/CoopDecisionBar.tsx\")",
-      "Bash(for file in \"src/components/chat/ChatHeader.tsx\" \"src/components/auth/AuthModal.tsx\" \"src/components/AppSidebar.tsx\")"
+      "Bash(for file in \"src/components/chat/ChatHeader.tsx\" \"src/components/auth/AuthModal.tsx\" \"src/components/AppSidebar.tsx\")",
+      "Bash(git rm:*)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run list --limit 5)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run list --limit 10)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17120803052)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17120803052 --log-failed)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run list --limit 3)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run list --limit 8)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17120872551)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17120924588)",
+      "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" run view 17120990334)"
     ],
     "deny": [],
     "ask": [],

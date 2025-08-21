@@ -139,7 +139,7 @@ export const useSessionManager = () => {
             messages: session.messages?.map((msg) => ({
               ...msg,
               timestamp: new Date(msg.timestamp)
-            })) || [],
+            })) ?? [],
             createdAt: new Date(session.createdAt),
             updatedAt: session.updatedAt ? new Date(session.updatedAt) : undefined
           }));
@@ -206,8 +206,8 @@ export const useSessionManager = () => {
       }
 
       const allSessionsData = [
-        ...(ownedSessions || []),
-        ...(participatedSessions || [])
+        ...(ownedSessions ?? []),
+        ...(participatedSessions ?? [])
       ];
 
       const cloudSessions: Session[] = allSessionsData.map(session => ({
@@ -216,13 +216,13 @@ export const useSessionManager = () => {
         messages: ((session.messages as unknown as RawMessage[]) ?? []).map((msg) => ({
           ...msg,
           timestamp: new Date(msg.timestamp) // Convert string timestamps back to Date objects
-        })) || [],
+        })) ?? [],
         customPrompt: session.custom_prompt ?? '',
         createdAt: new Date(session.created_at),
         updatedAt: new Date(session.updated_at),
         isSynced: true,
         isMultiplayer: session.is_multiplayer ?? false
-      })) || [];
+      })) ?? [];
 
       debugLog('Loaded sessions from Supabase:', cloudSessions.length);
       setSessions(cloudSessions);
@@ -262,7 +262,7 @@ export const useSessionManager = () => {
             messages: session.messages?.map((msg) => ({
               ...msg,
               timestamp: new Date(msg.timestamp)
-            })) || [],
+            })) ?? [],
             createdAt: new Date(session.createdAt),
             updatedAt: session.updatedAt ? new Date(session.updatedAt) : undefined
           }));
@@ -298,7 +298,7 @@ export const useSessionManager = () => {
             messages: s.messages?.map((msg) => ({
               ...msg,
               timestamp: new Date(msg.timestamp)
-            })) || [],
+            })) ?? [],
             createdAt: new Date(s.createdAt),
             updatedAt: s.updatedAt ? new Date(s.updatedAt) : undefined,
             isSynced: false
@@ -625,7 +625,7 @@ export const useSessionManager = () => {
                 isGeneratingAudio: (msg as Record<string, unknown>).isGeneratingAudio as boolean | undefined,
                 ttsError: (msg as Record<string, unknown>).ttsError as string | undefined,
                 timestamp: new Date((msg as Record<string, unknown>).timestamp as string)
-              })) || [],
+              })) ?? [],
               createdAt: new Date(),
               updatedAt: sessionData.updatedAt ? new Date(sessionData.updatedAt as string) : undefined,
               isSynced: false
@@ -659,7 +659,7 @@ export const useSessionManager = () => {
                   .trim();
                     
                 if (content) {
-                  const role = (message.author.role === 'assistant' ? 'assistant' : 'user') as 'user' | 'assistant';
+                  const role = (message.author.role === 'assistant' ? 'assistant' : 'user');
                   const timestamp = new Date(message.create_time * 1000);
                       
                   messages.push({
@@ -707,7 +707,7 @@ export const useSessionManager = () => {
                 if (content) {
                   messages.push({
                     id: crypto.randomUUID(),
-                    role: (message.author.role === 'assistant' ? 'assistant' : 'user') as 'user' | 'assistant',
+                    role: (message.author.role === 'assistant' ? 'assistant' : 'user'),
                     content,
                     timestamp: new Date(message.create_time * 1000)
                   });
@@ -739,7 +739,7 @@ export const useSessionManager = () => {
               if (messageItem.content || messageItem.message || messageItem.text) {
                 messages.push({
                   id: crypto.randomUUID(),
-                  role: ((messageItem.role as string) === 'assistant' ? 'assistant' : 'user') as 'user' | 'assistant',
+                  role: ((messageItem.role as string) === 'assistant' ? 'assistant' : 'user'),
                   content: (messageItem.content ?? messageItem.message ?? messageItem.text ?? '') as string,
                   timestamp: new Date((messageItem.timestamp ?? messageItem.created_at ?? Date.now()) as number | string)
                 });
@@ -766,7 +766,7 @@ export const useSessionManager = () => {
                   return null;
                 }
                 const messageItem = msg as Record<string, unknown>;
-                const role = ((messageItem.role as string) === 'assistant' ? 'assistant' : 'user') as 'user' | 'assistant';
+                const role = ((messageItem.role as string) === 'assistant' ? 'assistant' : 'user');
                 const content = (messageItem.content ?? messageItem.text ?? messageItem.message ?? '') as string;
                 const timestamp = new Date((messageItem.timestamp ?? messageItem.created_at ?? Date.now()) as number | string);
                 return {

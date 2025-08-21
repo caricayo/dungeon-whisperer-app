@@ -118,7 +118,7 @@ export function PremiumChatInterface({
                 </Avatar>
 
                 {/* Message Content */}
-                <div className={`flex flex-col max-w-[80%] ${message.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                <div className={`flex max-w-[80%] flex-col ${message.sender === 'user' ? 'items-end' : 'items-start'}`}>
                   <div className={`
                     relative rounded-2xl px-4 py-3 backdrop-blur-sm transition-all duration-300 hover:shadow-elevated
                     ${message.sender === 'ai' 
@@ -239,7 +239,7 @@ export function PremiumChatInterface({
               variant="outline"
               size="sm"
               onClick={() => setInput(prompt)}
-              className="border-border-elevated whitespace-nowrap bg-card/50 text-xs hover:bg-card-elevated"
+              className="whitespace-nowrap border-border-elevated bg-card/50 text-xs hover:bg-card-elevated"
             >
               {prompt}
             </Button>

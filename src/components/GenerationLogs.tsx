@@ -82,7 +82,7 @@ export function GenerationLogs({ logs, isVisible, className = '' }: GenerationLo
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ duration: 0.2, delay: index * 0.05 }}
-                      className="border-border-elevated/50 flex items-start gap-3 rounded-lg border bg-muted/20 p-3"
+                      className="flex items-start gap-3 rounded-lg border border-border-elevated/50 bg-muted/20 p-3"
                     >
                       <div className="mt-0.5 shrink-0">
                         {getLogIcon(log.type)}
