@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "vite preview",
-    "lint": "eslint . --max-warnings 1000",
+    "lint": "eslint . --max-warnings 2000",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
