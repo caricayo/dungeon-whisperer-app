@@ -16,24 +16,14 @@ import { Slider } from '@/components/ui/slider';
 import { AnimatedButton, FloatingActionButton } from '@/components/AnimatedElements';
 import { 
   Save, 
-  Upload, 
-  Mic, 
-  Image as ImageIcon, 
-  Video,
-  Clapperboard,
-  Film,
   Send, 
-  Menu,
   Dice6,
-  Scroll,
   Wand2,
   Volume2,
   Loader2,
   Play,
   Pause,
   Square,
-  LogOut,
-  Shield,
   AlertTriangle,
   AlertCircle,
   X,
@@ -45,24 +35,15 @@ import {
 } from 'lucide-react';
 import dndBackground from '@/assets/dnd-background.jpg';
 import { supabase } from "@/integrations/supabase/client";
-import { SystemStatus } from '@/components/SystemStatus';
-import { UsageTracker } from '@/components/UsageTracker';
-import { ErrorHandler, parseError, type ErrorInfo } from '@/components/ErrorHandler';
-import { useSessionManager, type Message, type Session } from '@/hooks/useSessionManager';
+import { ErrorHandler, parseError } from '@/components/ErrorHandler';
+import { useSessionManager, type Message } from '@/hooks/useSessionManager';
 import { useMultiplayerRealtimeSync } from '@/hooks/useMultiplayerRealtimeSync';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { UsernameSetupModal } from '@/components/UsernameSetupModal';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { guardDemoMode } from '@/lib/demo-mode';
 import DemoModeAPIGuard from '@/lib/demo-mode-guard';
-
-// Helper function for generating system prompts
-const generateSystemPrompt = (customPrompt?: string) => {
-  const basePrompt = "You are a helpful D&D assistant and dungeon master.";
-  return customPrompt ? `${basePrompt} ${customPrompt}` : basePrompt;
-};
 import { VoiceSettings } from '@/components/VoiceSettings';
 
 const DnDChatBot: React.FC = () => {

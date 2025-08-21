@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMultiplayerSessionManager } from '@/hooks/useMultiplayerSessionManager';
@@ -23,7 +23,7 @@ export default function RoomJoin() {
   
   const [isJoining, setIsJoining] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
-  const [_sessionInfo, _setSessionInfo] = useState<{id: string; name: string; players?: string[]} | null>(null);
+  const [sessionInfo, setSessionInfo] = useState<{id: string; name: string; players?: string[]} | null>(null);
 
   useEffect(() => {
     if (!sessionId) {
@@ -42,9 +42,9 @@ export default function RoomJoin() {
 
     // Auto-join on component mount
     handleJoinSession();
-  }, [sessionId, user]);
+  }, [sessionId, user, handleJoinSession]);
 
-  const handleJoinSession = async () => {
+  const handleJoinSession = useCallback(async () => {
     if (!sessionId || !user) {
       setJoinError('Authentication required to join session');
       return;
@@ -87,7 +87,7 @@ export default function RoomJoin() {
     } finally {
       setIsJoining(false);
     }
-  };
+  }, [sessionId, user, joinAndSetupMultiplayerSession, setCurrentSession, navigate, toast]);
 
   const handleRetry = () => {
     setJoinError(null);
@@ -160,15 +160,15 @@ export default function RoomJoin() {
             </Alert>
           )}
 
-          {_sessionInfo && (
+          {sessionInfo && (
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="size-4" />
-                Session: {_sessionInfo.name}
+                Session: {sessionInfo.name}
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Users className="size-4" />
-                Players: {_sessionInfo.players?.length || 0}/6
+                Players: {sessionInfo.players?.length ?? 0}/6
               </div>
             </div>
           )}

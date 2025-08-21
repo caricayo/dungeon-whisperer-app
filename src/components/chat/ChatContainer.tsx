@@ -234,7 +234,7 @@ export const ChatContainer = memo<ChatContainerProps>(({
           </div>
 
           {/* Cooperative Decision Bar for Multiplayer */}
-          {session?.metadata?.isMultiplayer && (
+          {session?.isMultiplayer && (
             <CoopDecisionBar sessionId={session.id || ''} onSendCombined={handleSendMessage} />
           )}
 
@@ -243,7 +243,7 @@ export const ChatContainer = memo<ChatContainerProps>(({
             <ChatInput
               onSendMessage={handleSendMessage}
               disabled={isLoading}
-              placeholder={session?.metadata?.isMultiplayer ? 'Chat or discuss while planning your turn…' : 'Describe your adventure...'}
+              placeholder={session?.isMultiplayer ? 'Chat or discuss while planning your turn…' : 'Describe your adventure...'}
               className="border-t border-border bg-card/30 backdrop-blur-sm"
             />
           )}

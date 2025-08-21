@@ -1,12 +1,14 @@
 -- ============================================================================
--- MULTIPLAYER CHAT FUNCTION: append_session_messages (SAFE VERSION)
+-- DROP AND RECREATE append_session_messages FUNCTION
 -- ============================================================================
--- This function allows users to append messages to multiplayer sessions
--- It handles both user and assistant messages in a single transaction
--- Note: If you get a return type error, run the drop_and_recreate_append_messages.sql first
+-- Run this script to fix the return type conflict
 -- ============================================================================
 
-CREATE OR REPLACE FUNCTION public.append_session_messages_v2(
+-- First, drop the existing function
+DROP FUNCTION IF EXISTS public.append_session_messages(uuid, jsonb, jsonb);
+
+-- Now recreate it with the correct return type
+CREATE OR REPLACE FUNCTION public.append_session_messages(
   session_id uuid,
   user_message jsonb,
   assistant_message jsonb
@@ -124,3 +126,7 @@ EXCEPTION WHEN OTHERS THEN
   );
 END;
 $function$;
+
+-- ============================================================================
+-- FUNCTION RECREATED SUCCESSFULLY
+-- ============================================================================

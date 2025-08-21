@@ -421,7 +421,7 @@ export const useMultiplayerSessions = () => {
       debugLog('🎮 Creating multiplayer session with RPC function:', name);
       
       // Use the new RPC function for creating multiplayer sessions
-      const { data, error } = await supabase.rpc('create_multiplayer_session', {
+      const { data, error } = await supabase.rpc('create_multiplayer_session_fixed', {
         session_name: name,
         custom_prompt: customPrompt || null,
         max_players: maxPlayers

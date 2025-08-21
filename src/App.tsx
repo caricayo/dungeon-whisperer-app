@@ -13,6 +13,7 @@ import { ConnectionStatus } from "@/components/ConnectionStatus";
 import { lazy, Suspense } from 'react';
 import { ChunkLoadErrorBoundary } from '@/components/ChunkLoadErrorBoundary';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
+import '@/lib/global-error-handler'; // Initialize global error handling
 
 // Lazy load all route components for better performance
 const Index = lazy(() => import('./pages/Index'));

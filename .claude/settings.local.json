@@ -66,7 +66,16 @@
       "Bash(git push:*)",
       "Bash(VITE_SUPABASE_URL=https://xnitbccvdoauywudnwsi.supabase.co VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuaXRiY2N2ZG9hdXl3dWRud3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNjY1NDQsImV4cCI6MjA3MDc0MjU0NH0.tW3Gi-Af-Joqb5QXBTFAUtEvd2qTOog55cp_r7NttFI node test-multiplayer-join.js)",
       "Bash(VITE_SUPABASE_URL=https://xnitbccvdoauywudnwsi.supabase.co VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuaXRiY2N2ZG9hdXl3dWRud3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNjY1NDQsImV4cCI6MjA3MDc0MjU0NH0.tW3Gi-Af-Joqb5QXBTFAUtEvd2qTOog55cp_r7NttFI node test-append-messages.js)",
-      "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\append_session_messages_function.sql\")"
+      "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\append_session_messages_function.sql\")",
+      "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\create_multiplayer_session_function.sql\")",
+      "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\multiplayer_functions_fixed.sql\")",
+      "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\drop_and_recreate_append_messages.sql\")",
+      "Bash(VITE_SUPABASE_URL=https://xnitbccvdoauywudnwsi.supabase.co VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuaXRiY2N2ZG9hdXl3dWRud3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNjY1NDQsImV4cCI6MjA3MDc0MjU0NH0.tW3Gi-Af-Joqb5QXBTFAUtEvd2qTOog55cp_r7NttFI node fix-role-constraint.js)",
+      "Bash(VITE_SUPABASE_URL=https://xnitbccvdoauywudnwsi.supabase.co VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuaXRiY2N2ZG9hdXl3dWRud3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxNjY1NDQsImV4cCI6MjA3MDc0MjU0NH0.tW3Gi-Af-Joqb5QXBTFAUtEvd2qTOog55cp_r7NttFI node fix-role-constraint.cjs)",
+      "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\role-constraint-fix.sql\")",
+      "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\role-constraint-fix-safe.sql\")",
+      "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\missing-join-functions.sql\")",
+      "Bash(npm run test:*)"
     ],
     "deny": [],
     "ask": [],

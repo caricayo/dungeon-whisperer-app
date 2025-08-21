@@ -9,6 +9,7 @@ import { Users, Copy, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { debugLog, debugError } from '@/lib/debug';
+import { InputSanitizer, SecurityLogger } from '@/lib/security';
 
 interface CreateMultiplayerSessionProps {
   onSessionCreated?: (sessionId: string, joinUrl: string) => void;
@@ -30,10 +31,36 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
   const [copied, setCopied] = useState(false);
 
   const handleCreateSession = async () => {
-    if (!sessionName.trim()) {
+    // Enhanced input validation with security
+    try {
+      const sanitizedName = InputSanitizer.sanitizeText(sessionName);
+      
+      if (!sanitizedName || sanitizedName.length < 1) {
+        SecurityLogger.logSecurityEvent('invalid_session_name', { 
+          reason: 'empty_or_dangerous' 
+        });
+        toast({
+          title: "Invalid Session Name",
+          description: "Please enter a valid name for your multiplayer session.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (sanitizedName.length > 100) {
+        toast({
+          title: "Session Name Too Long",
+          description: "Session name must be 100 characters or less.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+    } catch (error) {
+      SecurityLogger.logSecurityEvent('session_creation_input_error', { error: error.message });
       toast({
-        title: "Session Name Required",
-        description: "Please enter a name for your multiplayer session.",
+        title: "Invalid Input",
+        description: "Please check your input and try again.",
         variant: "destructive",
       });
       return;
@@ -44,9 +71,13 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
     try {
       debugLog('🎮 Creating multiplayer session:', sessionName);
 
-      const { data, error } = await supabase.rpc('create_multiplayer_session', {
-        session_name: sessionName.trim(),
-        custom_prompt: customPrompt.trim() || null,
+      // Re-sanitize inputs before database call (defensive programming)
+      const sanitizedName = InputSanitizer.sanitizeText(sessionName);
+      const sanitizedPrompt = InputSanitizer.sanitizeText(customPrompt);
+      
+      const { data, error } = await supabase.rpc('create_multiplayer_session_fixed', {
+        session_name: sanitizedName,
+        custom_prompt: sanitizedPrompt || null,
         max_players: maxPlayers[0]
       });
 
@@ -83,10 +114,10 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
         onSessionCreated(data.session_id, data.join_url);
       }
 
-    } catch (error) {
-      debugError('❌ Error creating multiplayer session:', error);
+    } catch (err) {
+      debugError('❌ Error creating multiplayer session:', err);
       
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       
       toast({
         title: "Session Creation Failed",
@@ -155,7 +186,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
           
           <div className="rounded-lg bg-muted p-3 text-sm">
             <p><strong>Session ID:</strong> {createdSession.sessionId}</p>
-            <p className="text-muted-foreground mt-1">
+            <p className="mt-1 text-muted-foreground">
               Players can join by clicking the link above or visiting the join URL directly.
             </p>
           </div>

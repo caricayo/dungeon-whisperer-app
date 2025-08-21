@@ -16,13 +16,13 @@
 
     /* Linting - Production-grade strict mode */
     "strict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitAny": false,
-    "noImplicitReturns": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": false,
-    "strictNullChecks": false,
+    "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
 
     "baseUrl": ".",
