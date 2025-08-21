@@ -90,7 +90,7 @@ export const useRoomJoinOrchestrator = () => {
       return {
         success: true,
         session: multiplayerSession,
-        participants: participants || []
+        participants: participants ?? []
       };
 
     } catch {
@@ -128,7 +128,7 @@ export const useRoomJoinOrchestrator = () => {
       
       if (error) throw new Error("Operation failed");
       
-      const messages = (data.messages as Message[]) || [];
+      const messages = (data.messages as Message[]) ?? [];
       
       // If we have a cursor, filter to messages after that timestamp
       if (lastCursor) {

@@ -141,7 +141,7 @@ export const usePresenceManager = (channelName = 'global_presence') => {
           username: u.username ?? '',
           avatarUrl: u.avatarUrl ?? u.avatar_url,
           isOnline: true,
-          lastSeen: (u.lastSeen || u.last_seen) ?? new Date().toISOString(),
+          lastSeen: (u.lastSeen ?? u.last_seen) ?? new Date().toISOString(),
           status: (u.status as UserPresence['status']) ?? 'online',
           currentWorld: u.currentWorld ?? u.current_world
         }));

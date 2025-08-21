@@ -22,6 +22,4 @@ export interface Session {
   isMultiplayer?: boolean;
 }
 
-export interface GameSession extends Session {
-  // Additional game-specific properties can be added here in the future
-}
+export type GameSession = Session;

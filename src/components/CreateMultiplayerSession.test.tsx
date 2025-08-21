@@ -241,7 +241,7 @@ describe('CreateMultiplayerSession', () => {
       const mockRpc = vi.mocked(supabase.rpc);
       
       // Create a promise that won't resolve immediately
-      let resolveRpc: (value: unknown) => void;
+      let resolveRpc: (value: unknown) => void = () => { /* noop */ };
       const rpcPromise = new Promise(resolve => {
         resolveRpc = resolve;
       });
@@ -265,7 +265,7 @@ describe('CreateMultiplayerSession', () => {
       
       // Resolve the promise
       await act(async () => {
-        resolveRpc!({
+        resolveRpc({
           data: { success: true, session_id: 'test', join_url: 'test' },
           error: null
         });

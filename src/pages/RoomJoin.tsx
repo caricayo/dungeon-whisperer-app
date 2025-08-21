@@ -168,7 +168,7 @@ export default function RoomJoin() {
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Users className="size-4" />
-                Players: {sessionInfo.players?.length || 0}/6
+                Players: {sessionInfo.players?.length ?? 0}/6
               </div>
             </div>
           )}

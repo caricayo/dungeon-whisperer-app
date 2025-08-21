@@ -97,7 +97,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
       
       setCreatedSession({
         sessionId: data.session_id,
-        sessionName: data.session_name || sanitizedName,
+        sessionName: data.session_name ?? sanitizedName,
         joinUrl: data.join_url,
         fullUrl
       });

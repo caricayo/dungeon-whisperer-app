@@ -125,14 +125,14 @@ class RateLimiter {
 export const rateLimiter = new RateLimiter();
 
 // Validate session data
-interface SessionMessage {
+export interface SessionMessage {
   id: string;
   role: string;
   content: string;
   timestamp: string | Date;
 }
 
-interface SessionData {
+export interface SessionData {
   id: string;
   name: string;
   messages: SessionMessage[];

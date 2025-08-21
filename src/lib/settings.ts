@@ -3,7 +3,7 @@ import { encryptData, decryptData, secureWipe } from '@/lib/crypto'
 import { validateApiKey } from '@/lib/validation'
 import { debugLog } from '@/lib/debug'
 
-interface UserSettings {
+export interface UserSettings {
   id?: string
   user_id: string
   openai_api_key_encrypted?: string
@@ -157,7 +157,7 @@ export const settingsService = {
         });
       
       if (error) {
-        console.error('Error saving voice settings:', _error);
+        console.error('Error saving voice settings:', error);
         throw new Error('Failed to save voice settings');
       }
       
@@ -194,7 +194,7 @@ export const settingsService = {
       };
       
     } catch {
-      console.error('Error fetching voice settings:', _error);
+      console.error('Error fetching voice settings:', error);
       return null;
     }
   },
@@ -216,7 +216,7 @@ export const settingsService = {
         });
       
       if (error) {
-        console.error('Error saving custom prompt:', _error);
+        console.error('Error saving custom prompt:', error);
         throw new Error('Failed to save custom prompt');
       }
       

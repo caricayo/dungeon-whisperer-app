@@ -98,7 +98,7 @@ export const useCachedQueries = () => {
     const userId = targetUserId ?? user?.id;
     
     return cachedQuery(
-      async () => {const { data, _error} = await supabase
+      async () => {const { data, error: _error} = await supabase
           .rpc('get_safe_user_settings', { target_user_id: userId });
 
         return { data, error: null };
@@ -219,7 +219,7 @@ export const useCachedQueries = () => {
 
   // Smart cache invalidation based on real-time events
   const handleRealtimeInvalidation = useCallback((payload: { table: string; eventType: string }) => {
-    const { table, eventType } = payload;
+    const { table, eventType: _eventType } = payload;
     
     switch (table) {
       case 'sessions':

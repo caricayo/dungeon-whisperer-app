@@ -161,16 +161,16 @@ const DnDChatBot: React.FC = () => {
     return saved !== null ? JSON.parse(saved) : true;
   });
 
-  const isNearBottom = () => {
-    if (!messagesContainerRef.current) return false;
-    const scrollArea = messagesContainerRef.current.querySelector('[data-radix-scroll-area-viewport]');
-    if (!scrollArea) return false;
-    
-    const { scrollTop, scrollHeight, clientHeight } = scrollArea;
-    return scrollHeight - scrollTop - clientHeight < 100; // Within 100px of bottom
-  };
-
   const scrollToBottomWithDelay = useCallback((delay = 0, force = false) => {
+    const isNearBottom = () => {
+      if (!messagesContainerRef.current) return false;
+      const scrollArea = messagesContainerRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (!scrollArea) return false;
+      
+      const { scrollTop, scrollHeight, clientHeight } = scrollArea;
+      return scrollHeight - scrollTop - clientHeight < 100; // Within 100px of bottom
+    };
+
     setTimeout(() => {
       if (messagesContainerRef.current) {
         const scrollArea = messagesContainerRef.current.querySelector('[data-radix-scroll-area-viewport]');
@@ -185,7 +185,7 @@ const DnDChatBot: React.FC = () => {
         }
       }
     }, delay);
-  }, [autoScrollEnabled, isNearBottom]);
+  }, [autoScrollEnabled]);
 
   // Save auto-scroll preference
   useEffect(() => {
