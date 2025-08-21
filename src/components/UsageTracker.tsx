@@ -61,18 +61,22 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
       // Aggregate usage by service
       const aggregated = data?.reduce((acc, item) => {
         const key = `${item.service}-${item.operation}`;
-        if (!(key in acc)) acc[key] = {
-          service: item.service,
-          operation: item.operation,
-          count: 0,
-          totalCost: 0,
-          lastUsed: new Date(item.created_at)
-        };
-        if (key in acc) {
-          acc[key].count += 1;
-          acc[key].totalCost += parseFloat(item.cost_estimate?.toString() ?? '0');
-          if (new Date(item.created_at) > acc[key].lastUsed) {
-            acc[key].lastUsed = new Date(item.created_at);
+        // eslint-disable-next-line security/detect-object-injection
+        const existing = Object.prototype.hasOwnProperty.call(acc, key) ? acc[key] : null;
+        if (!existing) {
+          // eslint-disable-next-line security/detect-object-injection
+          acc[key] = {
+            service: item.service,
+            operation: item.operation,
+            count: 1,
+            totalCost: parseFloat(item.cost_estimate?.toString() ?? '0'),
+            lastUsed: new Date(item.created_at)
+          };
+        } else {
+          existing.count += 1;
+          existing.totalCost += parseFloat(item.cost_estimate?.toString() ?? '0');
+          if (new Date(item.created_at) > existing.lastUsed) {
+            existing.lastUsed = new Date(item.created_at);
           }
         }
         return acc;

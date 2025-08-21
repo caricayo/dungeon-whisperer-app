@@ -170,11 +170,13 @@ export const useRealtimeManager = (
         return;
       }
       
+      // eslint-disable-next-line security/detect-object-injection
       eventCacheRef.current[eventHash] = { lastSeen: now, hash: eventHash };
     }
 
     // Throttling check with priority support
     const throttleMs = config.throttleMs || (config.priority === 'high' ? 50 : 100);
+    // eslint-disable-next-line security/detect-object-injection
     const lastProcessed = eventBatchRef.current[configKey]?.lastProcessed ?? 0;
     
     if (defaultOptions.enableThrottling && (now - lastProcessed) < throttleMs) {
@@ -183,13 +185,17 @@ export const useRealtimeManager = (
 
     // Batching logic
     if (defaultOptions.enableBatching && config.batchSize && config.batchSize > 1) {
+      // eslint-disable-next-line security/detect-object-injection
       if (!eventBatchRef.current[configKey]) {
+        // eslint-disable-next-line security/detect-object-injection
         eventBatchRef.current[configKey] = { events: [], lastProcessed: 0 };
       }
       
+      // eslint-disable-next-line security/detect-object-injection
       eventBatchRef.current[configKey].events.push(payload);
       
       // Process batch if full or after timeout
+      // eslint-disable-next-line security/detect-object-injection
       if (eventBatchRef.current[configKey].events.length >= config.batchSize) {
         processBatchedEvents();
       } else {

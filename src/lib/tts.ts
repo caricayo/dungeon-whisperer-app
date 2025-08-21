@@ -290,6 +290,7 @@ class TextToSpeechService {
         const bytes = new Uint8Array(binaryString.length);
         
         for (let i = 0; i < binaryString.length; i++) {
+          // eslint-disable-next-line security/detect-object-injection
           bytes[i] = binaryString.charCodeAt(i);
         }
         

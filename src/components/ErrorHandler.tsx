@@ -30,6 +30,40 @@ export interface ErrorInfo {
   timestamp: Date;
 }
 
+interface TTSError {
+  provider: string;
+  audioDataReceived: boolean;
+  audioDataLength: number;
+  browserInfo?: {
+    userAgent?: string;
+  };
+  originalError?: string;
+  fallbackError?: string;
+}
+
+interface AudioError {
+  errorName: string;
+  audioUrlValid: boolean;
+  userInteraction: boolean;
+  documentState?: {
+    hasFocus: boolean;
+  };
+  audioSupport?: {
+    canPlayMP3: boolean;
+  };
+}
+
+interface DebugLog {
+  type: string;
+  args: unknown[];
+}
+
+interface WindowWithDebugInfo extends Window {
+  __tts_mystery_error?: TTSError;
+  __audio_mystery_error?: AudioError;
+  __debug_errors?: DebugLog[];
+}
+
 interface ErrorHandlerProps {
   error: ErrorInfo;
   onRetry?: () => void;
@@ -163,9 +197,10 @@ export const ErrorHandler: React.FC<ErrorHandlerProps> = ({
 
   const getFallbackMessage = () => {
     // Check for comprehensive mystery details
-    const ttsError = (window as Record<string, unknown>).__tts_mystery_error;
-    const audioError = (window as Record<string, unknown>).__audio_mystery_error;
-    const debugLogs = (window as Record<string, unknown>).__debug_errors ?? [];
+    const windowWithDebug = window as WindowWithDebugInfo;
+    const ttsError = windowWithDebug.__tts_mystery_error;
+    const audioError = windowWithDebug.__audio_mystery_error;
+    const debugLogs = windowWithDebug.__debug_errors ?? [];
     
     // Enhanced D&D message with mystery details
     let mysteryAnalysis = '';
@@ -179,30 +214,30 @@ export const ErrorHandler: React.FC<ErrorHandlerProps> = ({
       if (ttsError) {
         mysteryAnalysis += `
 • **TTS Spell Components:**
-  - Provider: ${(ttsError as Record<string, unknown>).provider}
-  - Audio Data: ${(ttsError as Record<string, unknown>).audioDataReceived ? 'RECEIVED' : 'MISSING'} (${(ttsError as Record<string, unknown>).audioDataLength} chars)
-  - Browser Magic: ${((ttsError as Record<string, unknown>).browserInfo as Record<string, unknown>)?.userAgent ? String(((ttsError as Record<string, unknown>).browserInfo as Record<string, unknown>).userAgent).split(' ').pop() : 'Unknown'}
-  - Original Curse: ${(ttsError as Record<string, unknown>).originalError}
-  - Fallback Curse: ${(ttsError as Record<string, unknown>).fallbackError}`;  
+  - Provider: ${ttsError.provider}
+  - Audio Data: ${ttsError.audioDataReceived ? 'RECEIVED' : 'MISSING'} (${ttsError.audioDataLength} chars)
+  - Browser Magic: ${ttsError.browserInfo?.userAgent ? String(ttsError.browserInfo.userAgent).split(' ').pop() ?? 'Unknown' : 'Unknown'}
+  - Original Curse: ${ttsError.originalError ?? 'None'}
+  - Fallback Curse: ${ttsError.fallbackError ?? 'None'}`;  
       }
       
       if (audioError) {
         mysteryAnalysis += `
 • **Audio Playback Ritual:**
-  - Error Type: ${(audioError as Record<string, unknown>).errorName}
-  - URL Valid: ${(audioError as Record<string, unknown>).audioUrlValid ? 'YES' : 'NO'}
-  - User Interaction: ${(audioError as Record<string, unknown>).userInteraction ? 'DETECTED' : 'MISSING'}
-  - Document Focus: ${((audioError as Record<string, unknown>).documentState as Record<string, unknown>)?.hasFocus ? 'YES' : 'NO'}
-  - MP3 Support: ${((audioError as Record<string, unknown>).audioSupport as Record<string, unknown>)?.canPlayMP3 ?? 'Unknown'}`;
+  - Error Type: ${audioError.errorName}
+  - URL Valid: ${audioError.audioUrlValid ? 'YES' : 'NO'}
+  - User Interaction: ${audioError.userInteraction ? 'DETECTED' : 'MISSING'}
+  - Document Focus: ${audioError.documentState?.hasFocus ? 'YES' : 'NO'}
+  - MP3 Support: ${audioError.audioSupport?.canPlayMP3 ?? 'Unknown'}`;
       }
       
       const recentErrors = debugLogs.slice(-5);
       if (recentErrors.length > 0) {
         mysteryAnalysis += `
 • **Recent Magical Events:**`;
-        recentErrors.forEach((log: Record<string, unknown>, index: number) => {
+        recentErrors.forEach((log, index: number) => {
           mysteryAnalysis += `
-  ${index + 1}. [${String(log.type ?? 'LOG').toUpperCase()}] ${String((log.args as unknown[])?.[0] ?? 'Unknown event').substring(0, 60)}...`;
+  ${index + 1}. [${String(log.type ?? 'LOG').toUpperCase()}] ${String(log.args?.[0] ?? 'Unknown event').substring(0, 60)}...`;
         });
       }
       
@@ -213,7 +248,7 @@ export const ErrorHandler: React.FC<ErrorHandlerProps> = ({
 • Type 'window.__audio_mystery_error' in console for audio details  
 • Type 'exportAllDebugInfo()' in console for complete analysis
 • Try clicking anywhere on page first (for browser permissions)
-• Check if browser supports MP3: ${((audioError as Record<string, unknown>)?.audioSupport as Record<string, unknown>)?.canPlayMP3 ?? 'Unknown'}`;
+• Check if browser supports MP3: ${audioError?.audioSupport?.canPlayMP3 ?? 'Unknown'}`;
     }
     
     return `🎲 *The mystical energies surrounding the ${error.service} seem disrupted...*
@@ -273,12 +308,13 @@ The realm's magic should return shortly...`;
                 onClick={() => {
                   // Export debug information
                   try {
+                    const windowWithDebug = window as WindowWithDebugInfo;
                     const debugInfo = {
                       timestamp: new Date().toISOString(),
                       error: error,
-                      ttsError: (window as Record<string, unknown>).__tts_mystery_error ?? null,
-                      audioError: (window as Record<string, unknown>).__audio_mystery_error ?? null,
-                      debugLogs: (window as Record<string, unknown>).__debug_errors ?? [],
+                      ttsError: windowWithDebug.__tts_mystery_error ?? null,
+                      audioError: windowWithDebug.__audio_mystery_error ?? null,
+                      debugLogs: windowWithDebug.__debug_errors ?? [],
                       browserInfo: {
                         userAgent: navigator.userAgent,
                         platform: navigator.platform,
