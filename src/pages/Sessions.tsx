@@ -38,7 +38,7 @@ const Sessions = () => {
     leaveSession 
   } = useMultiplayerSessions();
   const { friends } = useSocialManager();
-  const { joinMultiplayerSession } = useSessionJoining();
+  const { joinMultiplayerSession: _joinMultiplayerSession } = useSessionJoining();
   
   const [isCreating, setIsCreating] = useState(false);
   const [currentWorld, setCurrentWorld] = useState<number>(1);
@@ -83,7 +83,7 @@ const Sessions = () => {
   // Handle URL parameters for navigation
   useEffect(() => {
     const tab = searchParams.get('tab');
-    const source = searchParams.get('source');
+    const _source = searchParams.get('source');
     
     if (tab) {
       setActiveTab(tab);

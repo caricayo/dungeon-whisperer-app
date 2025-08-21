@@ -17,7 +17,10 @@ const queryClient = new QueryClient();
 ResourcePrioritizer.initializeOptimizations();
 
 // Environment validated successfully
-console.debug('Environment configuration loaded:', !!env);
+// Environment configuration loaded successfully
+if (import.meta.env.DEV) {
+  console.warn('Environment configuration loaded:', !!env);
+}
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
