@@ -11,24 +11,34 @@ export function validateInput(input: string): { isValid: boolean; error?: string
 }
 
 export function sanitizeInput(input: string): string {
-  if (!input || typeof input !== 'string') return '';
+  if (typeof input !== 'string') return '';
+  if (input === '') return '';
+  if (input.trim() === '' && input.length > 0) return input; // Preserve whitespace-only strings
   
-  return input
-    // Remove HTML tags
-    .replace(/<[^>]*>/g, '')
-    // Remove script tags more aggressively
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-    // Remove javascript: protocols
-    .replace(/javascript:/gi, '')
-    // Remove data: protocols (can contain scripts)
-    .replace(/data:/gi, '')
-    // Remove vbscript: protocols
-    .replace(/vbscript:/gi, '')
-    // Remove onload and other event handlers
-    .replace(/on\w+\s*=/gi, '')
-    // Limit length to prevent DoS
-    .substring(0, 10000)
-    .trim();
+  let sanitized = input;
+  
+  // Remove script tags first (case insensitive, handle nested)
+  sanitized = sanitized.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+  
+  // Remove all HTML/XML tags
+  sanitized = sanitized.replace(/<[^>]*>/g, '');
+  
+  // Remove javascript: protocols
+  sanitized = sanitized.replace(/javascript:/gi, '');
+  
+  // Remove data: protocols (can contain scripts)
+  sanitized = sanitized.replace(/data:/gi, '');
+  
+  // Remove vbscript: protocols
+  sanitized = sanitized.replace(/vbscript:/gi, '');
+  
+  // Remove onload and other event handlers
+  sanitized = sanitized.replace(/on\w+\s*=/gi, '');
+  
+  // Limit length to prevent DoS
+  sanitized = sanitized.substring(0, 10000);
+  
+  return sanitized;
 }
 
 // Validate custom prompt content
@@ -129,24 +139,28 @@ interface SessionData {
   createdAt: string | Date;
 }
 
-export function validateSessionData(session: unknown): boolean {
-  if (!session || typeof session !== 'object') return false;
-  
-  const requiredFields = ['id', 'name', 'messages', 'createdAt'];
-  for (const field of requiredFields) {
-    if (!(field in session)) return false;
+export function validateSessionData(session: unknown): void {
+  if (!session || typeof session !== 'object') {
+    throw new Error('Invalid session data');
   }
   
-  // Validate messages array
-  if (!Array.isArray(session.messages)) return false;
+  const s = session as Record<string, unknown>;
   
-  for (const message of session.messages) {
-    if (!message.id || !message.role || !message.content || !message.timestamp) {
-      return false;
-    }
+  if (!s.id || typeof s.id !== 'string') {
+    throw new Error('Invalid session data');
   }
   
-  return true;
+  if (!s.name || typeof s.name !== 'string' || s.name.trim() === '') {
+    throw new Error('Invalid session data');
+  }
+  
+  if (!Array.isArray(s.messages)) {
+    throw new Error('Invalid session data');
+  }
+  
+  if (!s.createdAt) {
+    throw new Error('Invalid session data');
+  }
 }
 
 /**
