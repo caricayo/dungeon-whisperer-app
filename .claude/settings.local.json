@@ -110,7 +110,8 @@
       "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" repo view caricayo/dungeon-whisperer-app --json description,homepageUrl,hasIssuesEnabled,hasWikiEnabled,defaultBranchRef,visibility,isSecurityPolicyEnabled,securityPolicyUrl,licenseInfo)",
       "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" api repos/caricayo/dungeon-whisperer-app/vulnerability-alerts)",
       "Bash(\"C:\\Program Files\\GitHub CLI\\gh.exe\" api repos/caricayo/dungeon-whisperer-app/branches/main/protection)",
-      "Bash(npm run audit:*)"
+      "Bash(npm run audit:*)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "ask": [],
