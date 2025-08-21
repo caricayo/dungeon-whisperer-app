@@ -15,9 +15,7 @@ export interface UserProfile {
 export function getDisplayName(profile: UserProfile | null | undefined): string {
   if (!profile) return 'Unknown Player';
   
-  return profile.display_name || 
-         profile.username || 
-         `Adventurer-${profile.id.substring(0, 8)}`;
+  return profile.display_name ?? profile.username ?? `Adventurer-${profile.id.substring(0, 8)}`;
 }
 
 /**

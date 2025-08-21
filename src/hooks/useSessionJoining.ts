@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { debugLog, debugError } from '@/lib/debug';
 
@@ -21,7 +21,7 @@ export const useSessionJoining = () => {
     try {
       debugLog('Attempting to join multiplayer session:', sessionId);
 
-      const { data, error } = await supabase.rpc('join_multiplayer_session', {
+      const {data, _error} = await supabase.rpc('join_multiplayer_session', {
         session_id: sessionId
       });
 
@@ -46,15 +46,29 @@ export const useSessionJoining = () => {
 
           return sessionData;
         }
-        throw error;
+        throw new Error("Operation failed");
       }
 
-      const result = data as { success: boolean; message?: string; error?: string; session?: any };
+      interface SessionResult {
+        success: boolean;
+        message?: string;
+        error?: string;
+        session?: {
+          id: string;
+          name: string;
+          messages: unknown[];
+          customPrompt: string;
+          createdAt: string;
+          updatedAt?: string;
+          isMultiplayer?: boolean;
+        };
+      }
+      const result = data as SessionResult;
 
       if (result?.success) {
         toast({
           title: "Joined Session!",
-          description: result.message || "Successfully joined the multiplayer session!",
+          description: result.message ?? "Successfully joined the multiplayer session!",
         });
 
         debugLog('Successfully joined multiplayer session, returning session data');
@@ -62,14 +76,14 @@ export const useSessionJoining = () => {
       } else {
         toast({
           title: "Join Failed",
-          description: result?.error || "Could not join the multiplayer session.",
+          description: result?.error ?? "Could not join the multiplayer session.",
           variant: "destructive",
         });
         return null;
       }
 
-    } catch (error) {
-      debugError('Error joining multiplayer session:', error);
+    } catch {
+      debugError('Error joining multiplayer session:');
       toast({
         title: "Join Failed",
         description: "Could not join the multiplayer session. Please try again.",
@@ -80,6 +94,6 @@ export const useSessionJoining = () => {
   }, [user, toast]);
 
   return { 
-    joinMultiplayerSession: joinMultiplayerSession as (sessionId: string) => Promise<any | null>
+    joinMultiplayerSession: (sessionId: string) => Promise<SessionResult['session'] | null>
   };
 };

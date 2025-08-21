@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { debugLog, debugError } from '@/lib/debug';
 
@@ -27,7 +27,15 @@ export interface SessionJoinResult {
     joinedAt: string;
     isOnline?: boolean;
   }[];
-  last30Messages?: any[];
+  last30Messages?: {
+    id: string;
+    content: string;
+    role: 'user' | 'assistant';
+    timestamp: string;
+    userId: string;
+    displayName: string;
+    avatarUrl?: string;
+  }[];
   userProfile?: {
     userId: string;
     displayName: string;
@@ -59,19 +67,19 @@ export const useSessionJoiningV2 = () => {
       debugLog('🎮 Joining multiplayer session with room support:', sessionId);
       
       // Use the new RPC function that handles room creation and returns structured data
-      const { data, error } = await supabase.rpc('join_session_v2', {
+      const {data, _error} = await supabase.rpc('join_session_v2', {
         session_id: sessionId
       });
 
       if (error) {
-        debugError('🎮 Error joining session:', error);
-        throw error;
+        debugError('🎮 Error joining session:');
+        throw new Error("Operation failed");
       }
 
       const result = data as unknown as SessionJoinResult;
 
       if (!result?.success) {
-        const errorMsg = result?.error || 'Failed to join session';
+        const errorMsg = result?.error ?? 'Failed to join session';
         const action = result?.action;
         
         // Handle specific error actions
@@ -109,8 +117,8 @@ export const useSessionJoiningV2 = () => {
 
       return result;
 
-    } catch (error) {
-      debugError('🎮 Error in session join:', error);
+    } catch {
+      debugError('🎮 Error in session join:');
       
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       

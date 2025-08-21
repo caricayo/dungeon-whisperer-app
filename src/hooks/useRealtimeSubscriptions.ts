@@ -1,18 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
+
+interface RealtimePayload {
+  eventType: 'INSERT' | 'UPDATE' | 'DELETE';
+  new?: Record<string, unknown>;
+  old?: Record<string, unknown>;
+  table: string;
+}
 
 interface SubscriptionConfig {
   table: string;
   event: 'INSERT' | 'UPDATE' | 'DELETE' | '*';
   filter?: string;
-  callback: (payload: any) => void;
+  callback: (payload: RealtimePayload) => void;
 }
 
 export const useRealtimeSubscriptions = (configs: SubscriptionConfig[]) => {
   const { user } = useAuth();
-  const channelsRef = useRef<any[]>([]);
+  const channelsRef = useRef<ReturnType<typeof supabase.channel>[]>([]);
   const [connectionStates, setConnectionStates] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -27,13 +34,13 @@ export const useRealtimeSubscriptions = (configs: SubscriptionConfig[]) => {
     channelsRef.current = [];
 
     // Set up new subscriptions
-    configs.forEach((config, index) => {
+    configs.forEach((config, _index) => {
       const channelName = `${config.table}_${config.event}_${index}`;
       
       const channel = supabase
         .channel(channelName)
         .on(
-          'postgres_changes' as any,
+          'postgres_changes' as const,
           {
             event: config.event,
             schema: 'public',

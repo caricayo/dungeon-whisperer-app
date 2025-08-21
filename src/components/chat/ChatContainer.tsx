@@ -16,7 +16,7 @@ import { Logger } from '@/lib/enterprise/Logger';
 import { MetricsCollector } from '@/lib/enterprise/MetricsCollector';
 import { useChatService } from '@/hooks/chat/useChatService';
 import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
-import { Message, Session } from '@/domains/chat/types';
+import { Session } from '@/domains/chat/types';
 import { CoopDecisionBar } from '@/components/chat/CoopDecisionBar';
 
 interface ChatContainerProps {
@@ -95,11 +95,8 @@ export const ChatContainer = memo<ChatContainerProps>(({
 
       metrics.recordPerformance('sendMessage', Date.now() - startTime, true);
 
-    } catch (error) {
-      logger.error('Failed to send message', {
-        sessionId: session.id,
-        error
-      });
+    } catch {
+      logger.error('Failed to send message', {sessionId: session.id});
       
       metrics.recordPerformance('sendMessage', Date.now() - startTime, false);
     }
@@ -235,7 +232,7 @@ export const ChatContainer = memo<ChatContainerProps>(({
 
           {/* Cooperative Decision Bar for Multiplayer */}
           {session?.isMultiplayer && (
-            <CoopDecisionBar sessionId={session.id || ''} onSendCombined={handleSendMessage} />
+            <CoopDecisionBar sessionId={session.id ?? ''} onSendCombined={handleSendMessage} />
           )}
 
           {/* Input Area */}

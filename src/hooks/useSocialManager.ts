@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { debugLog, debugError } from '@/lib/debug';
 import { useRealtimeSubscriptions } from '@/hooks/useRealtimeSubscriptions';
@@ -112,43 +112,42 @@ export const useSocialManager = () => {
       setFriends(friendsData || []);
       setFriendRequests(requestsData || []);
 
-    } catch (error) {
-      debugError('Error loading friends:', error);
+    } catch {
+      debugError('Error loading friends:');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const sendFriendRequest = async (username: string) => {
-    if (!user) return false;
+  const sendFriendRequest = async (username: string) => {if (!user) return false;
 
     try {
       const { data, error } = await supabase.rpc('send_friend_request', {
         target_username: username.trim()
       });
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
 
       const result = data as { success: boolean; message?: string; error?: string };
       
       if (result?.success) {
         toast({
           title: "Friend Request Sent",
-          description: result.message || `Friend request sent to ${username}!`,
+          description: result.message ?? `Friend request sent to ${username}!`,
         });
         await loadFriends();
         return true;
       } else {
         toast({
           title: "Unable to Send Request",
-          description: result?.error || "Failed to send friend request.",
+          description: result?.error ?? "Failed to send friend request.",
           variant: "destructive",
         });
         return false;
       }
-    } catch (error: any) {
-      debugError('Error sending friend request:', error);
-      const description = error?.message || error?.hint || error?.details || 'Failed to send friend request.';
+    } catch (error: unknown) {
+      debugError('Error sending friend request:');
+      const description = error instanceof Error ? error.message : 'Failed to send friend request.';
       toast({
         title: 'Error',
         description,
@@ -158,36 +157,35 @@ export const useSocialManager = () => {
     }
   };
 
-  const sendFriendRequestByUserId = async (targetUserId: string) => {
-    if (!user) return false;
+  const sendFriendRequestByUserId = async (targetUserId: string) => {if (!user) return false;
 
     try {
       const { data, error } = await supabase.rpc('send_friend_request_by_user_id', {
         target_user_id: targetUserId
       });
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
 
       const result = data as { success: boolean; message?: string; error?: string };
       
       if (result?.success) {
         toast({
           title: "Friend Request Sent",
-          description: result.message || "Friend request sent!",
+          description: result.message ?? "Friend request sent!",
         });
         await loadFriends();
         return true;
       } else {
         toast({
           title: "Unable to Send Request",
-          description: result?.error || "Failed to send friend request.",
+          description: result?.error ?? "Failed to send friend request.",
           variant: "destructive",
         });
         return false;
       }
-    } catch (error: any) {
-      debugError('Error sending friend request by user ID:', error);
-      const description = error?.message || error?.hint || error?.details || 'Failed to send friend request.';
+    } catch (error: unknown) {
+      debugError('Error sending friend request by user ID:');
+      const description = error instanceof Error ? error.message : 'Failed to send friend request.';
       toast({
         title: 'Error',
         description,
@@ -204,7 +202,7 @@ export const useSocialManager = () => {
         .update({ status: 'accepted' })
         .eq('id', friendshipId);
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
       
       toast({
         title: "Friend Request Accepted",
@@ -213,7 +211,7 @@ export const useSocialManager = () => {
 
       await loadFriends();
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   };
@@ -225,11 +223,11 @@ export const useSocialManager = () => {
         .delete()
         .eq('id', friendshipId);
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
       
       await loadFriends();
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   };
@@ -249,8 +247,8 @@ export const useSocialManager = () => {
         ...friend,
         friend_profile: {
           ...friend.friend_profile,
-          is_online: onlineData?.is_online || false,
-          last_seen: onlineData?.last_seen || friend.friend_profile?.last_seen
+          is_online: onlineData?.is_online ?? false,
+          last_seen: onlineData?.last_seen ?? friend.friend_profile?.last_seen
         }
       };
     });

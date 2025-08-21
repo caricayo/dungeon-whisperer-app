@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useDirectMessages } from '@/hooks/useDirectMessages';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { Mail, Send, Users, MessageSquare, Loader2, User, ArrowLeft } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -167,7 +167,7 @@ const Inbox = () => {
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center justify-between">
                             <p className="truncate font-medium">
-                              {conversation.otherUser.displayName || conversation.otherUser.username}
+                              {conversation.otherUser.displayName ?? conversation.otherUser.username}
                             </p>
                             {conversation.unreadCount > 0 && (
                               <Badge variant="secondary" className="ml-2 bg-primary text-primary-foreground">
@@ -176,7 +176,7 @@ const Inbox = () => {
                             )}
                           </div>
                           <p className="truncate text-sm text-muted-foreground">
-                            {conversation.lastMessage.content || 'No messages yet'}
+                            {conversation.lastMessage.content ?? 'No messages yet'}
                           </p>
                           {conversation.lastMessage.createdAt && (
                             <p className="mt-1 text-xs text-muted-foreground">
@@ -210,7 +210,7 @@ const Inbox = () => {
                   </Avatar>
                   <div>
                     <h3 className="font-semibold">
-                      {selectedConversation.otherUser.displayName || selectedConversation.otherUser.username}
+                      {selectedConversation.otherUser.displayName ?? selectedConversation.otherUser.username}
                     </h3>
                     <p className="text-sm text-muted-foreground">
                       {selectedConversation.otherUser.isOnline ? 'Online' : 'Offline'}

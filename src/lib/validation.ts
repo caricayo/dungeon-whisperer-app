@@ -17,7 +17,7 @@ export function sanitizeInput(input: string): string {
     // Remove HTML tags
     .replace(/<[^>]*>/g, '')
     // Remove script tags more aggressively
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
     // Remove javascript: protocols
     .replace(/javascript:/gi, '')
     // Remove data: protocols (can contain scripts)
@@ -115,7 +115,21 @@ class RateLimiter {
 export const rateLimiter = new RateLimiter();
 
 // Validate session data
-export function validateSessionData(session: any): boolean {
+interface SessionMessage {
+  id: string;
+  role: string;
+  content: string;
+  timestamp: string | Date;
+}
+
+interface SessionData {
+  id: string;
+  name: string;
+  messages: SessionMessage[];
+  createdAt: string | Date;
+}
+
+export function validateSessionData(session: unknown): boolean {
   if (!session || typeof session !== 'object') return false;
   
   const requiredFields = ['id', 'name', 'messages', 'createdAt'];

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useRealtimeManager } from '@/hooks/useRealtimeManager';
 import { usePresenceManager } from '@/hooks/usePresenceManager';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 
 // Enhanced multiplayer functionality with real-time updates
 export const useMultiplayerEnhancements = () => {
@@ -54,7 +54,7 @@ export const useMultiplayerEnhancements = () => {
         }
       }
     ];
-  }, [user]);
+  }, [user, loading]);
 
   const { 
     connectionHealth, 

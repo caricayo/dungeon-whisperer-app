@@ -19,7 +19,10 @@ export default {
 		},
 		extend: {
 			colors: {
-				border: 'hsl(var(--border))',
+				border: {
+					DEFAULT: 'hsl(var(--border))',
+					elevated: 'hsl(var(--border-elevated))'
+				},
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
 				background: {
@@ -73,8 +76,10 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
-					elevated: 'hsl(var(--card-elevated))'
+					elevated: 'hsl(var(--card-elevated))',
+					premium: 'hsl(var(--card-elevated))'
 				},
+				info: 'hsl(var(--primary))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -183,6 +188,10 @@ export default {
 				'shimmer': {
 					'0%': { backgroundPosition: '-200% 0' },
 					'100%': { backgroundPosition: '200% 0' }
+				},
+				'caret-blink': {
+					'0%,70%,100%': { opacity: '1' },
+					'20%,50%': { opacity: '0' }
 				}
 			},
 			animation: {
@@ -197,7 +206,8 @@ export default {
 				'magical-glow': 'magical-glow 4s ease-in-out infinite',
 				'mystical-pulse': 'mystical-pulse 3s ease-in-out infinite',
 				'float': 'float 6s ease-in-out infinite',
-				'shimmer': 'shimmer 2s linear infinite'
+				'shimmer': 'shimmer 2s linear infinite',
+				'caret-blink': 'caret-blink 1.25s ease-out infinite'
 			},
 			spacing: {
 				'18': '4.5rem',

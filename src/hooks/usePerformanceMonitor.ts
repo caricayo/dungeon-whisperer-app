@@ -7,6 +7,12 @@ import { useCallback, useRef, useEffect } from 'react';
 import { Logger } from '@/lib/enterprise/Logger';
 import { MetricsCollector } from '@/lib/enterprise/MetricsCollector';
 
+interface PerformanceMemory {
+  usedJSHeapSize: number;
+  totalJSHeapSize: number;
+  jsHeapSizeLimit: number;
+}
+
 interface PerformanceEntry {
   name: string;
   startTime: number;
@@ -122,9 +128,9 @@ export function usePerformanceMonitor(componentName: string) {
       // Handle sync functions
       end(operationName);
       return result;
-    } catch (error) {
+    } catch {
       end(operationName, { error: error instanceof Error ? error.message : 'Unknown error' });
-      throw error;
+      throw new Error("Operation failed");
     }
   }, [start, end]);
 
@@ -140,9 +146,9 @@ export function usePerformanceMonitor(componentName: string) {
       const result = await fn();
       end(operationName);
       return result;
-    } catch (error) {
+    } catch {
       end(operationName, { error: error instanceof Error ? error.message : 'Unknown error' });
-      throw error;
+      throw new Error("Operation failed");
     }
   }, [start, end]);
 
@@ -178,32 +184,34 @@ export function usePerformanceMonitor(componentName: string) {
   // Memory usage monitoring
   const checkMemoryUsage = useCallback(() => {
     if ('memory' in performance) {
-      const memory = (performance as any).memory;
-      const memoryData = {
-        usedJSHeapSize: memory.usedJSHeapSize,
-        totalJSHeapSize: memory.totalJSHeapSize,
-        jsHeapSizeLimit: memory.jsHeapSizeLimit,
-        usagePercentage: Math.round((memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100)
-      };
+      const memory = (performance as Performance & { memory?: PerformanceMemory }).memory;
+      if (memory) {
+        const memoryData = {
+          usedJSHeapSize: memory.usedJSHeapSize,
+          totalJSHeapSize: memory.totalJSHeapSize,
+          jsHeapSizeLimit: memory.jsHeapSizeLimit,
+          usagePercentage: Math.round((memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100)
+        };
 
-      logger.debug('Memory usage check', {
-        component: componentName,
-        ...memoryData
-      });
-
-      metrics.gauge('memory.usage_percentage', memoryData.usagePercentage, {
-        component: componentName
-      });
-
-      // Alert if memory usage is high
-      if (memoryData.usagePercentage > 80) {
-        logger.warn('High memory usage detected', {
+        logger.debug('Memory usage check', {
           component: componentName,
           ...memoryData
         });
-      }
 
-      return memoryData;
+        metrics.gauge('memory.usage_percentage', memoryData.usagePercentage, {
+          component: componentName
+        });
+
+        // Alert if memory usage is high
+        if (memoryData.usagePercentage > 80) {
+          logger.warn('High memory usage detected', {
+            component: componentName,
+            ...memoryData
+          });
+        }
+
+        return memoryData;
+      }
     }
 
     return null;

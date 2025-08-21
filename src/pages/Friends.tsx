@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { UserPlus, Users, Check, X, Loader2, MessageSquare, ArrowLeft } from 'lucide-react';
 import { useSocialManager } from '@/hooks/useSocialManager';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { MessageUserModal } from '@/components/MessageUserModal';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
@@ -156,7 +156,7 @@ const Friends = () => {
             <CardContent className="space-y-3">
               {friends.length > 0 ? (
                 friends.map((friend) => {
-                  const profile = friend.friend_profile || friend.requester_profile;
+                  const profile = friend.friend_profile ?? friend.requester_profile;
                   return (
                     <div 
                       key={friend.id} 
@@ -166,12 +166,12 @@ const Friends = () => {
                       <div className="flex items-center gap-3">
                         <div className="flex size-8 items-center justify-center rounded-full bg-primary/10">
                           <span className="text-sm font-medium">
-                            {profile?.username?.charAt(0)?.toUpperCase() || 'U'}
+                            {profile?.username?.charAt(0)?.toUpperCase() ?? 'U'}
                           </span>
                         </div>
                         <div>
-                          <div className="font-medium">{getDisplayName({ id: profile?.id || '', username: profile?.username || '', display_name: profile?.display_name })}</div>
-                          <div className="text-sm text-foreground-muted">@{profile?.username || 'unknown'}</div>
+                          <div className="font-medium">{getDisplayName({ id: profile?.id ?? '', username: profile?.username ?? '', display_name: profile?.display_name })}</div>
+                          <div className="text-sm text-foreground-muted">@{profile?.username ?? 'unknown'}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -182,7 +182,7 @@ const Friends = () => {
                             e.stopPropagation();
                             setSelectedUserForMessage({
                               id: friend.friend_id,
-                              username: profile?.username || `User-${friend.friend_id.slice(0, 8)}`,
+                              username: profile?.username ?? `User-${friend.friend_id.slice(0, 8)}`,
                               displayName: profile?.display_name,
                               avatarUrl: undefined
                             });
@@ -230,11 +230,11 @@ const Friends = () => {
                           <div className="flex items-center gap-3">
                             <div className="flex size-8 items-center justify-center rounded-full bg-primary/10">
                               <span className="text-sm font-medium">
-                                {profile?.username?.charAt(0)?.toUpperCase() || 'U'}
+                                {profile?.username?.charAt(0)?.toUpperCase() ?? 'U'}
                               </span>
                             </div>
                             <div>
-                              <div className="font-medium">{getDisplayName({ id: profile?.id || '', username: profile?.username || '', display_name: profile?.display_name })}</div>
+                              <div className="font-medium">{getDisplayName({ id: profile?.id ?? '', username: profile?.username ?? '', display_name: profile?.display_name })}</div>
                               <div className="text-xs text-foreground-muted">
                                 {formatDistanceToNow(new Date(request.created_at), { addSuffix: true })}
                               </div>
@@ -267,11 +267,11 @@ const Friends = () => {
                           <div className="flex items-center gap-3">
                             <div className="flex size-8 items-center justify-center rounded-full bg-primary/10">
                               <span className="text-sm font-medium">
-                                {profile?.username?.charAt(0)?.toUpperCase() || 'U'}
+                                {profile?.username?.charAt(0)?.toUpperCase() ?? 'U'}
                               </span>
                             </div>
                             <div>
-                              <div className="font-medium">{getDisplayName({ id: profile?.id || '', username: profile?.username || '', display_name: profile?.display_name })}</div>
+                              <div className="font-medium">{getDisplayName({ id: profile?.id ?? '', username: profile?.username ?? '', display_name: profile?.display_name })}</div>
                               <div className="text-xs text-foreground-muted">
                                 Sent {formatDistanceToNow(new Date(request.created_at), { addSuffix: true })}
                               </div>

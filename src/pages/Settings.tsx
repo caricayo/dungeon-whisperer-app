@@ -20,7 +20,7 @@ const Settings = () => {
     // Retry failed operations (would implement actual retry logic here)
   };
 
-  const handleUsageWarning = (service: string, usage: number) => {
+  const handleUsageWarning = (_service: string, _usage: number) => {
     // Handle usage warning (would implement actual warning handling here)
     // Service: ${service}, Usage: ${usage}%
   };

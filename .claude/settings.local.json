@@ -75,7 +75,15 @@
       "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\role-constraint-fix.sql\")",
       "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\role-constraint-fix-safe.sql\")",
       "Bash(start notepad \"C:\\Users\\christian coding\\Desktop\\dungeon-whisperer-main\\missing-join-functions.sql\")",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(npx eslint:*)",
+      "WebFetch(domain:prettier.io)",
+      "Bash(grep:*)",
+      "Bash(powershell:*)",
+      "Bash(for file in \"src/hooks/useCachedQueries.ts\" \"src/hooks/chat/useChatService.ts\" \"src/components/UsageTracker.tsx\")",
+      "Bash(done)",
+      "Bash(for file in \"src/components/WorldSelector.tsx\" \"src/components/SocialPanel.tsx\" \"src/components/chat/CoopDecisionBar.tsx\")",
+      "Bash(for file in \"src/components/chat/ChatHeader.tsx\" \"src/components/auth/AuthModal.tsx\" \"src/components/AppSidebar.tsx\")"
     ],
     "deny": [],
     "ask": [],

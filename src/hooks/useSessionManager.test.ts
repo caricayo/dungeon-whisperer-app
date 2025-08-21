@@ -71,7 +71,7 @@ describe('useSessionManager', () => {
       result.current.createSession('Test Session', '');
     });
     
-    const savedSessions = JSON.parse(localStorage.getItem('dnd-sessions') || '[]');
+    const savedSessions = JSON.parse(localStorage.getItem('dnd-sessions') ?? '[]');
     expect(savedSessions).toHaveLength(1);
     expect(savedSessions[0].name).toBe('Test Session');
   });

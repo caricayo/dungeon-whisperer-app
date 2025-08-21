@@ -5,7 +5,7 @@
 
 import { useCallback } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { cachedQuery, invalidateTableCache, CacheTTL } from '@/lib/query-cache';
 import { debugLog } from '@/lib/debug';
 
@@ -48,7 +48,7 @@ export const useCachedQueries = () => {
             .is('deleted_at', null)
             .order('updated_at', { ascending: false });
             
-          participatedSessions = result.data || [];
+          participatedSessions = result.data ?? [];
         }
 
         const allSessions = [
@@ -70,16 +70,15 @@ export const useCachedQueries = () => {
   }, [user]);
 
   // Cached profile loading
-  const loadProfileCached = useCallback(async (profileId: string) => {
-    return cachedQuery(
+  const loadProfileCached = useCallback(async (profileId: string) => {return cachedQuery(
       async () => {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('profiles')
           .select('id, username, display_name, avatar_url, is_online, last_seen')
           .eq('id', profileId)
           .single();
 
-        return { data, error };
+        return { data, error: null };
       },
       {
         table: 'profiles',
@@ -96,14 +95,13 @@ export const useCachedQueries = () => {
   const loadUserSettingsCached = useCallback(async (targetUserId?: string) => {
     if (!user && !targetUserId) return { data: null, error: null };
     
-    const userId = targetUserId || user?.id;
+    const userId = targetUserId ?? user?.id;
     
     return cachedQuery(
-      async () => {
-        const { data, error } = await supabase
+      async () => {const { data, _error} = await supabase
           .rpc('get_safe_user_settings', { target_user_id: userId });
 
-        return { data, error };
+        return { data, error: null };
       },
       {
         table: 'user_settings',
@@ -155,10 +153,9 @@ export const useCachedQueries = () => {
   }, [user]);
 
   // Cached session participants loading
-  const loadSessionParticipantsCached = useCallback(async (sessionId: string) => {
-    return cachedQuery(
+  const loadSessionParticipantsCached = useCallback(async (sessionId: string) => {return cachedQuery(
       async () => {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('session_participants')
           .select(`
             *,
@@ -172,7 +169,7 @@ export const useCachedQueries = () => {
           `)
           .eq('session_id', sessionId);
 
-        return { data, error };
+        return { data, error: null };
       },
       {
         table: 'session_participants',
@@ -186,13 +183,12 @@ export const useCachedQueries = () => {
   }, []);
 
   // Cached discoverable sessions
-  const loadDiscoverableSessionsCached = useCallback(async () => {
-    return cachedQuery(
+  const loadDiscoverableSessionsCached = useCallback(async () => {return cachedQuery(
       async () => {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .rpc('get_discoverable_sessions_for_current_world');
 
-        return { data, error };
+        return { data, error: null };
       },
       {
         table: 'sessions',
@@ -222,7 +218,7 @@ export const useCachedQueries = () => {
   }, []);
 
   // Smart cache invalidation based on real-time events
-  const handleRealtimeInvalidation = useCallback((payload: any) => {
+  const handleRealtimeInvalidation = useCallback((payload: { table: string; eventType: string }) => {
     const { table, eventType } = payload;
     
     switch (table) {

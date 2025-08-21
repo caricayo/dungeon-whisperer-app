@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useMultiplayerSessionManager } from '@/hooks/useMultiplayerSessionManager';
 import { useSessionManager } from '@/hooks/useSessionManager';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -74,8 +74,8 @@ export default function RoomJoin() {
       } else {
         throw new Error('Failed to join session - session may not exist or be full');
       }
-    } catch (error) {
-      debugError('[RoomJoin] Failed to join session:', error);
+    } catch {
+      debugError('[RoomJoin] Failed to join session:');
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       setJoinError(errorMessage);
       
@@ -168,7 +168,7 @@ export default function RoomJoin() {
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Users className="size-4" />
-                Players: {sessionInfo.players?.length ?? 0}/6
+                Players: {sessionInfo.players?.length || 0}/6
               </div>
             </div>
           )}

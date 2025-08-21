@@ -31,7 +31,7 @@ export interface MetricsBackend {
 class ConsoleMetricsBackend implements MetricsBackend {
   async send(metrics: Metric[]): Promise<void> {
     metrics.forEach(metric => {
-      console.log(`📊 [METRIC] ${metric.name}: ${metric.value}`, metric.tags);
+      console.warn(`📊 [METRIC] ${metric.name}: ${metric.value}`, metric.tags);
     });
   }
 }
@@ -52,8 +52,8 @@ class RemoteMetricsBackend implements MetricsBackend {
         },
         body: JSON.stringify({ metrics })
       });
-    } catch (error) {
-      console.error('Failed to send metrics:', error);
+    } catch {
+      console.error('Failed to send metrics');
     }
   }
 }
@@ -205,7 +205,7 @@ export class MetricsCollector {
       );
 
       this.logger.debug(`Flushed ${metricsToSend.length} metrics`);
-    } catch (error) {
+    } catch {
       this.logger.error('Failed to flush metrics', { error });
       // Put metrics back in buffer for retry
       this.metricsBuffer.unshift(...metricsToSend);

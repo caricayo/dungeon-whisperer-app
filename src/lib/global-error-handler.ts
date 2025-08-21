@@ -46,7 +46,7 @@ class GlobalErrorHandler {
     this.setupConsoleErrorOverride();
 
     this.isInitialized = true;
-    console.log('🛡️ Global error handler initialized');
+    console.warn('🛡️ Global error handler initialized');
   }
 
   /**
@@ -75,7 +75,7 @@ class GlobalErrorHandler {
   private setupUnhandledPromiseHandler(): void {
     window.addEventListener('unhandledrejection', (event) => {
       const errorReport: ErrorReport = {
-        message: event.reason?.message || 'Unhandled Promise Rejection',
+        message: event.reason?.message ?? 'Unhandled Promise Rejection',
         stack: event.reason?.stack,
         url: window.location.href,
         userAgent: navigator.userAgent,
@@ -99,7 +99,7 @@ class GlobalErrorHandler {
       const target = event.target;
       if (target && target !== window) {
         const errorReport: ErrorReport = {
-          message: `Resource failed to load: ${target.outerHTML?.slice(0, 100) || 'Unknown resource'}`,
+          message: `Resource failed to load: ${target.outerHTML?.slice(0, 100) ?? 'Unknown resource'}`,
           url: window.location.href,
           userAgent: navigator.userAgent,
           timestamp: new Date().toISOString(),
@@ -117,7 +117,7 @@ class GlobalErrorHandler {
   private setupConsoleErrorOverride(): void {
     const originalConsoleError = console.error;
     
-    console.error = (...args: any[]) => {
+    console.error = (...args: unknown[]) => {
       // Only capture actual Error objects, not debug logs
       const errorArg = args.find(arg => arg instanceof Error);
       
@@ -160,13 +160,12 @@ class GlobalErrorHandler {
 
     // In development, log to console
     if (import.meta.env.DEV) {
-      console.group(`🚨 ${errorReport.type.toUpperCase()} ERROR`);
+      console.warn(`🚨 ${errorReport.type.toUpperCase()} ERROR`);
       console.error('Message:', errorReport.message);
       console.error('URL:', errorReport.url);
       if (errorReport.stack) {
         console.error('Stack:', errorReport.stack);
       }
-      console.groupEnd();
     }
 
     // In production, send to monitoring service (e.g., Sentry, LogRocket)
@@ -226,7 +225,7 @@ class GlobalErrorHandler {
 
     return criticalPatterns.some(pattern => 
       pattern.test(errorReport.message) || 
-      pattern.test(errorReport.stack || '')
+      pattern.test(errorReport.stack ?? '')
     );
   }
 
@@ -293,7 +292,7 @@ class GlobalErrorHandler {
   /**
    * Manually report a custom error
    */
-  reportError(error: Error, context?: Record<string, any>): void {
+  reportError(error: Error, context?: Record<string, unknown>): void {
     const errorReport: ErrorReport = {
       message: error.message,
       stack: error.stack,
@@ -327,6 +326,6 @@ declare global {
       description: string;
       variant?: 'default' | 'destructive';
     }) => void;
-    gtag?: (...args: any[]) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }

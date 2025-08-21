@@ -1,10 +1,16 @@
 import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { debugLog, debugError } from '@/lib/debug';
+import type { Message } from '@/hooks/useSessionManager';
+
+interface SessionUpdateData {
+  id: string;
+  messages?: Message[];
+}
 
 interface MultiplayerRealtimeSyncProps {
   sessionId: string | null;
-  onSessionUpdate: (sessionData: any) => void;
+  onSessionUpdate: (sessionData: SessionUpdateData) => void;
 }
 
 export const useMultiplayerRealtimeSync = ({ sessionId, onSessionUpdate }: MultiplayerRealtimeSyncProps) => {
@@ -33,7 +39,7 @@ export const useMultiplayerRealtimeSync = ({ sessionId, onSessionUpdate }: Multi
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') {
           debugLog('✅ SUBSCRIBED to multiplayer session updates for session:', sessionId);
-          console.log('✅ Realtime sync channel SUBSCRIBED successfully for session:', sessionId);
+          console.warn('✅ Realtime sync channel SUBSCRIBED successfully for session:', sessionId);
         } else if (status === 'CHANNEL_ERROR') {
           debugError('❌ CHANNEL_ERROR subscribing to multiplayer session updates for session:', sessionId);
           console.error('❌ Realtime sync channel error for session:', sessionId);

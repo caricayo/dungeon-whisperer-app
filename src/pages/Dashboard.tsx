@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Star, Scroll } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useSessionManager } from '@/hooks/useSessionManager';
 import DnDChatBot from '@/components/DnDChatBot';
 

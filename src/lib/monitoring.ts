@@ -156,7 +156,7 @@ class ApplicationMonitoring {
       name: 'user_action',
       value: 1,
       timestamp: Date.now(),
-      tags: { action, userId: userId || 'anonymous' },
+      tags: { action, userId: userId ?? 'anonymous' },
       unit: 'count'
     });
   }
@@ -176,7 +176,7 @@ class ApplicationMonitoring {
       name: 'cache_activity',
       value: 1,
       timestamp: Date.now(),
-      tags: { operation, key: key || 'unknown' },
+      tags: { operation, key: key ?? 'unknown' },
       unit: 'count'
     });
   }
@@ -226,7 +226,7 @@ class ApplicationMonitoring {
       const errorStats = this.getMetricStats('error_count');
       const totalRequests = this.getMetricStats('user_action');
       
-      newHealth.metrics.responseTime = responseTimeStats?.average || 0;
+      newHealth.metrics.responseTime = responseTimeStats?.average ?? 0;
       
       if (errorStats && totalRequests) {
         newHealth.metrics.errorRate = errorStats.sum / Math.max(totalRequests.sum, 1);
@@ -242,14 +242,14 @@ class ApplicationMonitoring {
       
       if (hasDownComponents) {
         newHealth.status = 'down';
-      } else if (hasSlowComponents || newHealth.metrics.errorRate > 0.1) {
+      } else if (hasSlowComponents ?? newHealth.metrics.errorRate > 0.1) {
         newHealth.status = 'degraded';
       } else {
         newHealth.status = 'healthy';
       }
       
-    } catch (error) {
-      console.error('Health check failed:', error);
+    } catch {
+      console.error('Health check failed:', _error);
       newHealth.status = 'down';
       newHealth.components.database = 'down';
     }
@@ -365,10 +365,10 @@ class ApplicationMonitoring {
 const monitoring = new ApplicationMonitoring();
 
 // Performance monitoring decorator
-export function monitorPerformance(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+export function monitorPerformance(target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   
-  descriptor.value = async function(...args: any[]) {
+  descriptor.value = async function(...args: unknown[]) {
     const startTime = Date.now();
     const methodName = `${target.constructor.name}.${propertyKey}`;
     
@@ -379,13 +379,13 @@ export function monitorPerformance(target: any, propertyKey: string, descriptor:
       monitoring.recordResponseTime(methodName, duration);
       
       return result;
-    } catch (error) {
+    } catch {
       const duration = Date.now() - startTime;
       
-      monitoring.recordError(methodName, error.name || 'UnknownError');
+      monitoring.recordError(methodName, error.name ?? 'UnknownError');
       monitoring.recordResponseTime(methodName, duration);
       
-      throw error;
+      throw new Error("Operation failed");
     }
   };
   
@@ -394,7 +394,7 @@ export function monitorPerformance(target: any, propertyKey: string, descriptor:
 
 // User activity tracking hook
 export function useActivityTracking() {
-  const trackAction = (action: string, metadata?: Record<string, any>) => {
+  const trackAction = (action: string, metadata?: Record<string, unknown>) => {
     monitoring.recordUserAction(action);
     
     if (metadata) {

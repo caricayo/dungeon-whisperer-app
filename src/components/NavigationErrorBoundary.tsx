@@ -15,11 +15,11 @@ export class NavigationErrorBoundary extends Component<Props, State> {
     hasError: false,
   };
 
-  public static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
+  public static getDerivedStateFromError(_error: Error): State {
+    return { hasError: true, error: _error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+  public componentDidCatch(error: Error, _errorInfo: React.ErrorInfo): void {
     debugError('Navigation Error Boundary caught an error:', {
       error: error.message,
       stack: error.stack,

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { debugLog, debugError } from '@/lib/debug';
 
@@ -85,7 +85,7 @@ export const useDirectMessages = () => {
         // Continue without profile data
       }
 
-      const profilesMap = new Map((profilesData || []).map(p => [p.id, p]));
+      const profilesMap = new Map((profilesData ?? []).map(p => [p.id, p]));
 
       // Group messages by conversation (other user)
       const conversationMap = new Map<string, MessageConversation>();
@@ -175,8 +175,8 @@ export const useDirectMessages = () => {
       debugLog(`Loaded ${sortedConversations.length} conversations`);
       setConversations(sortedConversations);
 
-    } catch (error) {
-      debugError('Error loading conversations:', error);
+    } catch {
+      debugError('Error loading conversations:');
       toast({
         title: "Error Loading Messages",
         description: "Could not load your conversations. Please try again.",
@@ -203,7 +203,7 @@ export const useDirectMessages = () => {
           content: content.trim()
         });
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
 
       // Refresh conversations to show the new message
       await loadConversations();
@@ -211,8 +211,8 @@ export const useDirectMessages = () => {
       debugLog('Message sent successfully');
       return true;
 
-    } catch (error) {
-      debugError('Error sending message:', error);
+    } catch {
+      debugError('Error sending message:');
       toast({
         title: "Send Failed",
         description: "Could not send your message. Please try again.",
@@ -238,7 +238,7 @@ export const useDirectMessages = () => {
         .eq('recipient_id', user.id)
         .is('read_at', null);
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
 
       // Update local state
       setConversations(prev => prev.map(conv => 
@@ -257,8 +257,8 @@ export const useDirectMessages = () => {
 
       debugLog('Messages marked as read');
 
-    } catch (error) {
-      debugError('Error marking messages as read:', error);
+    } catch {
+      debugError('Error marking messages as read:');
     }
   }, [user]);
 
@@ -275,13 +275,13 @@ export const useDirectMessages = () => {
       }
 
       // Get user profile
-      const { data: profile, error } = await supabase
+      const { data: profile } = await supabase
         .from('profiles')
         .select('id, username, display_name, avatar_url, is_online')
         .eq('id', userId)
         .single();
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
 
       // Create new conversation object
       const newConversation: MessageConversation = {
@@ -309,8 +309,8 @@ export const useDirectMessages = () => {
       setSelectedConversation(newConversation);
       return newConversation;
 
-    } catch (error) {
-      debugError('Error starting conversation:', error);
+    } catch {
+      debugError('Error starting conversation:');
       toast({
         title: "Error",
         description: "Could not start conversation with this user.",

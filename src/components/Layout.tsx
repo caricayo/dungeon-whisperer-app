@@ -1,7 +1,7 @@
 import React from 'react';
 import { UsernameSetupModal } from '@/components/UsernameSetupModal';
 import { ConnectionStatus } from '@/components/ConnectionStatus';
-import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useUserProfile } from '@/hooks/use-user-profile';
 
 interface LayoutProps {
   children: React.ReactNode;

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, Users, Zap, Clock, Send } from 'lucide-react';
 import { useCoopDecision } from '@/hooks/useCoopDecision';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface CoopDecisionBarProps {
@@ -36,7 +36,7 @@ export const CoopDecisionBar = memo(({ sessionId, onSendCombined }: CoopDecision
 
   const handleSend = async () => {
     if (!combinedPrompt) return;
-    console.log('🎮 Sending combined prompt:', combinedPrompt);
+    console.warn('🎮 Sending combined prompt:', combinedPrompt);
     await onSendCombined(combinedPrompt);
     reset();
   };

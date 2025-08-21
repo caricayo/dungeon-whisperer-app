@@ -1,13 +1,14 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
 import { useToast } from '@/hooks/use-toast';
+import type { Message } from '@/hooks/useSessionManager';
 
-export const useRealtimeChat = (sessionId?: string, onMessageReceived?: (message: any) => void) => {
+export const useRealtimeChat = (sessionId?: string, onMessageReceived?: (message: Message) => void) => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const channelRef = useRef<any>(null);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   const setupRealtimeChat = useCallback(() => {
     if (!user || !sessionId) return;
@@ -31,7 +32,7 @@ export const useRealtimeChat = (sessionId?: string, onMessageReceived?: (message
         debugLog('🔄 Session messages updated:', payload);
         
         if (payload.new?.messages && onMessageReceived) {
-          const messages = payload.new.messages as any[];
+          const messages = payload.new.messages as Message[];
           const lastMessage = messages[messages.length - 1];
           
           if (lastMessage) {
@@ -69,7 +70,7 @@ export const useRealtimeChat = (sessionId?: string, onMessageReceived?: (message
         channelRef.current = null;
       }
     };
-  }, [setupRealtimeChat]);
+  }, [setupRealtimeChat, sessionId]);
 
   // Clean up on unmount
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
 
 interface TypingUser {
@@ -14,7 +14,7 @@ export const useTypingIndicators = (sessionId: string | null) => {
   const { user } = useAuth();
   const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
-  const channelRef = useRef<any>();
+  const channelRef = useRef<ReturnType<typeof supabase.channel>>();
 
   // Start typing indicator
   const startTyping = useCallback(() => {

@@ -28,7 +28,7 @@ export function GenerationLogs({ logs, isVisible, className = '' }: GenerationLo
       case 'success':
         return <CheckCircle className="size-4 text-success" />;
       default:
-        return <Info className="text-info size-4" />;
+        return <Info className="size-4 text-info" />;
     }
   };
 
@@ -51,7 +51,7 @@ export function GenerationLogs({ logs, isVisible, className = '' }: GenerationLo
       transition={{ duration: 0.3 }}
       className={`${className}`}
     >
-      <Card className="bg-card-premium border-border-elevated border shadow-premium backdrop-blur-sm">
+      <Card className="border border-border-elevated bg-card-premium shadow-premium backdrop-blur-sm">
         <div className="p-4">
           <div className="mb-4 flex items-center gap-2">
             <Clock className="size-4 text-primary" />
@@ -75,7 +75,7 @@ export function GenerationLogs({ logs, isVisible, className = '' }: GenerationLo
                     <p className="text-xs">Logs will appear when you generate content</p>
                   </motion.div>
                 ) : (
-                  logs.slice().reverse().map((log, index) => (
+                  logs.slice().reverse().map((log, _index) => (
                     <motion.div
                       key={log.id}
                       initial={{ opacity: 0, x: -20 }}

@@ -1,36 +1,52 @@
 // Debug utility for console logging with enhanced error tracking
 const DEBUG = import.meta.env.MODE !== 'production'; // Only debug in development
 
-// Global error collector for mystery analysis
-(window as any).__debug_errors = (window as any).__debug_errors || [];
+interface DebugEntry {
+  type: 'log' | 'error' | 'warn';
+  timestamp: string;
+  args: (string | { name: string; message: string; stack?: string })[];
+}
 
-export const debugLog = (...args: any[]) => {
+interface WindowDebug {
+  __debug_errors?: DebugEntry[];
+  __tts_mystery_error?: unknown;
+  __audio_mystery_error?: unknown;
+}
+
+declare global {
+  interface Window extends WindowDebug {}
+}
+
+// Global error collector for mystery analysis
+window.__debug_errors = window.__debug_errors ?? [];
+
+export const debugLog = (...args: unknown[]) => {
   if (DEBUG) {
-    console.log(...args);
+    console.warn(...args);
     
     // Store significant debug events
     if (args.some(arg => typeof arg === 'string' && 
         (arg.includes('TTS') || arg.includes('AUDIO') || arg.includes('BLOB')))) {
-      (window as any).__debug_errors.push({
+      window.__debug_errors!.push({
         type: 'log',
         timestamp: new Date().toISOString(),
         args: args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg))
       });
       
       // Keep only last 50 debug entries
-      if ((window as any).__debug_errors.length > 50) {
-        (window as any).__debug_errors = (window as any).__debug_errors.slice(-50);
+      if (window.__debug_errors!.length > 50) {
+        window.__debug_errors = window.__debug_errors!.slice(-50);
       }
     }
   }
 };
 
-export const debugError = (...args: any[]) => {
+export const debugError = (...args: unknown[]) => {
   if (DEBUG) {
     console.error(...args);
     
     // Always store errors for mystery analysis
-    (window as any).__debug_errors.push({
+    window.__debug_errors!.push({
       type: 'error',
       timestamp: new Date().toISOString(),
       args: args.map(arg => {
@@ -46,26 +62,26 @@ export const debugError = (...args: any[]) => {
     });
     
     // Keep only last 50 debug entries
-    if ((window as any).__debug_errors.length > 50) {
-      (window as any).__debug_errors = (window as any).__debug_errors.slice(-50);
+    if (window.__debug_errors!.length > 50) {
+      window.__debug_errors = window.__debug_errors!.slice(-50);
     }
   }
 };
 
-export const debugWarn = (...args: any[]) => {
+export const debugWarn = (...args: unknown[]) => {
   if (DEBUG) {
     console.warn(...args);
     
     // Store warnings for mystery analysis
-    (window as any).__debug_errors.push({
+    window.__debug_errors!.push({
       type: 'warn',
       timestamp: new Date().toISOString(),
       args: args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg))
     });
     
     // Keep only last 50 debug entries
-    if ((window as any).__debug_errors.length > 50) {
-      (window as any).__debug_errors = (window as any).__debug_errors.slice(-50);
+    if (window.__debug_errors!.length > 50) {
+      window.__debug_errors = window.__debug_errors!.slice(-50);
     }
   }
 };
@@ -73,9 +89,9 @@ export const debugWarn = (...args: any[]) => {
 // Helper function to get all debug info
 export const getDebugSummary = () => {
   return {
-    errors: (window as any).__debug_errors || [],
-    ttsError: (window as any).__tts_mystery_error || null,
-    audioError: (window as any).__audio_mystery_error || null,
+    errors: window.__debug_errors ?? [],
+    ttsError: window.__tts_mystery_error ?? null,
+    audioError: window.__audio_mystery_error ?? null,
     browserInfo: {
       userAgent: navigator.userAgent,
       platform: navigator.platform,

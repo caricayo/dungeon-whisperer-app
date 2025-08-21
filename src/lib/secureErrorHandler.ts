@@ -22,9 +22,9 @@ export function handleSecureError(
   
   // Log detailed error for debugging (only in development)
   if (logLevel === 'error') {
-    debugError(context ? `[${context}]` : 'Error:', error);
+    debugError(context ? `[${context}]` : 'Error:');
   } else {
-    debugLog(context ? `[${context}]` : 'Info:', error);
+    debugLog(context ? `[${context}]` : 'Info:', _error);
   }
   
   // In production, only show user-friendly messages
@@ -33,7 +33,7 @@ export function handleSecureError(
     console.warn(userMessage);
   } else if (showToUser) {
     // In development, show more details
-    console.error(userMessage, error);
+    console.error(userMessage, _error);
   }
 }
 
@@ -62,7 +62,7 @@ class RateLimitedErrorReporter {
 
   report(errorKey: string, error: unknown, context?: string): void {
     const now = Date.now();
-    const errorInfo = this.errorCounts.get(errorKey) || { count: 0, lastReported: 0 };
+    const errorInfo = this.errorCounts.get(errorKey) ?? { count: 0, lastReported: 0 };
     
     // Reset counter if enough time has passed
     if (now - errorInfo.lastReported > this.resetInterval) {
@@ -75,7 +75,7 @@ class RateLimitedErrorReporter {
     
     // Only report if under rate limit
     if (errorInfo.count <= this.maxReportsPerMinute) {
-      handleSecureError(error, `Error in ${context || errorKey}`, {
+      handleSecureError(error, `Error in ${context ?? errorKey}`, {
         context,
         logLevel: 'error'
       });

@@ -11,7 +11,7 @@ export function useSecurityMonitor() {
     if (env.VITE_APP_ENV !== 'production') return;
     
     const handlePaste = (event: ClipboardEvent) => {
-      const pasteData = event.clipboardData?.getData('text') || '';
+      const pasteData = event.clipboardData?.getData('text') ?? '';
       
       // Check for potential script injection
       if (/<script|javascript:|on\w+\s*=|<iframe/i.test(pasteData)) {
@@ -27,11 +27,13 @@ export function useSecurityMonitor() {
   const monitorConsole = useCallback(() => {
     if (env.VITE_APP_ENV !== 'production') return;
 
+    // eslint-disable-next-line no-console
     const originalLog = console.log;
     const originalWarn = console.warn;
     const originalError = console.error;
 
     // Monitor for suspicious console activity
+    // eslint-disable-next-line no-console
     console.log = (...args) => {
       if (args.some(arg => 
         typeof arg === 'string' && 
@@ -61,6 +63,7 @@ export function useSecurityMonitor() {
     };
 
     return () => {
+      // eslint-disable-next-line no-console
       console.log = originalLog;
       console.warn = originalWarn;
       console.error = originalError;
@@ -87,7 +90,7 @@ export function useSecurityMonitor() {
           key: key.substring(0, 20) + '...' 
         });
       }
-      return originalGetItem.call(this, key);
+      return originalGetItem.call(this, _key);
     };
 
     return () => {
@@ -104,8 +107,7 @@ export function useSecurityMonitor() {
     setInterval(() => {
       const threshold = 160;
       
-      if (window.outerHeight - window.innerHeight > threshold || 
-          window.outerWidth - window.innerWidth > threshold) {
+      if (window.outerHeight - window.innerHeight > threshold || window.outerWidth - window.innerWidth > threshold) {
         if (!devtools.open) {
           devtools.open = true;
           SecurityLogger.logSecurityEvent('devtools_opened', {

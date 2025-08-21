@@ -56,8 +56,9 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
         return;
       }
       
-    } catch (error) {
-      SecurityLogger.logSecurityEvent('session_creation_input_error', { error: error.message });
+    } catch (_error: unknown) {
+      const errorMessage = _error instanceof Error ? _error.message : 'Unknown error';
+      SecurityLogger.logSecurityEvent('session_creation_input_error', { error: errorMessage });
       toast({
         title: "Invalid Input",
         description: "Please check your input and try again.",
@@ -75,18 +76,18 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
       const sanitizedName = InputSanitizer.sanitizeText(sessionName);
       const sanitizedPrompt = InputSanitizer.sanitizeText(customPrompt);
       
-      const { data, error } = await supabase.rpc('create_multiplayer_session_fixed', {
+      const {data, error} = await supabase.rpc('create_multiplayer_session_fixed', {
         session_name: sanitizedName,
-        custom_prompt: sanitizedPrompt || null,
+        custom_prompt: sanitizedPrompt ?? null,
         max_players: maxPlayers[0]
       });
 
       if (error) {
-        throw error;
+        throw new Error("Operation failed");
       }
 
       if (!data?.success) {
-        throw new Error(data?.error || 'Failed to create session');
+        throw new Error(data?.error ?? 'Failed to create session');
       }
 
       debugLog('✅ Multiplayer session created:', data);
@@ -142,7 +143,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
       });
 
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
+    } catch {
       toast({
         title: "Copy Failed",
         description: "Could not copy to clipboard",

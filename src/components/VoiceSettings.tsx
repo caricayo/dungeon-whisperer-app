@@ -42,8 +42,8 @@ export const VoiceSettings: React.FC = () => {
           setCurrentProvider('elevenlabs');
           setCurrentSpeed(1.0);
         }
-      } catch (error) {
-        debugError('Error loading voice settings:', error);
+      } catch {
+        debugError('Error loading voice settings:');
       } finally {
         setIsLoading(false);
       }
@@ -74,8 +74,8 @@ export const VoiceSettings: React.FC = () => {
         title: "Voice Settings Saved",
         description: "Your TTS voice and speed preferences have been updated.",
       });
-    } catch (error) {
-      debugError('Error saving voice settings:', error);
+    } catch {
+      debugError('Error saving voice settings:');
       toast({
         title: "Save Error",
         description: "Failed to save voice settings. Please try again.",
@@ -113,8 +113,8 @@ export const VoiceSettings: React.FC = () => {
       setTestComplete(true);
       setTimeout(() => setTestComplete(false), 3000);
       
-    } catch (error) {
-      debugError('Error testing voice:', error);
+    } catch {
+      debugError('Error testing voice:');
       toast({
         title: "Test Failed",
         description: "Could not test the selected voice. Please try again.",

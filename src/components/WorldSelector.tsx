@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Globe } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 
 interface WorldSelectorProps {
@@ -34,12 +34,12 @@ export const WorldSelector: React.FC<WorldSelectorProps> = ({
         .upsert({
           id: user.id,
           current_world: newWorld,
-          username: user.user_metadata?.username || `user_${user.id.slice(0, 8)}`
+          username: user.user_metadata?.username ?? `user_${user.id.slice(0, 8)}`
         }, {
           onConflict: 'id'
         });
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
 
       onWorldChange(newWorld);
       toast({
@@ -47,8 +47,8 @@ export const WorldSelector: React.FC<WorldSelectorProps> = ({
         description: `You're now exploring World ${newWorld}!`,
       });
 
-    } catch (error) {
-      console.error('Error updating world:', error);
+    } catch {
+      console.error('Error updating world:', _error);
       toast({
         title: "Update Failed",
         description: "Could not change world. Please try again.",

@@ -26,10 +26,9 @@ export class AuthErrorBoundary extends Component<Props, State> {
     };
   }
 
-  static getDerivedStateFromError(error: Error): Partial<State> {
+  static getDerivedStateFromError(_error: Error): Partial<State> {
     return {
-      hasError: true,
-      error
+      hasError: true
     };
   }
 
@@ -63,7 +62,7 @@ export class AuthErrorBoundary extends Component<Props, State> {
               <AlertCircle className="size-4" />
               <AlertTitle>Authentication Error</AlertTitle>
               <AlertDescription className="mb-4 mt-2">
-                {this.state.error?.message || 'An unexpected authentication error occurred.'}
+                {this.state.error?.message ?? 'An unexpected authentication error occurred.'}
                 {this.state.retryCount > 0 && (
                   <span className="mt-2 block text-sm">
                     Retry attempts: {this.state.retryCount}/{this.maxRetries}

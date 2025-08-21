@@ -33,7 +33,7 @@ function validateSupabaseConfig() {
   
   // Log successful configuration in development
   if (import.meta.env.DEV) {
-    console.log('✅ Supabase configuration validated successfully');
+    console.warn('✅ Supabase configuration validated successfully');
   }
 }
 

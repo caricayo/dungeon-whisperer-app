@@ -39,7 +39,7 @@ export const MessageBubble = memo<MessageBubbleProps>(({
   const formatMessageContent = (content: string) => {
     const paragraphs = content.split('\n\n').filter(p => p.trim());
     
-    return paragraphs.map((paragraph, index) => {
+    return paragraphs.map((paragraph, _index) => {
       // For mobile, break long paragraphs into shorter chunks
       const isMobile = window.innerWidth < 768;
       if (!isMobile || paragraph.length < 150) {

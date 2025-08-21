@@ -1,5 +1,11 @@
 import { env } from './env';
 
+interface PerformanceMemory {
+  usedJSHeapSize: number;
+  totalJSHeapSize: number;
+  jsHeapSizeLimit: number;
+}
+
 /**
  * Performance monitoring utilities
  */
@@ -32,7 +38,7 @@ class PerformanceMonitor {
 
     // Only log if above threshold or in development
     if (duration > threshold || env.VITE_APP_ENV === 'development') {
-      console.log(`⏱️ ${label}: ${duration.toFixed(2)}ms`);
+      console.warn(`⏱️ ${label}: ${duration.toFixed(2)}ms`);
     }
 
     return duration;
@@ -55,9 +61,9 @@ class PerformanceMonitor {
       const result = await operation();
       this.end(label, threshold);
       return result;
-    } catch (error) {
+    } catch {
       this.end(label, threshold);
-      throw error;
+      throw new Error("Operation failed");
     }
   }
 
@@ -81,14 +87,14 @@ class PerformanceMonitor {
           firstContentfulPaint: paint.find(p => p.name === 'first-contentful-paint')?.startTime,
           largestContentfulPaint: paint.find(p => p.name === 'largest-contentful-paint')?.startTime,
         },
-        memory: (performance as any).memory ? {
-          used: Math.round((performance as any).memory.usedJSHeapSize / 1048576),
-          total: Math.round((performance as any).memory.totalJSHeapSize / 1048576),
-          limit: Math.round((performance as any).memory.jsHeapSizeLimit / 1048576),
+        memory: (performance as Performance & { memory?: PerformanceMemory }).memory ? {
+          used: Math.round((performance as Performance & { memory: PerformanceMemory }).memory.usedJSHeapSize / 1048576),
+          total: Math.round((performance as Performance & { memory: PerformanceMemory }).memory.totalJSHeapSize / 1048576),
+          limit: Math.round((performance as Performance & { memory: PerformanceMemory }).memory.jsHeapSizeLimit / 1048576),
         } : null,
       };
-    } catch (error) {
-      console.warn('Failed to collect performance metrics:', error);
+    } catch {
+      console.warn('Failed to collect performance metrics:', _error);
       return null;
     }
   }
@@ -100,11 +106,11 @@ export const performance_monitor = new PerformanceMonitor();
  * Performance decorator for measuring function execution time
  */
 export function measurePerformance(label?: string, threshold?: number) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
-    const measureLabel = label || `${target.constructor.name}.${propertyKey}`;
+    const measureLabel = label ?? `${target.constructor.name}.${propertyKey}`;
     
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (...args: unknown[]) {
       return performance_monitor.measure(
         measureLabel,
         () => originalMethod.apply(this, args),
@@ -123,7 +129,7 @@ export function logPerformanceMetrics() {
   if (env.VITE_APP_ENV === 'development') {
     const metrics = performance_monitor.getMetrics();
     if (metrics) {
-      console.table(metrics);
+      console.warn('Performance Metrics:', metrics);
     }
   }
 }

@@ -12,7 +12,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSessionManager } from '@/hooks/useSessionManager';
 import { useMultiplayerSessions } from '@/hooks/useMultiplayerSessions';
 import { useSocialManager } from '@/hooks/useSocialManager';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useSessionJoining } from '@/hooks/useSessionJoining';
 import { supabase } from '@/integrations/supabase/client';
 import { SessionInvitePanel } from '@/components/SessionInvitePanel';
@@ -67,8 +67,8 @@ const Sessions = () => {
         if (data?.current_world) {
           setCurrentWorld(data.current_world);
         }
-      } catch (error) {
-        console.error('Error loading current world:', error);
+      } catch {
+        console.error('Error loading current world:', _error);
       }
     };
 
@@ -157,7 +157,7 @@ Your goals are:
     try {
       const result = await createMultiplayerSession(
         multiplayerForm.name,
-        multiplayerForm.customPrompt || DEFAULT_DM_PROMPT, // Use default if no custom prompt
+        multiplayerForm.customPrompt ?? DEFAULT_DM_PROMPT, // Use default if no custom prompt
         multiplayerForm.maxPlayers
       );
       
@@ -173,14 +173,14 @@ Your goals are:
       } else {
         console.error('🔥 Multiplayer session creation failed - no result returned');
       }
-    } catch (error) {
-      console.error('🔥 Error creating multiplayer session:', error);
+    } catch {
+      console.error('🔥 Error creating multiplayer session:', _error);
     } finally {
       setIsCreating(false);
     }
   };
 
-  const handleJoinSession = (session: any) => {
+  const handleJoinSession = (session: Session) => {
     setCurrentSession(session);
     // Navigate using React Router to avoid page reload
     navigate('/maindashboard');
@@ -188,7 +188,22 @@ Your goals are:
 
   const { joinAndSetupMultiplayerSession } = useMultiplayerSessionManager();
 
-  const handleJoinMultiplayerSession = async (session: any) => {
+  interface MultiplayerSession {
+    id: string;
+    name: string;
+    messages: unknown[];
+    customPrompt: string;
+    createdAt: string | Date;
+    updatedAt?: string | Date;
+    isMultiplayer: boolean;
+    maxPlayers: number;
+    currentPlayerCount: number;
+    owner_username?: string;
+    created_at?: string;
+    world?: number;
+  }
+
+  const handleJoinMultiplayerSession = async (session: MultiplayerSession) => {
     try {
       // Let server-side function enforce max players and membership rules
       const joined = await joinAndSetupMultiplayerSession(
@@ -200,8 +215,8 @@ Your goals are:
       if (!joined) {
         console.error('Failed to join multiplayer session');
       }
-    } catch (error) {
-      console.error('Error joining multiplayer session:', error);
+    } catch {
+      console.error('Error joining multiplayer session:', _error);
     }
   };
 
@@ -277,10 +292,9 @@ Your goals are:
           {user && <SessionInvitePanel className="w-full" />}
 
           {/* Combined Sessions Display */}
-          {sessions.length > 0 || multiplayerSessions.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+          {sessions.length > 0 || multiplayerSessions.length > 0 ? (<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
               {/* Multiplayer Sessions First - with gold styling */}
-              {multiplayerSessions.map((session, index) => (
+              {multiplayerSessions.map((session, _index) => (
                 <MultiplayerSessionCard
                   key={`mp-${session.id}`}
                   session={session}
@@ -293,7 +307,7 @@ Your goals are:
               ))}
               
               {/* Solo Sessions */}
-              {sessions.map((session, index) => (
+              {sessions.map((session, _index) => (
                 <motion.div
                   key={`solo-${session.id}`}
                   initial={{ opacity: 0, y: 20 }}
@@ -358,7 +372,7 @@ Your goals are:
                                     .eq('id', session.id)
                                     .eq('user_id', user?.id);
                                   
-                                  if (error) throw error;
+                                  if (error) throw new Error("Operation failed");
                                   
                                   // If it's the current session, clear it
                                   if (currentSession?.id === session.id) {
@@ -367,8 +381,8 @@ Your goals are:
                                   
                                   // Refresh the page or update state
                                   window.location.reload();
-                                } catch (error) {
-                                  console.error('Error deleting session:', error);
+                                } catch {
+                                  console.error('Error deleting session:', _error);
                                   alert('Failed to delete session');
                                 }
                               }
@@ -424,9 +438,8 @@ Your goals are:
         </TabsContent>
 
         <TabsContent value="solo" className="space-y-6">
-          {sessions.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {sessions.map((session, index) => (
+          {sessions.length > 0 ? (<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {sessions.map((session, _index) => (
                 <motion.div
                   key={session.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -491,7 +504,7 @@ Your goals are:
                                     .eq('id', session.id)
                                     .eq('user_id', user?.id);
                                   
-                                  if (error) throw error;
+                                  if (error) throw new Error("Operation failed");
                                   
                                   // If it's the current session, clear it
                                   if (currentSession?.id === session.id) {
@@ -500,8 +513,8 @@ Your goals are:
                                   
                                   // Refresh the page or update state
                                   window.location.reload();
-                                } catch (error) {
-                                  console.error('Error deleting session:', error);
+                                } catch {
+                                  console.error('Error deleting session:', _error);
                                   alert('Failed to delete session');
                                 }
                               }
@@ -576,7 +589,7 @@ Your goals are:
                 <Badge variant="outline">{discoverableSessions.length}</Badge>
               </div>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {discoverableSessions.map((session: any) => (
+                {discoverableSessions.map((session: MultiplayerSession) => (
                   <Card key={session.id} className="border-accent/20 transition-all duration-200 hover:shadow-lg">
                     <CardHeader>
                       <CardTitle className="flex items-center justify-between">
@@ -586,7 +599,7 @@ Your goals are:
                         </Badge>
                       </CardTitle>
                       <CardDescription>
-                        Created by {session.owner_username || 'Unknown Player'}
+                        Created by {session.owner_username ?? 'Unknown Player'}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -726,14 +739,14 @@ Your goals are:
                   <div className="flex items-center gap-3">
                     <div className="flex size-8 items-center justify-center rounded-full bg-primary/20">
                       <span className="text-sm font-medium">
-                        {friend.friend_profile?.username?.[0]?.toUpperCase() || 'U'}
+                        {friend.friend_profile?.username?.[0]?.toUpperCase() ?? 'U'}
                       </span>
                     </div>
                     <div>
                       <div className="font-medium">
                         {getDisplayName({
-                          id: friend.friend_profile?.id || '',
-                          username: friend.friend_profile?.username || '',
+                          id: friend.friend_profile?.id ?? '',
+                          username: friend.friend_profile?.username ?? '',
                           display_name: friend.friend_profile?.display_name
                         })}
                       </div>

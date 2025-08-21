@@ -3,7 +3,7 @@
  * Implements memory-based caching with TTL and size limits
  */
 
-interface CacheEntry<T = any> {
+interface CacheEntry<T = unknown> {
   data: T;
   timestamp: number;
   ttl: number; // Time to live in milliseconds
@@ -82,7 +82,7 @@ class QueryCache {
     }
   }
 
-  private estimateSize(data: any): number {
+  private estimateSize(data: unknown): number {
     try {
       return JSON.stringify(data).length * 2; // Rough estimation (UTF-16)
     } catch {
@@ -90,19 +90,19 @@ class QueryCache {
     }
   }
 
-  private generateKey(table: string, query: any, params?: any): string {
+  private generateKey(table: string, query: unknown, params?: unknown): string {
     const queryStr = typeof query === 'string' ? query : JSON.stringify(query);
     const paramsStr = params ? JSON.stringify(params) : '';
     return `${table}:${btoa(queryStr + paramsStr).slice(0, 32)}`;
   }
 
-  set<T>(table: string, query: any, data: T, params?: any, ttl?: number): void {
+  set<T>(table: string, query: unknown, data: T, params?: unknown, ttl?: number): void {
     const key = this.generateKey(table, query, params);
     const size = this.estimateSize(data);
     const entry: CacheEntry<T> = {
       data,
       timestamp: Date.now(),
-      ttl: ttl || this.config.defaultTTL,
+      ttl: ttl ?? this.config.defaultTTL,
       hits: 0,
       size
     };
@@ -122,7 +122,7 @@ class QueryCache {
     }
   }
 
-  get<T>(table: string, query: any, params?: any): T | null {
+  get<T>(table: string, query: unknown, params?: unknown): T | null {
     const key = this.generateKey(table, query, params);
     const entry = this.cache.get(key);
 
@@ -207,24 +207,24 @@ const queryCache = new QueryCache();
 
 // Cache-enabled query wrapper
 export async function cachedQuery<T>(
-  queryFn: () => Promise<{ data: T | null; error: any }>,
+  queryFn: () => Promise<{ data: T | null; error: unknown }>,
   cacheKey: {
     table: string;
-    query: any;
-    params?: any;
+    query: unknown;
+    params?: unknown;
   },
   options: {
     ttl?: number;
     skipCache?: boolean;
     invalidateOnError?: boolean;
   } = {}
-): Promise<{ data: T | null; error: any; fromCache?: boolean }> {
+): Promise<{ data: T | null; error: unknown; fromCache?: boolean }> {
   const { table, query, params } = cacheKey;
   const { ttl, skipCache = false, invalidateOnError = true } = options;
 
   // Check cache first unless explicitly skipped
   if (!skipCache) {
-    const cached = queryCache.get<{ data: T | null; error: any }>(table, query, params);
+    const cached = queryCache.get<{ data: T | null; error: unknown }>(table, query, params);
     if (cached) {
       return { ...cached, fromCache: true };
     }
@@ -243,11 +243,11 @@ export async function cachedQuery<T>(
     }
 
     return result;
-  } catch (error) {
+  } catch {
     if (invalidateOnError) {
       queryCache.invalidate(table);
     }
-    return { data: null, error };
+    return {data: null, error: new Error("Operation failed")};
   }
 }
 
@@ -279,10 +279,10 @@ export const CacheTTL = {
 
 // Auto-invalidation for write operations
 export function invalidateOnWrite(tables: string[]) {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value;
     
-    descriptor.value = async function(...args: any[]) {
+    descriptor.value = async function(...args: unknown[]) {
       const result = await originalMethod.apply(this, args);
       
       // Invalidate cache for affected tables after successful writes

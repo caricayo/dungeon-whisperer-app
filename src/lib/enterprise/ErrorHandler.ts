@@ -275,7 +275,6 @@ export class ErrorHandler {
    * Check if error should trigger an alert
    */
   shouldAlert(error: EnterpriseError): boolean {
-    return error.severity === ErrorSeverity.CRITICAL || 
-           error.severity === ErrorSeverity.HIGH;
+    return error.severity === ErrorSeverity.CRITICAL || error.severity === ErrorSeverity.HIGH;
   }
 }

@@ -67,10 +67,9 @@ export function PremiumChatInterface({
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  return (
-    <div className="bg-card-premium border-border-elevated flex h-full flex-col overflow-hidden rounded-2xl border shadow-premium">
+  return (<div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border-elevated bg-card-premium shadow-premium">
       {/* Chat Header */}
-      <div className="border-border-elevated flex items-center justify-between border-b bg-gradient-card p-6">
+      <div className="flex items-center justify-between border-b border-border-elevated bg-gradient-card p-6">
         <div className="flex items-center gap-3">
           <div className="relative">
             <Avatar className="size-10 border-2 border-primary/20">
@@ -98,7 +97,7 @@ export function PremiumChatInterface({
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-6">
         <div className="space-y-6">
           <AnimatePresence>
-            {messages.map((message, index) => (
+            {messages.map((message, _index) => (
               <motion.div
                 key={message.id}
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -119,11 +118,11 @@ export function PremiumChatInterface({
                 </Avatar>
 
                 {/* Message Content */}
-                <div className={`flex max-w-[80%] flex-col ${message.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                <div className={`flex flex-col max-w-[80%] ${message.sender === 'user' ? 'items-end' : 'items-start'}`}>
                   <div className={`
                     relative rounded-2xl px-4 py-3 backdrop-blur-sm transition-all duration-300 hover:shadow-elevated
                     ${message.sender === 'ai' 
-                      ? 'border-border-elevated border bg-card-elevated/80 text-foreground' 
+                      ? 'border border-border-elevated bg-card-elevated/80 text-foreground' 
                       : 'bg-gradient-primary text-primary-foreground'
                     }
                   `}>
@@ -169,7 +168,7 @@ export function PremiumChatInterface({
                     <Bot className="size-4" />
                   </AvatarFallback>
                 </Avatar>
-                <div className="border-border-elevated rounded-2xl border bg-card-elevated/80 px-4 py-3">
+                <div className="rounded-2xl border border-border-elevated bg-card-elevated/80 px-4 py-3">
                   <div className="flex gap-1">
                     {[0, 1, 2].map((i) => (
                       <motion.div
@@ -192,7 +191,7 @@ export function PremiumChatInterface({
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="border-border-elevated border-t bg-gradient-card p-6">
+      <div className="border-t border-border-elevated bg-gradient-card p-6">
         <div className="flex items-end gap-4">
           <div className="relative flex-1">
             <Textarea
@@ -201,7 +200,7 @@ export function PremiumChatInterface({
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
               placeholder={placeholder}
-              className="border-border-elevated max-h-[120px] min-h-[48px] resize-none rounded-xl bg-input/50 pr-12 backdrop-blur-sm transition-all duration-300 focus:border-primary/50 focus:ring-2 focus:ring-primary/20"
+              className="max-h-[120px] min-h-[48px] resize-none rounded-xl border-border-elevated bg-input/50 pr-12 backdrop-blur-sm transition-all duration-300 focus:border-primary/50 focus:ring-2 focus:ring-primary/20"
               rows={1}
             />
             
@@ -234,7 +233,7 @@ export function PremiumChatInterface({
             "Roll for initiative",
             "Describe the scene",
             "Generate an NPC"
-          ].map((prompt, index) => (
+          ].map((prompt, _index) => (
             <Button
               key={index}
               variant="outline"

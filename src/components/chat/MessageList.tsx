@@ -66,8 +66,8 @@ export const MessageList = memo<MessageListProps>(({
     try {
       logger.info('Generating image for message', { messageId });
       await onGenerateImage(messageId);
-    } catch (error) {
-      logger.error('Image generation failed', { messageId, error });
+    } catch {
+      logger.error('Image generation failed', {messageId});
     }
   }, [onGenerateImage, logger]);
 
@@ -78,8 +78,8 @@ export const MessageList = memo<MessageListProps>(({
     try {
       logger.info('Generating audio for message', { messageId });
       await onGenerateAudio(messageId);
-    } catch (error) {
-      logger.error('Audio generation failed', { messageId, error });
+    } catch {
+      logger.error('Audio generation failed', {messageId});
     }
   }, [onGenerateAudio, logger]);
 
@@ -90,8 +90,8 @@ export const MessageList = memo<MessageListProps>(({
     try {
       logger.info('Generating video for message', { messageId });
       await onGenerateVideo(messageId);
-    } catch (error) {
-      logger.error('Video generation failed', { messageId, error });
+    } catch {
+      logger.error('Video generation failed', {messageId});
     }
   }, [onGenerateVideo, logger]);
 
@@ -173,8 +173,7 @@ export const MessageList = memo<MessageListProps>(({
               }}
             >
               {/* Show date separator for first message of the day */}
-              {virtualItem.index === 0 || 
-               new Date(messages[virtualItem.index - 1].timestamp).toDateString() !== 
+              {virtualItem.index === 0 || new Date(messages[virtualItem.index - 1].timestamp).toDateString() !== 
                new Date(message.timestamp).toDateString() ? (
                 <DateSeparator date={new Date(message.timestamp).toDateString()} />
               ) : null}

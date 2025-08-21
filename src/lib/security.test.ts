@@ -43,6 +43,7 @@ describe('InputSanitizer', () => {
     });
 
     it('should reject javascript URLs', () => {
+      // eslint-disable-next-line no-script-url
       const dangerousUrl = 'javascript:alert("xss")';
       const result = InputSanitizer.sanitizeUrl(dangerousUrl);
       expect(result).toBe(null);
@@ -84,10 +85,12 @@ describe('InputSanitizer', () => {
 });
 
 describe('SecurityLogger', () => {
-  let consoleSpy: any;
+  let consoleSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+      // Mock implementation - intentionally empty
+    });
   });
 
   afterEach(() => {
@@ -139,19 +142,22 @@ describe('SecurityLogger', () => {
 describe('Error Handling Integration', () => {
   it('should handle security validation errors gracefully', () => {
     // Test that security functions don't throw on edge cases
-    expect(() => InputSanitizer.sanitizeText(null as any)).not.toThrow();
-    expect(() => InputSanitizer.sanitizeText(undefined as any)).not.toThrow();
-    expect(() => InputSanitizer.sanitizeUrl(null as any)).not.toThrow();
-    expect(() => InputSanitizer.sanitizeFileName(null as any)).not.toThrow();
+    expect(() => InputSanitizer.sanitizeText(null as unknown as string)).not.toThrow();
+    expect(() => InputSanitizer.sanitizeText(undefined as unknown as string)).not.toThrow();
+    expect(() => InputSanitizer.sanitizeUrl(null as unknown as string)).not.toThrow();
+    expect(() => InputSanitizer.sanitizeFileName(null as unknown as string)).not.toThrow();
   });
 });
 
 // Test data for edge cases
+ 
 const testCases = {
   xssAttempts: [
     '<script>alert("xss")</script>',
+    // eslint-disable-next-line no-script-url
     'javascript:alert(1)',
     'onload="alert(1)"',
+     
     '<iframe src="javascript:alert(1)"></iframe>',
     '<img src="x" onerror="alert(1)">',
     '<svg onload="alert(1)">',
@@ -176,6 +182,7 @@ describe('Security Edge Cases', () => {
   it.each(testCases.xssAttempts)('should sanitize XSS attempt: %s', (xssPayload) => {
     const result = InputSanitizer.sanitizeText(xssPayload);
     expect(result).not.toContain('<script');
+    // eslint-disable-next-line no-script-url
     expect(result).not.toContain('javascript:');
     expect(result).not.toContain('onload=');
     expect(result).not.toContain('onerror=');

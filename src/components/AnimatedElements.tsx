@@ -64,8 +64,8 @@ export function AnimatedButton({
       title={title}
       className={`
         ${baseClasses}
-        ${variantClasses[variant]}
-        ${sizeClasses[size]}
+        ${variant in variantClasses ? variantClasses[variant] : ''}
+        ${size in sizeClasses ? sizeClasses[size] : ''}
         ${glowEffect ? 'glow-magical' : ''}
         ${className}
       `}
@@ -147,8 +147,8 @@ export function FloatingActionButton({
       className={`
         fixed z-50 flex size-14 items-center justify-center rounded-2xl backdrop-blur-sm
         transition-all duration-300 hover:shadow-2xl
-        ${positionClasses[position]}
-        ${colorClasses[color]}
+        ${position in positionClasses ? positionClasses[position] : ''}
+        ${color in colorClasses ? colorClasses[color] : ''}
       `}
       title={tooltip}
     >
@@ -191,13 +191,12 @@ export function InteractiveCard({
 
   return (
     <motion.div
-      whileHover={hoverEffects[hoverEffect]}
+      whileHover={hoverEffect in hoverEffects ? hoverEffects[hoverEffect] : {}}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className={`
-        bg-card-premium border-border-elevated hover:border- cursor-pointer 
-        rounded-2xl border backdrop-blur-sm transition-all
-        duration-300${glowColor}/30 hover:shadow-elevated
+        cursor-pointer rounded-2xl border border-border-elevated bg-card-premium backdrop-blur-sm
+        transition-all duration-300 hover:border-primary/50 hover:shadow-elevated
         ${className}
       `}
     >

@@ -1,7 +1,7 @@
 import { supabase } from '@/integrations/supabase/client'
 import { encryptData, decryptData, secureWipe } from '@/lib/crypto'
 import { validateApiKey } from '@/lib/validation'
-import { debugLog, debugError } from '@/lib/debug'
+import { debugLog } from '@/lib/debug'
 
 interface UserSettings {
   id?: string
@@ -63,8 +63,7 @@ export const settingsService = {
       return null;
     }
     
-    try {
-      const { data, error } = await supabase
+    try {const { data, error } = await supabase
         .from('user_settings')
         .select('openai_api_key_encrypted')
         .eq('user_id', user.id)
@@ -127,15 +126,14 @@ export const settingsService = {
       return false;
     }
 
-    try {
-      const { data, error } = await supabase
+    try {const { data, error } = await supabase
         .from('user_settings')
         .select('id')
         .eq('user_id', user.id)
         .maybeSingle();
       
       return !error && !!data;
-    } catch (error) {
+    } catch {
       return false;
     }
   },
@@ -159,7 +157,7 @@ export const settingsService = {
         });
       
       if (error) {
-        console.error('Error saving voice settings:', error);
+        console.error('Error saving voice settings:', _error);
         throw new Error('Failed to save voice settings');
       }
       
@@ -178,8 +176,7 @@ export const settingsService = {
       return null;
     }
     
-    try {
-      const { data, error } = await supabase
+    try {const { data, error } = await supabase
         .from('user_settings')
         .select('elevenlabs_voice_id, tts_provider, tts_speed')
         .eq('user_id', user.id)
@@ -191,13 +188,13 @@ export const settingsService = {
       }
       
       return {
-        voiceId: data.elevenlabs_voice_id || 'BNgbHR0DNeZixGQVzloa', // User's custom voice
-        provider: data.tts_provider || 'elevenlabs',
-        speed: data.tts_speed || 1.0
+        voiceId: data.elevenlabs_voice_id ?? 'BNgbHR0DNeZixGQVzloa', // User's custom voice
+        provider: data.tts_provider ?? 'elevenlabs',
+        speed: data.tts_speed ?? 1.0
       };
       
-    } catch (error) {
-      console.error('Error fetching voice settings:', error);
+    } catch {
+      console.error('Error fetching voice settings:', _error);
       return null;
     }
   },
@@ -219,7 +216,7 @@ export const settingsService = {
         });
       
       if (error) {
-        console.error('Error saving custom prompt:', error);
+        console.error('Error saving custom prompt:', _error);
         throw new Error('Failed to save custom prompt');
       }
       
@@ -238,8 +235,7 @@ export const settingsService = {
       return null;
     }
     
-    try {
-      const { data, error } = await supabase
+    try {const { data, error } = await supabase
         .from('user_settings')
         .select('custom_dnd_prompt')
         .eq('user_id', user.id)
@@ -250,7 +246,7 @@ export const settingsService = {
         return null;
       }
       
-      return data.custom_dnd_prompt || null;
+      return data.custom_dnd_prompt ?? null;
       
     } catch (error) {
       console.error('Error fetching custom prompt:', error);

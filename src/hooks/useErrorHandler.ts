@@ -6,7 +6,7 @@ interface ErrorDetails {
   operation: string;
   error: Error | unknown;
   retryable?: boolean;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 export const useErrorHandler = () => {

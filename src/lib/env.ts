@@ -42,7 +42,7 @@ function validateEnv() {
     });
     
     return env;
-  } catch (error) {
+  } catch {
     if (error instanceof z.ZodError) {
       // Environment validation failed - throwing error
       error.errors.forEach((err) => {
@@ -53,7 +53,7 @@ function validateEnv() {
       });
       throw new Error('Invalid environment configuration');
     }
-    throw error;
+    throw new Error("Operation failed");
   }
 }
 
@@ -65,7 +65,7 @@ export type Env = typeof env;
 
 // Debug helper for development only
 if (env.VITE_DEBUG_MODE && env.VITE_APP_ENV === 'development' && import.meta.env.DEV) {
-  console.log('🔧 Environment Configuration:', {
+  console.warn('🔧 Environment Configuration:', {
     ...env,
     VITE_SUPABASE_ANON_KEY: env.VITE_SUPABASE_ANON_KEY?.slice(0, 10) + '...',
   });

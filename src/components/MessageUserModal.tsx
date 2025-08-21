@@ -58,7 +58,7 @@ export const MessageUserModal = ({ isOpen, onClose, user }: MessageUserModalProp
             Send Message
           </DialogTitle>
           <DialogDescription>
-            Send a private message to {user.displayName || user.username}
+            Send a private message to {user.displayName ?? user.username}
           </DialogDescription>
         </DialogHeader>
 
@@ -72,7 +72,7 @@ export const MessageUserModal = ({ isOpen, onClose, user }: MessageUserModalProp
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-medium">{user.displayName || user.username}</p>
+                <p className="font-medium">{user.displayName ?? user.username}</p>
                 <p className="text-sm text-muted-foreground">@{user.username}</p>
               </div>
             </div>

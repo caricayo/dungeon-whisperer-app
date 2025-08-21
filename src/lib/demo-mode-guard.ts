@@ -6,29 +6,28 @@ import { toast } from '@/hooks/use-toast';
  * Enhanced demo mode guard for API calls
  * Context-7 Doc Assist compliance: Prevents ALL paid API calls in demo mode
  */
-export class DemoModeAPIGuard {
-  private static readonly blockedAPIs = [
-    'dnd-chat-v2',
-    'dnd-chat', 
-    'dnd-image',
-    'dnd-video',
-    'dnd-tts',
-    'elevenlabs-tts',
-    'luma-video',
-    'session-messages'
-  ];
+const blockedAPIs = [
+  'dnd-chat-v2',
+  'dnd-chat', 
+  'dnd-image',
+  'dnd-video',
+  'dnd-tts',
+  'elevenlabs-tts',
+  'luma-video',
+  'session-messages'
+];
 
-  /**
-   * Check if API call should be blocked in demo mode
-   */
-  static shouldBlockAPI(functionName: string): boolean {
-    return isDemoMode && this.blockedAPIs.includes(functionName);
-  }
+/**
+ * Check if API call should be blocked in demo mode
+ */
+export function shouldBlockAPI(functionName: string): boolean {
+  return isDemoMode && blockedAPIs.includes(functionName);
+}
 
-  /**
-   * Guard function for Supabase edge function calls
-   */
-  static async guardSupabaseFunction<T>(
+/**
+ * Guard function for Supabase edge function calls
+ */
+export async function guardSupabaseFunction<T>(
     functionName: string,
     invokeFunction: () => Promise<T>,
     options?: {
@@ -40,7 +39,7 @@ export class DemoModeAPIGuard {
     const showToast = options?.showToast ?? true;
     const operationName = options?.operationName ?? functionName;
 
-    if (this.shouldBlockAPI(functionName)) {
+    if (shouldBlockAPI(functionName)) {
       debugLog(`[DemoGuard] Blocking API call to ${functionName} in demo mode`);
       
       if (showToast) {
@@ -61,16 +60,16 @@ export class DemoModeAPIGuard {
     try {
       debugLog(`[DemoGuard] Allowing API call to ${functionName}`);
       return await invokeFunction();
-    } catch (error) {
-      debugError(`[DemoGuard] API call to ${functionName} failed:`, error);
-      throw error;
+    } catch {
+      debugError(`[DemoGuard] API call to ${functionName} failed:`);
+      throw new Error("Operation failed");
     }
   }
 
-  /**
-   * Guard for general paid API operations
-   */
-  static guardPaidOperation(
+/**
+ * Guard for general paid API operations
+ */
+export function guardPaidOperation(
     operationName: string,
     operation: () => void,
     showToast = true
@@ -92,16 +91,16 @@ export class DemoModeAPIGuard {
     try {
       operation();
       return true;
-    } catch (error) {
-      debugError(`[DemoGuard] Operation ${operationName} failed:`, error);
-      throw error;
+    } catch {
+      debugError(`[DemoGuard] Operation ${operationName} failed:`);
+      throw new Error("Operation failed");
     }
   }
 
-  /**
-   * Create a demo-guarded version of a function
-   */
-  static createGuardedFunction<T extends unknown[], R>(
+/**
+ * Create a demo-guarded version of a function
+ */
+export function createGuardedFunction<T extends unknown[], R>(
     operationName: string,
     fn: (...args: T) => R,
     options?: {
@@ -132,13 +131,13 @@ export class DemoModeAPIGuard {
     };
   }
 
-  /**
-   * Log blocked API attempt for analytics
-   */
-  static logBlockedAttempt(functionName: string, userId?: string): void {
+/**
+ * Log blocked API attempt for analytics
+ */
+export function logBlockedAttempt(functionName: string, userId?: string): void {
     debugLog(`[DemoGuard] Blocked API attempt:`, {
       function: functionName,
-      userId: userId || 'anonymous',
+      userId: userId ?? 'anonymous',
       timestamp: new Date().toISOString(),
       isDemoMode
     });
@@ -146,19 +145,29 @@ export class DemoModeAPIGuard {
     // In production, this could send analytics to understand
     // which features users try to use in demo mode
   }
-}
+
+/**
+ * Demo mode API guard utilities
+ */
+export const DemoModeAPIGuard = {
+  shouldBlockAPI,
+  guardSupabaseFunction,
+  guardPaidOperation,
+  createGuardedFunction,
+  logBlockedAttempt
+};
 
 /**
  * Decorator for automatic demo mode protection
  */
 export function demoPaidAPIGuard(operationName?: string) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
-    const name = operationName || propertyKey;
+    const name = operationName ?? propertyKey;
     
-    descriptor.value = function (...args: any[]) {
+    descriptor.value = function (...args: unknown[]) {
       if (isDemoMode) {
-        DemoModeAPIGuard.logBlockedAttempt(name);
+        logBlockedAttempt(name);
         guardDemoMode(name);
         return null;
       }

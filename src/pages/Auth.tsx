@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { Shield, Mail, Lock, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -40,12 +40,7 @@ const Auth: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   
   // All hooks must be called unconditionally
-  let authContext;
-  try {
-    authContext = useAuth();
-  } catch {
-    setAuthError(true);
-  }
+  const authContext = useAuth();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -135,7 +130,7 @@ const Auth: React.FC = () => {
           navigate('/', { replace: true });
         }
       }
-    } catch (err) {
+    } catch (_err) {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);
@@ -155,7 +150,7 @@ const Auth: React.FC = () => {
       if (authError) {
         setError('Google sign-in failed. Please try again.');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to sign in with Google');
     } finally {
       setLoading(false);
@@ -177,7 +172,7 @@ const Auth: React.FC = () => {
       } else {
         setSuccess('Verification email sent! Please check your inbox.');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to resend verification email');
     } finally {
       setResendingVerification(false);
