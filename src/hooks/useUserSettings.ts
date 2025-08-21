@@ -34,8 +34,8 @@ export function useUserSettings() {
         const parsedSettings = JSON.parse(stored);
         setSettings(prev => ({ ...prev, ...parsedSettings }));
       }
-    } catch (error) {
-      console.warn('Failed to load user settings:', error);
+    } catch {
+      console.warn('Failed to load user settings:', _error);
       toast({
         title: 'Settings load warning',
         description: 'Using default settings due to load error',
@@ -61,8 +61,8 @@ export function useUserSettings() {
         description: `${key} has been updated successfully`,
         variant: 'default',
       });
-    } catch (error) {
-      console.error('Failed to update setting:', error);
+    } catch {
+      console.error('Failed to update setting:', _error);
       toast({
         title: 'Setting update failed',
         description: 'Failed to save your preference',
@@ -81,8 +81,8 @@ export function useUserSettings() {
         description: 'All settings have been reset to defaults',
         variant: 'default',
       });
-    } catch (error) {
-      console.error('Failed to reset settings:', error);
+    } catch {
+      console.error('Failed to reset settings:', _error);
       toast({
         title: 'Reset failed',
         description: 'Failed to reset settings',

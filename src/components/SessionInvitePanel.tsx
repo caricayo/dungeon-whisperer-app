@@ -64,8 +64,7 @@ export const SessionInvitePanel: React.FC<SessionInvitePanelProps> = ({
     );
   }
 
-  return (
-    <Card className={className}>
+  return (<Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <UserPlus className="size-5" />
@@ -81,7 +80,7 @@ export const SessionInvitePanel: React.FC<SessionInvitePanelProps> = ({
       <CardContent>
         <ScrollArea className="max-h-96">
           <div className="space-y-3">
-            {sessionInvites.map((invite, index) => (
+            {sessionInvites.map((invite, _index) => (
               <motion.div
                 key={invite.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -94,7 +93,7 @@ export const SessionInvitePanel: React.FC<SessionInvitePanelProps> = ({
                       <div className="flex items-center gap-2">
                         <Crown className="size-4 text-primary" />
                         <span className="font-medium text-foreground">
-                          {invite.session?.name || 'Multiplayer Adventure'}
+                          {invite.session?.name ?? 'Multiplayer Adventure'}
                         </span>
                         <Badge variant="outline" className="border-primary/30 bg-gradient-to-r from-primary/20 to-accent/20 text-xs">
                           <Users className="mr-1 size-3" />
@@ -104,7 +103,7 @@ export const SessionInvitePanel: React.FC<SessionInvitePanelProps> = ({
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <span>Invited by</span>
                         <span className="font-medium text-foreground">
-                          {invite.inviter?.displayName || invite.inviter?.username || 'Unknown'}
+                          {invite.inviter?.displayName ?? invite.inviter?.username ?? 'Unknown'}
                         </span>
                       </div>
                       <div className="text-xs text-muted-foreground">

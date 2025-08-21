@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
 
 interface EnhancedPresence {
@@ -18,7 +18,7 @@ export const useEnhancedPresenceManager = (sessionId: string | null) => {
   const [onlineUsers, setOnlineUsers] = useState<EnhancedPresence[]>([]);
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
   const heartbeatIntervalRef = useRef<NodeJS.Timeout>();
-  const channelRef = useRef<any>();
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
   const [isReconnecting, setIsReconnecting] = useState(false);
 
@@ -54,8 +54,8 @@ export const useEnhancedPresenceManager = (sessionId: string | null) => {
       }
 
       debugLog('🟢 Updated session presence:', { sessionId, status });
-    } catch (error) {
-      debugError('🔴 Error updating session presence:', error);
+    } catch {
+      debugError('🔴 Error updating session presence:');
     }
   }, [user, sessionId]);
 
@@ -106,14 +106,14 @@ export const useEnhancedPresenceManager = (sessionId: string | null) => {
         
         setIsReconnecting(false);
         debugLog('✅ Presence reconnection successful');
-      } catch (error) {
-        debugError('❌ Presence reconnection failed:', error);
+      } catch {
+        debugError('❌ Presence reconnection failed:');
         setIsReconnecting(false);
         // Try again with longer delay
         setTimeout(() => attemptReconnection(), reconnectDelay);
       }
     }, reconnectDelay);
-  }, [isReconnecting, sessionId, user]);
+  }, [isReconnecting, sessionId, user, setupPresenceChannel]);
 
   // Setup presence channel
   const setupPresenceChannel = useCallback(() => {

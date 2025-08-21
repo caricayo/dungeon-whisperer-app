@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import { Dice6, Sparkles, Crown, Sword } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { debugLog, debugError } from '@/lib/debug';
@@ -11,8 +10,6 @@ interface PremiumHeroProps {
 }
 
 export function PremiumHero({ onGetStarted, onLearnMore }: PremiumHeroProps) {
-  const navigate = useNavigate();
-  
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-premium-pattern">
       {/* Animated Background Elements */}
@@ -77,7 +74,7 @@ export function PremiumHero({ onGetStarted, onLearnMore }: PremiumHeroProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="border-border-elevated mb-8 inline-flex items-center gap-2 rounded-full border bg-card-elevated/50 px-6 py-3 backdrop-blur-sm"
+          className="mb-8 inline-flex items-center gap-2 rounded-full border border-border-elevated bg-card-elevated/50 px-6 py-3 backdrop-blur-sm"
         >
           <Crown className="size-4 text-primary" />
           <span className="text-sm font-medium text-foreground-muted">
@@ -135,7 +132,7 @@ export function PremiumHero({ onGetStarted, onLearnMore }: PremiumHeroProps) {
           <Button
             onClick={onLearnMore}
             variant="outline"
-            className="border-border-elevated group rounded-xl bg-card/50 px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all duration-300 hover:bg-card-elevated"
+            className="group rounded-xl border-border-elevated bg-card/50 px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all duration-300 hover:bg-card-elevated"
           >
             <Sparkles className="mr-2 size-5 group-hover:animate-pulse" />
             Discover Features
@@ -165,13 +162,13 @@ export function PremiumHero({ onGetStarted, onLearnMore }: PremiumHeroProps) {
               title: "Real-time Magic",
               description: "Collaborative features that bring stories to life"
             }
-          ].map((feature, index) => (
+          ].map((feature, _index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.9 + index * 0.1 }}
-              className="bg-card-premium group rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-elevated"
+              className="group rounded-2xl bg-card-premium p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-elevated"
             >
               <div className="mb-4 text-primary transition-transform duration-300 group-hover:scale-110">
                 {feature.icon}

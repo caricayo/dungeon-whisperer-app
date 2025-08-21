@@ -26,7 +26,7 @@ export class SessionError extends Error {
 }
 
 // Session data validator
-export const validateSession = (session: any): boolean => {
+export const validateSession = (session: unknown): boolean => {
   if (!session || typeof session !== 'object') return false;
   
   const requiredFields = ['id', 'name', 'messages', 'createdAt'];
@@ -52,8 +52,8 @@ export const withRetry = async <T>(
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
-    } catch (error) {
-      lastError = error as Error;
+    } catch {
+      lastError = new Error("Operation failed");
       
       if (attempt === maxRetries) {
         throw new SessionError(

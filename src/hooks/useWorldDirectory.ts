@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
 import { getDisplayName } from '@/lib/displayNameResolver';
 
@@ -42,7 +42,7 @@ export const useWorldDirectory = () => {
       }
 
       if (data) {
-        const usersWithDisplayNames: WorldUser[] = data.map((user: any) => ({
+        const usersWithDisplayNames: WorldUser[] = data.map((user: Omit<WorldUser, 'resolvedDisplayName'>) => ({
           ...user,
           resolvedDisplayName: getDisplayName({
             id: user.id,
@@ -55,9 +55,9 @@ export const useWorldDirectory = () => {
         setAllUsers(usersWithDisplayNames);
         debugLog('Loaded world directory users:', usersWithDisplayNames.length);
       }
-    } catch (error: any) {
-      debugError('Error loading world directory:', error);
-      setError(error?.message || 'Failed to load world directory');
+    } catch (error: unknown) {
+      debugError('Error loading world directory:');
+      setError(error instanceof Error ? error.message : 'Failed to load world directory');
     } finally {
       setIsLoading(false);
     }

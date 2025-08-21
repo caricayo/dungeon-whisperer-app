@@ -1,10 +1,10 @@
 import { supabase } from '@/integrations/supabase/client';
 
 export class SecureRemoteTransport {
-  private buffer: any[] = [];
+  private buffer: Record<string, unknown>[] = [];
   private flushTimer: NodeJS.Timeout | null = null;
 
-  async log(entry: any): Promise<void> {
+  async log(entry: Record<string, unknown>): Promise<void> {
     this.buffer.push(entry);
     
     // Auto-flush if buffer gets large or after delay
@@ -15,17 +15,17 @@ export class SecureRemoteTransport {
     }
   }
 
-  async recordMetrics(metrics: any[]): Promise<void> {
+  async recordMetrics(metrics: Record<string, unknown>[]): Promise<void> {
     try {
       const { error } = await supabase.functions.invoke('secure-metrics', {
         body: { metrics }
       });
 
       if (error) {
-        console.error('Failed to send metrics securely:', error);
+        console.error('Failed to send metrics securely:', _error);
       }
-    } catch (error) {
-      console.error('Metrics transport error:', error);
+    } catch {
+      console.error('Metrics transport error:', _error);
     }
   }
 
@@ -46,12 +46,12 @@ export class SecureRemoteTransport {
       });
 
       if (error) {
-        console.error('Failed to send logs securely:', error);
+        console.error('Failed to send logs securely:', _error);
         // Put logs back for retry
         this.buffer.unshift(...logs);
       }
-    } catch (error) {
-      console.error('Logging transport error:', error);
+    } catch {
+      console.error('Logging transport error:', _error);
       this.buffer.unshift(...logs);
     }
   }

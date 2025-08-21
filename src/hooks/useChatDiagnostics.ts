@@ -1,8 +1,16 @@
 import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
 import { useToast } from '@/hooks/use-toast';
+
+interface DiagnosticResults {
+  database: { connected: boolean; error?: string };
+  realtime: { connected: boolean; error?: string };
+  session?: { accessible: boolean; error?: string };
+  multiplayer?: { accessible: boolean; error?: string };
+  edgeFunction: { available: boolean; error?: string };
+}
 
 export const useChatDiagnostics = () => {
   const { user } = useAuth();
@@ -16,13 +24,13 @@ export const useChatDiagnostics = () => {
       timestamp: new Date().toISOString(),
       userId: user.id,
       sessionId,
-      results: {} as any
+      results: {} as DiagnosticResults
     };
 
     try {
       // Test 1: Database connectivity
       debugLog('🔍 Testing database connectivity...');
-      const { data: dbTest, error: dbError } = await supabase
+      const { error: dbError } = await supabase
         .from('profiles')
         .select('id')
         .eq('id', user.id)
@@ -78,7 +86,7 @@ export const useChatDiagnostics = () => {
       // Test 5: Edge function availability
       debugLog('🔍 Testing edge function availability...');
       try {
-        const { data: functionTest, error: functionError } = await supabase.functions
+        const { error: functionError } = await supabase.functions
           .invoke('dnd-chat-v2', {
             body: { 
               messages: [{ role: 'system', content: 'ping' }], 
@@ -90,10 +98,10 @@ export const useChatDiagnostics = () => {
           available: !functionError,
           error: functionError?.message
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         diagnostics.results.edgeFunction = {
           available: false,
-          error: error?.message || 'Function invocation failed'
+          error: error instanceof Error ? error.message : 'Function invocation failed'
         };
       }
 
@@ -122,8 +130,8 @@ export const useChatDiagnostics = () => {
 
       return diagnostics;
 
-    } catch (error: any) {
-      debugError('🔍 Diagnostics failed:', error);
+    } catch (error: unknown) {
+      debugError('🔍 Diagnostics failed:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Diagnostics Failed",
         description: "Unable to run system diagnostics. Check console for details.",

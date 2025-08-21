@@ -1,5 +1,7 @@
 # Dungeon Whisperer
 
+[![CI/CD Pipeline](https://github.com/caricayo/dungeon-whisperer-app/actions/workflows/ci.yml/badge.svg)](https://github.com/caricayo/dungeon-whisperer-app/actions/workflows/ci.yml)
+
 AI-powered D&D companion app with multiplayer sessions and advanced storytelling.
 
 ## Release & Deployment Guide

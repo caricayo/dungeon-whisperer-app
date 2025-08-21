@@ -1,18 +1,25 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
+
+interface RealtimePayload {
+  eventType: 'INSERT' | 'UPDATE' | 'DELETE';
+  new?: Record<string, unknown>;
+  old?: Record<string, unknown>;
+  table: string;
+}
 
 interface RealtimeConfig {
   table: string;
   event: 'INSERT' | 'UPDATE' | 'DELETE' | '*';
   filter?: string;
-  callback: (payload: any) => void;
+  callback: (payload: RealtimePayload) => void;
 }
 
 export const useReliableRealtime = (configs: RealtimeConfig[], channelName?: string) => {
   const { user } = useAuth();
-  const channelRef = useRef<any>(null);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
   const [reconnectAttempts, setReconnectAttempts] = useState(0);
@@ -39,12 +46,12 @@ export const useReliableRealtime = (configs: RealtimeConfig[], channelName?: str
     cleanup();
     setConnectionStatus('connecting');
     
-    const channel = supabase.channel(channelName || `realtime-${Date.now()}`);
+    const channel = supabase.channel(channelName ?? `realtime-${Date.now()}`);
     
     // Add all configurations to the channel
     configs.forEach(({ table, event, filter, callback }) => {
       channel.on(
-        'postgres_changes' as any,
+        'postgres_changes' as const,
         {
           event,
           schema: 'public',

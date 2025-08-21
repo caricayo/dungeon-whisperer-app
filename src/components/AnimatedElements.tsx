@@ -31,14 +31,14 @@ export function AnimatedButton({
 }: AnimatedButtonProps) {
   const baseClasses = "relative inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed";
   
-  const variantClasses = {
+  const variantClasses: Record<typeof variant, string> = {
     primary: "bg-gradient-primary text-primary-foreground hover:shadow-glow-lg border border-primary/20",
     secondary: "bg-gradient-mystical text-foreground hover:shadow-mystical border border-secondary/20",
-    outline: "border-2 border-border-elevated bg-card/50 backdrop-blur-sm hover:bg-card-elevated text-foreground",
+    outline: "border-2 border-border bg-card/50 backdrop-blur-sm hover:bg-card text-foreground",
     ghost: "hover:bg-accent/10 text-foreground"
   };
 
-  const sizeClasses = {
+  const sizeClasses: Record<typeof size, string> = {
     sm: "px-4 py-2 text-sm",
     md: "px-6 py-3 text-base",
     lg: "px-8 py-4 text-lg"
@@ -64,8 +64,8 @@ export function AnimatedButton({
       title={title}
       className={`
         ${baseClasses}
-        ${variantClasses[variant]}
-        ${sizeClasses[size]}
+        ${variant === 'primary' ? variantClasses.primary : variant === 'secondary' ? variantClasses.secondary : variant === 'outline' ? variantClasses.outline : variantClasses.ghost}
+        ${size === 'sm' ? sizeClasses.sm : size === 'md' ? sizeClasses.md : sizeClasses.lg}
         ${glowEffect ? 'glow-magical' : ''}
         ${className}
       `}
@@ -120,14 +120,14 @@ export function FloatingActionButton({
   tooltip,
   color = 'primary'
 }: FloatingActionButtonProps) {
-  const positionClasses = {
+  const positionClasses: Record<typeof position, string> = {
     'bottom-right': 'bottom-6 right-6',
     'bottom-left': 'bottom-6 left-6',
     'top-right': 'top-6 right-6',
     'top-left': 'top-6 left-6'
   };
 
-  const colorClasses = {
+  const colorClasses: Record<typeof color, string> = {
     primary: 'bg-gradient-primary text-primary-foreground shadow-glow',
     secondary: 'bg-gradient-mystical text-foreground shadow-mystical',
     accent: 'bg-accent text-accent-foreground shadow-elevated'
@@ -147,8 +147,8 @@ export function FloatingActionButton({
       className={`
         fixed z-50 flex size-14 items-center justify-center rounded-2xl backdrop-blur-sm
         transition-all duration-300 hover:shadow-2xl
-        ${positionClasses[position]}
-        ${colorClasses[color]}
+        ${position === 'bottom-right' ? positionClasses['bottom-right'] : position === 'bottom-left' ? positionClasses['bottom-left'] : position === 'top-right' ? positionClasses['top-right'] : positionClasses['top-left']}
+        ${color === 'primary' ? colorClasses.primary : color === 'secondary' ? colorClasses.secondary : colorClasses.accent}
       `}
       title={tooltip}
     >
@@ -182,7 +182,7 @@ export function InteractiveCard({
   hoverEffect = 'lift',
   glowColor = 'primary'
 }: InteractiveCardProps) {
-  const hoverEffects = {
+  const hoverEffects: Record<typeof hoverEffect, object> = {
     lift: { y: -8, transition: { duration: 0.3 } },
     glow: { boxShadow: `0 0 30px hsl(var(--${glowColor}) / 0.3)` },
     scale: { scale: 1.03 },
@@ -191,13 +191,12 @@ export function InteractiveCard({
 
   return (
     <motion.div
-      whileHover={hoverEffects[hoverEffect]}
+      whileHover={hoverEffect === 'lift' ? hoverEffects.lift : hoverEffect === 'glow' ? hoverEffects.glow : hoverEffect === 'scale' ? hoverEffects.scale : hoverEffects.none}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className={`
-        bg-card-premium border-border-elevated hover:border- cursor-pointer 
-        rounded-2xl border backdrop-blur-sm transition-all
-        duration-300${glowColor}/30 hover:shadow-elevated
+        cursor-pointer rounded-2xl border border-border bg-card backdrop-blur-sm
+        transition-all duration-300 hover:border-primary/50 hover:shadow-elevated
         ${className}
       `}
     >

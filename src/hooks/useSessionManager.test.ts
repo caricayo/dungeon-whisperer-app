@@ -2,23 +2,20 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useSessionManager } from '@/hooks/useSessionManager';
 
-// Mock Supabase
-const mockSupabase = {
-  auth: {
-    getUser: vi.fn(),
-  },
-  from: vi.fn(() => ({
-    select: vi.fn().mockReturnThis(),
-    eq: vi.fn().mockReturnThis(),
-    order: vi.fn().mockReturnThis(),
-    insert: vi.fn().mockReturnThis(),
-    upsert: vi.fn().mockReturnThis(),
-    delete: vi.fn().mockReturnThis(),
-  })),
-};
-
 vi.mock('@/integrations/supabase/client', () => ({
-  supabase: mockSupabase,
+  supabase: {
+    auth: {
+      getUser: vi.fn(),
+    },
+    from: vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockReturnThis(),
+      insert: vi.fn().mockReturnThis(),
+      upsert: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
+    })),
+  },
 }));
 
 // Mock useAuth
@@ -71,7 +68,7 @@ describe('useSessionManager', () => {
       result.current.createSession('Test Session', '');
     });
     
-    const savedSessions = JSON.parse(localStorage.getItem('dnd-sessions') || '[]');
+    const savedSessions = JSON.parse(localStorage.getItem('dnd-sessions') ?? '[]');
     expect(savedSessions).toHaveLength(1);
     expect(savedSessions[0].name).toBe('Test Session');
   });

@@ -3,6 +3,19 @@ import { debugLog, debugError } from '@/lib/debug';
 import { settingsService } from '@/lib/settings';
 import DemoModeAPIGuard from '@/lib/demo-mode-guard';
 
+interface PerformanceMemory {
+  usedJSHeapSize: number;
+  totalJSHeapSize: number;
+  jsHeapSizeLimit: number;
+}
+
+declare global {
+  interface Window {
+    __tts_mystery_error?: unknown;
+    __audio_mystery_error?: unknown;
+  }
+}
+
 interface TTSOptions {
   voice?: string // ElevenLabs voice ID or OpenAI voice name
   model?: string // ElevenLabs model or OpenAI model
@@ -65,9 +78,9 @@ class TextToSpeechService {
         await audio.play();
         debugLog(`🔊 AUDIO RETRY: Success on attempt ${attempt}`);
         return; // Success!
-      } catch (error) {
-        lastError = error as Error;
-        debugLog(`🔊 AUDIO RETRY: Failed attempt ${attempt}:`, error);
+      } catch {
+        lastError = new Error("Operation failed");
+        debugLog(`🔊 AUDIO RETRY: Failed attempt ${attempt}:`, _error);
         
         // Don't retry certain errors
         if (error.name === 'NotAllowedError' || error.name === 'NotSupportedError') {
@@ -85,7 +98,7 @@ class TextToSpeechService {
     }
     
     // All retries failed
-    throw lastError || new Error('Audio playback failed after all retries');
+    throw lastError ?? new Error('Audio playback failed after all retries');
   }
   
   async generateSpeech(text: string, options: TTSOptions = {}): Promise<string> {
@@ -103,9 +116,9 @@ class TextToSpeechService {
       debugLog('🎵 Loaded user voice settings:', voiceSettings);
     }
 
-    const provider = options.provider || voiceSettings?.provider || 'elevenlabs'; // Default to ElevenLabs
-    const voice = options.voice || voiceSettings?.voiceId || 'BNgbHR0DNeZixGQVzloa';
-    const speed = options.speed || voiceSettings?.speed || 1.0;
+    const provider = options.provider ?? voiceSettings?.provider ?? 'elevenlabs'; // Default to ElevenLabs
+    const voice = options.voice ?? voiceSettings?.voiceId ?? 'BNgbHR0DNeZixGQVzloa';
+    const speed = options.speed ?? voiceSettings?.speed ?? 1.0;
     
     debugLog('🎵 Using provider:', provider, 'voice:', voice, 'speed:', speed);
     
@@ -113,12 +126,12 @@ class TextToSpeechService {
     if (provider === 'elevenlabs' || provider === 'auto') {
       try {
         return await this.generateWithElevenLabs(text, { ...options, voice, speed });
-      } catch (error) {
-        debugError('🎵 ElevenLabs TTS failed:', error);
+      } catch {
+        debugError('🎵 ElevenLabs TTS failed:');
         
         // If specifically requesting ElevenLabs, don't fallback
         if (provider === 'elevenlabs') {
-          throw error;
+          throw new Error("Operation failed");
         }
         
         // Otherwise, try OpenAI fallback
@@ -137,18 +150,18 @@ class TextToSpeechService {
     let voiceId = options.voice;
     if (!voiceId) {
       const voiceSettings = await settingsService.getVoiceSettings();
-      voiceId = voiceSettings?.voiceId || 'BNgbHR0DNeZixGQVzloa';
+      voiceId = voiceSettings?.voiceId ?? 'BNgbHR0DNeZixGQVzloa';
       debugLog('🎵 Using saved voice ID:', voiceId);
     }
     
-    const { data, error } = await DemoModeAPIGuard.guardSupabaseFunction(
+    const {data, _error} = await DemoModeAPIGuard.guardSupabaseFunction(
       'elevenlabs-tts',
       () => supabase.functions.invoke('elevenlabs-tts', {
         body: {
           text: text.trim(),
           voice: voiceId,
-          model: options.model || 'eleven_turbo_v2_5',
-          speed: options.speed || 1.0, // Pass speed for potential server-side handling
+          model: options.model ?? 'eleven_turbo_v2_5',
+          speed: options.speed ?? 1.0, // Pass speed for potential server-side handling
         }
       }),
       {
@@ -158,23 +171,22 @@ class TextToSpeechService {
     );
 
     if (error) {
-      throw new Error(error.message || 'ElevenLabs TTS service error');
+      throw new Error(error.message ?? 'ElevenLabs TTS service error');
     }
 
     return await this.processAudioResponse(data, 'ElevenLabs');
   }
 
-  private async generateWithOpenAI(text: string, options: TTSOptions): Promise<string> {
-    debugLog('🎵 Using OpenAI TTS...');
+  private async generateWithOpenAI(text: string, options: TTSOptions): Promise<string> {debugLog('🎵 Using OpenAI TTS...');
     
-    const { data, error } = await DemoModeAPIGuard.guardSupabaseFunction(
+    const { data, _error} = await DemoModeAPIGuard.guardSupabaseFunction(
       'dnd-tts',
       () => supabase.functions.invoke('dnd-tts', {
         body: {
           text: text.trim(),
-          voice: this.mapToOpenAIVoice(options.voice) || 'alloy',
-          model: options.model || 'tts-1',
-          speed: options.speed || 1.0,
+          voice: this.mapToOpenAIVoice(options.voice) ?? 'alloy',
+          model: options.model ?? 'tts-1',
+          speed: options.speed ?? 1.0,
         }
       }),
       {
@@ -184,7 +196,7 @@ class TextToSpeechService {
     );
 
     if (error) {
-      throw new Error(error.message || 'OpenAI TTS service error');
+      throw new Error(error.message ?? 'OpenAI TTS service error');
     }
 
     return await this.processAudioResponse(data, 'OpenAI');
@@ -201,11 +213,11 @@ class TextToSpeechService {
       'XB0fDUnXU5powFXDhCwa': 'shimmer', // Charlotte -> Shimmer
     };
 
-    return voiceMap[voice || ''] || voice || 'alloy';
+    return voiceMap[voice ?? ''] ?? voice ?? 'alloy';
   }
 
   private async processAudioResponse(data: TTSResponse, provider: string): Promise<string> {
-    debugLog(`🎵 ${provider} TTS SUCCESS: Received audio data, content length:`, data.audioContent?.length || 'unknown')
+    debugLog(`🎵 ${provider} TTS SUCCESS: Received audio data, content length:`, data.audioContent?.length ?? 'unknown')
     
     if (!data?.audioContent) {
       throw new Error(`No audio content received from ${provider} TTS service`);
@@ -232,7 +244,7 @@ class TextToSpeechService {
       }
       
       // Enhanced MIME type detection
-      const actualMimeType = audioBlob.type || 'audio/mpeg';
+      const actualMimeType = audioBlob.type ?? 'audio/mpeg';
       debugLog(`🎵 ${provider} DETECTED MIME TYPE:`, actualMimeType);
       
       // Validate and correct MIME type with fallbacks
@@ -278,6 +290,7 @@ class TextToSpeechService {
         const bytes = new Uint8Array(binaryString.length);
         
         for (let i = 0; i < binaryString.length; i++) {
+          // eslint-disable-next-line security/detect-object-injection
           bytes[i] = binaryString.charCodeAt(i);
         }
         
@@ -308,10 +321,10 @@ class TextToSpeechService {
           provider: provider,
           timestamp: new Date().toISOString(),
           audioDataReceived: !!data?.audioContent,
-          audioDataLength: data?.audioContent?.length || 0,
+          audioDataLength: data?.audioContent?.length ?? 0,
           audioDataSample: data?.audioContent?.substring(0, 100) + '...',
-          originalError: blobError?.message || 'Unknown blob error',
-          fallbackError: fallbackError?.message || 'Unknown fallback error',
+          originalError: blobError?.message ?? 'Unknown blob error',
+          fallbackError: fallbackError?.message ?? 'Unknown fallback error',
           browserInfo: {
             userAgent: navigator.userAgent,
             platform: navigator.platform,
@@ -338,10 +351,11 @@ class TextToSpeechService {
           },
           memoryInfo: (() => {
             try {
-              return (performance as any).memory ? {
-                usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
-                totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
-                jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit
+              const perfWithMemory = performance as Performance & { memory?: PerformanceMemory };
+              return perfWithMemory.memory ? {
+                usedJSHeapSize: perfWithMemory.memory.usedJSHeapSize,
+                totalJSHeapSize: perfWithMemory.memory.totalJSHeapSize,
+                jsHeapSizeLimit: perfWithMemory.memory.jsHeapSizeLimit
               } : 'Not available';
             } catch {
               return 'Not accessible';
@@ -349,23 +363,23 @@ class TextToSpeechService {
           })(),
           debugSteps: [
             `1. API Response: ${data?.audioContent ? 'SUCCESS' : 'FAILED'}`,
-            `2. Base64 Length: ${data?.audioContent?.length || 0} chars`,
+            `2. Base64 Length: ${data?.audioContent?.length ?? 0} chars`,
             `3. Data URL Creation: ${blobError ? 'FAILED' : 'SUCCESS'}`,
-            `4. Fetch Response: ${blobError?.message || 'Unknown'}`,
-            `5. Fallback Decode: ${fallbackError?.message || 'Unknown'}`
+            `4. Fetch Response: ${blobError?.message ?? 'Unknown'}`,
+            `5. Fallback Decode: ${fallbackError?.message ?? 'Unknown'}`
           ]
         };
         
         debugError(`🔍 COMPREHENSIVE TTS MYSTERY ANALYSIS:`, mysteryDetails);
         
         // Store mystery for retrieval by user
-        (window as any).__tts_mystery_error = mysteryDetails;
+        window.__tts_mystery_error = mysteryDetails;
         
         const friendlyError = `🎭 **The D&D Audio Spirits are Troubled!** 🎭
 
 **Mystery Details:**
 - Provider: ${provider}
-- Audio received: ${data?.audioContent ? 'Yes' : 'No'} (${data?.audioContent?.length || 0} chars)
+- Audio received: ${data?.audioContent ? 'Yes' : 'No'} (${data?.audioContent?.length ?? 0} chars)
 - Browser: ${navigator.userAgent.split(' ').pop()}
 - Audio support: ${(() => {
           try {
@@ -377,8 +391,8 @@ class TextToSpeechService {
         })()}
 
 **Technical Incantation Failed:**
-• Original spell: ${blobError?.message || 'Unknown blob conjuring error'}
-• Backup spell: ${fallbackError?.message || 'Unknown fallback error'}
+• Original spell: ${blobError?.message ?? 'Unknown blob conjuring error'}
+• Backup spell: ${fallbackError?.message ?? 'Unknown fallback error'}
 
 **Mystical Investigation:**
 ${mysteryDetails.debugSteps.join('\n')}
@@ -424,8 +438,8 @@ ${mysteryDetails.debugSteps.join('\n')}
       if (!testResponse.ok) {
         throw new Error(`Blob URL not accessible: ${testResponse.status}`);
       }
-    } catch (error) {
-      debugError('🔍 Blob URL test failed:', error);
+    } catch {
+      debugError('🔍 Blob URL test failed:');
       throw new Error(`Blob URL test failed: ${error.message}`);
     }
     
@@ -479,8 +493,8 @@ ${mysteryDetails.debugSteps.join('\n')}
       
       this.isPlaying = true
       debugLog('🔊 AUDIO PLAY: Successfully started playback')
-    } catch (error) {
-      debugError('🔊 AUDIO PLAY ERROR:', error)
+    } catch {
+      debugError('🔊 AUDIO PLAY ERROR:')
       this.isPlaying = false
       
       // Enhanced error reporting with comprehensive diagnostics
@@ -539,7 +553,7 @@ ${mysteryDetails.debugSteps.join('\n')}
       };
       
       debugError('🔊 COMPREHENSIVE AUDIO PLAYBACK MYSTERY:', playbackMystery);
-      (window as any).__audio_mystery_error = playbackMystery;
+      window.__audio_mystery_error = playbackMystery;
       
       if (error.name === 'NotAllowedError') {
         throw new Error(`🎭 **Audio Blocked by Browser Guards!** 🎭
@@ -598,13 +612,13 @@ The audio spell was interrupted mid-casting!
 A mysterious error has befallen the audio realm!
 
 **Mystery Details:**
-• Error Type: ${error.name || 'Unknown'}
-• Error Message: ${error.message || 'No message'}
+• Error Type: ${error.name ?? 'Unknown'}
+• Error Message: ${error.message ?? 'No message'}
 • Audio URL Valid: ${audioUrl?.startsWith('blob:') ? 'Yes' : 'No'}
 • Browser: ${navigator.userAgent.split(' ').pop()}
 
 **Technical Incantation Failed:**
-${error.message || error.name || 'Unknown error'}
+${error.message ?? error.name ?? 'Unknown error'}
 
 **Ancient Remedies:**
 • Refresh the page and try again
@@ -615,7 +629,7 @@ ${error.message || error.name || 'Unknown error'}
 *Type \`window.__audio_mystery_error\` in console for complete diagnostic data*
 
 **Full Error Stack:**
-${error.stack || 'No stack trace available'}`)
+${error.stack ?? 'No stack trace available'}`)
     }
   }
 

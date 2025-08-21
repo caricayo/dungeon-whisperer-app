@@ -65,7 +65,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   private getUserId(): string | null {
     try {
-      return localStorage.getItem('user-id') || null;
+      return localStorage.getItem('user-id') ?? null;
     } catch {
       return null;
     }

@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -11,15 +10,13 @@ import {
   Check, 
   X, 
   Mail, 
-  Clock,
   ChevronDown,
   ChevronRight,
   Send,
-  Calendar,
   Globe
 } from 'lucide-react';
 import { useSocialManager } from '@/hooks/useSocialManager';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { usePresenceManager } from '@/hooks/usePresenceManager';
 import { useWorldDirectory } from '@/hooks/useWorldDirectory';
 import { getDisplayName } from '@/lib/displayNameResolver';
@@ -45,7 +42,6 @@ export const SocialPanel = ({ isOpen }: SocialPanelProps) => {
 
   const [friendUsername, setFriendUsername] = useState('');
   const [showFriends, setShowFriends] = useState(false);
-  const [showInvites, setShowInvites] = useState(false);
   const [showOnlineUsers, setShowOnlineUsers] = useState(false);
   const [showWorlds, setShowWorlds] = useState(false);
   const [showWorldDirectory, setShowWorldDirectory] = useState(false);
@@ -107,16 +103,16 @@ export const SocialPanel = ({ isOpen }: SocialPanelProps) => {
 
   const handleSendFriendRequest = async () => {
     if (friendUsername.trim()) {
-      console.log('🔥 Sending friend request to:', friendUsername);
-      console.log('🔥 sendFriendRequest function type:', typeof sendFriendRequest);
-      console.log('🔥 isLoading:', isLoading);
+      console.warn('🔥 Sending friend request to:', friendUsername);
+      console.warn('🔥 sendFriendRequest function type:', typeof sendFriendRequest);
+      console.warn('🔥 isLoading:', isLoading);
       const success = await sendFriendRequest(friendUsername);
-      console.log('🔥 Friend request result:', success);
+      console.warn('🔥 Friend request result:', success);
       if (success) {
         setFriendUsername('');
       }
     } else {
-      console.log('🔥 Friend request failed - empty username');
+      console.warn('🔥 Friend request failed - empty username');
     }
   };
 
@@ -182,7 +178,7 @@ export const SocialPanel = ({ isOpen }: SocialPanelProps) => {
     await sendFriendRequestByUserId(userId);
   };
 
-  console.log('🔍 Social Panel Debug:', {
+  console.warn('🔍 Social Panel Debug:', {
     totalOnlineUsers: onlineUsers.length,
     currentUserId: user?.id,
     friendsCount: friends.length,
@@ -282,7 +278,7 @@ export const SocialPanel = ({ isOpen }: SocialPanelProps) => {
                      ? friend.friend_profile 
                      : friend.requester_profile;
                    const displayName = getDisplayName(otherProfile);
-                   const isOnline = otherProfile?.is_online || false;
+                   const isOnline = otherProfile?.is_online ?? false;
 
                    return (
                      <div key={friend.id} className="flex items-center justify-between rounded-lg bg-muted/50 p-2">
@@ -388,7 +384,7 @@ export const SocialPanel = ({ isOpen }: SocialPanelProps) => {
                       <div className="relative">
                         <div className="flex size-6 items-center justify-center rounded-full bg-primary/20">
                           <span className="text-xs font-medium">
-                            {onlineUser.username?.charAt(0).toUpperCase() || 'U'}
+                            {onlineUser.username?.charAt(0).toUpperCase() ?? 'U'}
                           </span>
                         </div>
                         {/* Online indicator */}
@@ -396,7 +392,7 @@ export const SocialPanel = ({ isOpen }: SocialPanelProps) => {
                       </div>
                       <div className="flex flex-col">
                         <span className="max-w-16 truncate text-xs font-medium">
-                          {onlineUser.username || 'Unknown'}
+                          {onlineUser.username ?? 'Unknown'}
                         </span>
                         <div className="flex items-center gap-1 text-xs text-green-600">
                           <div className="size-1.5 rounded-full bg-green-500" />

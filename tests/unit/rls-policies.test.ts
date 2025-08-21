@@ -65,19 +65,17 @@ describe('RLS Policy Tests', () => {
       { id: '1', content: 'Test message', role: 'user' },
     ];
     
-    const mockSelect = vi.fn().mockResolvedValue({
+    const mockEq = vi.fn().mockResolvedValue({
       data: mockData,
       error: null,
     });
     
-    const mockEq = vi.fn().mockReturnValue({
-      select: mockSelect,
+    const mockSelect = vi.fn().mockReturnValue({
+      eq: mockEq,
     });
     
     (supabase.from as any).mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        eq: mockEq,
-      }),
+      select: mockSelect,
     });
 
     // Simulate authorized access to session messages

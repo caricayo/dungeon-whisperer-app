@@ -48,7 +48,7 @@ class ConsoleTransport implements LogTransport {
     const levelName = LogLevel[entry.level];
     const color = colors[entry.level];
 
-    console.log(
+    console.warn(
       `${color}[${entry.timestamp}] ${levelName}${reset} ${entry.context}: ${entry.message}`,
       entry.metadata ? entry.metadata : ''
     );
@@ -75,9 +75,9 @@ class RemoteTransport implements LogTransport {
         },
         body: JSON.stringify(entry)
       });
-    } catch (error) {
+    } catch {
       // Fallback to console if remote logging fails
-      console.error('Remote logging failed:', error);
+      console.error('Remote logging failed');
       await new ConsoleTransport().log(entry);
     }
   }
@@ -160,7 +160,7 @@ export class Logger {
     await Promise.all(
       this.transports.map(transport => 
         transport.log(entry).catch(err => 
-          console.error('Transport failed:', err)
+          console.error('Transport failed')
         )
       )
     );

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useSessionJoiningV2 } from '@/hooks/useSessionJoiningV2';
 import { debugLog, debugError } from '@/lib/debug';
@@ -61,7 +61,7 @@ export const useMultiplayerSessionManager = () => {
           } else {
             toast({
               title: "Profile Incomplete",
-              description: profileCheck?.error || "Please complete your profile setup.",
+              description: profileCheck?.error ?? "Please complete your profile setup.",
               variant: "destructive",
             });
             return null;
@@ -76,11 +76,11 @@ export const useMultiplayerSessionManager = () => {
         const multiplayerSession: Session = {
           id: joinResult.session.id,
           name: joinResult.session.name,
-          messages: (joinResult.last30Messages || []).map((msg: any) => ({
+          messages: (joinResult.last30Messages ?? []).map((msg: Message) => ({
             ...msg,
             timestamp: new Date(msg.timestamp)
           })),
-          customPrompt: joinResult.session.customPrompt || '',
+          customPrompt: joinResult.session.customPrompt ?? '',
           createdAt: new Date(),
           isMultiplayer: true,
           isSynced: true
@@ -95,7 +95,7 @@ export const useMultiplayerSessionManager = () => {
         // Clear local session cache to prevent conflicts
         localStorage.removeItem('dnd-sessions');
         localStorage.setItem('lastSessionId', multiplayerSession.id);
-        localStorage.setItem('multiplayerRoomId', joinResult.session.roomId || '');
+        localStorage.setItem('multiplayerRoomId', joinResult.session.roomId ?? '');
         
         // Navigate to chat if navigation function provided
         if (navigate) {
@@ -106,8 +106,8 @@ export const useMultiplayerSessionManager = () => {
       }
       
       return null;
-    } catch (error) {
-      debugError('🎮 Error joining multiplayer session:', error);
+    } catch {
+      debugError('🎮 Error joining multiplayer session:');
       
       // Handle specific error cases
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';

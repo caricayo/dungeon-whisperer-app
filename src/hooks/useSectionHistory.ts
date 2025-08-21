@@ -15,7 +15,8 @@ export const useSectionHistory = (sectionKey: string) => {
     try {
       const stored = sessionStorage.getItem(storageKey);
       return stored ? JSON.parse(stored) : [];
-    } catch {
+    } catch (error) {
+      console.error('Error reading section history:', error);
       return [];
     }
   }, [storageKey]);
@@ -24,8 +25,8 @@ export const useSectionHistory = (sectionKey: string) => {
   const setHistory = useCallback((history: SectionHistoryEntry[]) => {
     try {
       sessionStorage.setItem(storageKey, JSON.stringify(history));
-    } catch {
-      // Silently fail if storage is not available
+    } catch (error) {
+      console.warn('Error writing section history:', error);
     }
   }, [storageKey]);
 
@@ -34,21 +35,21 @@ export const useSectionHistory = (sectionKey: string) => {
     const history = getHistory();
     const entry: SectionHistoryEntry = { path, timestamp: Date.now() };
     
-    console.log(`🔄 Pushing to section history (${sectionKey}):`, entry);
+    console.warn(`🔄 Pushing to section history (${sectionKey}):`, entry);
     
     // Remove duplicates and add new entry
     const filtered = history.filter(item => item.path !== path);
     const newHistory = [...filtered, entry].slice(-10); // Keep last 10 entries
     
     setHistory(newHistory);
-    console.log(`🔄 Section history updated:`, newHistory);
+    console.warn(`🔄 Section history updated:`, newHistory);
   }, [getHistory, setHistory, sectionKey]);
 
   // Navigate back within section or to fallback
   const back = useCallback((fallbackPath: string): boolean => {
     const history = getHistory();
     
-    console.log(`🔄 Section back requested for ${sectionKey}:`, { history, fallbackPath });
+    console.warn(`🔄 Section back requested for ${sectionKey}:`, { history, fallbackPath });
     
     if (history.length > 1) {
       // Remove current path and go to previous
@@ -56,7 +57,7 @@ export const useSectionHistory = (sectionKey: string) => {
       setHistory(newHistory);
       const prevPath = newHistory[newHistory.length - 1]?.path;
       
-      console.log(`🔄 Going back to previous path:`, prevPath);
+      console.warn(`🔄 Going back to previous path:`, prevPath);
       if (prevPath && prevPath !== window.location.pathname) {
         navigate(prevPath);
         return true;
@@ -64,7 +65,7 @@ export const useSectionHistory = (sectionKey: string) => {
     }
     
     // No history or fallback case - go to section root
-    console.log(`🔄 No section history, going to fallback:`, fallbackPath);
+    console.warn(`🔄 No section history, going to fallback:`, fallbackPath);
     navigate(fallbackPath);
     return false;
   }, [getHistory, setHistory, navigate]);

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { useCompatibility } from '@/components/CompatibilityChecker';
+import { useCompatibility } from '@/hooks/use-compatibility';
 import { 
   Shield, 
   AlertTriangle, 
@@ -42,7 +42,7 @@ export const SystemStatus: React.FC<SystemStatusProps> = React.memo(({ onRetry, 
   // Get compatibility data
   const { isCompatible, issues, warnings } = useCompatibility();
 
-  const checkServiceHealth = async () => {
+  const checkServiceHealth = useCallback(async () => {
     setIsRefreshing(true);
     const newServices: ServiceStatus[] = [];
 
@@ -58,7 +58,7 @@ export const SystemStatus: React.FC<SystemStatusProps> = React.memo(({ onRetry, 
           message: isHealthy ? 'All systems operational' : 'Experiencing intermittent issues',
           lastChecked: new Date()
         });
-      } catch (error) {
+      } catch {
         newServices.push({
           ...service,
           status: 'outage',
@@ -70,11 +70,11 @@ export const SystemStatus: React.FC<SystemStatusProps> = React.memo(({ onRetry, 
 
     setServices(newServices);
     setIsRefreshing(false);
-  };
+  }, [services]);
 
   useEffect(() => {
     checkServiceHealth();
-  }, []);
+  }, [checkServiceHealth]);
 
   const getStatusIcon = (status: ServiceStatus['status']) => {
     switch (status) {
@@ -193,21 +193,19 @@ export const SystemStatus: React.FC<SystemStatusProps> = React.memo(({ onRetry, 
         </CollapsibleTrigger>
         <CollapsibleContent>
           <div className="mt-3 space-y-2 text-sm">
-            {issues.length > 0 && (
-              <div className="text-destructive">
+            {issues.length > 0 && (<div className="text-destructive">
                 <strong>Issues:</strong>
                 <ul className="mt-1 list-inside list-disc">
-                  {issues.map((issue, index) => (
+                  {issues.map((issue, _index) => (
                     <li key={index}>{issue}</li>
                   ))}
                 </ul>
               </div>
             )}
-            {warnings.length > 0 && (
-              <div className="text-warning">
+            {warnings.length > 0 && (<div className="text-warning">
                 <strong>Warnings:</strong>
                 <ul className="mt-1 list-inside list-disc">
-                  {warnings.map((warning, index) => (
+                  {warnings.map((warning, _index) => (
                     <li key={index}>{warning}</li>
                   ))}
                 </ul>

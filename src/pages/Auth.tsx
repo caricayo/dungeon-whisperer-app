@@ -6,9 +6,24 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { Shield, Mail, Lock, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+
+const AuthErrorFallback: React.FC = () => (
+  <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    <Card className="w-full max-w-md">
+      <CardContent className="pt-6">
+        <Alert variant="destructive">
+          <AlertTriangle className="size-4" />
+          <AlertDescription>
+            Authentication system unavailable. Please refresh the page.
+          </AlertDescription>
+        </Alert>
+      </CardContent>
+    </Card>
+  </div>
+);
 
 const Auth: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -19,39 +34,20 @@ const Auth: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [pendingEmail, setPendingEmail] = useState<string>('');
+  const [authError, setAuthError] = useState(false);
   
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   
-  // Add error boundary for auth context
-  let authContext;
-  try {
-    authContext = useAuth();
-  } catch (err) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6">
-            <Alert variant="destructive">
-              <AlertTriangle className="size-4" />
-              <AlertDescription>
-                Authentication system unavailable. Please refresh the page.
-              </AlertDescription>
-            </Alert>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  const { signIn, signUp, signInWithGoogle, resendVerification, user } = authContext;
+  // All hooks must be called unconditionally
+  const authContext = useAuth();
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (user) {
+    if (authContext?.user) {
       navigate('/', { replace: true });
     }
-  }, [user, navigate]);
+  }, [authContext?.user, navigate]);
 
   // Handle URL parameters for verification status
   useEffect(() => {
@@ -64,6 +60,12 @@ const Auth: React.FC = () => {
       setSuccess('Account created! Please check your email and click the verification link to continue.');
     }
   }, [searchParams, setSearchParams]);
+
+  if (authError || !authContext) {
+    return <AuthErrorFallback />;
+  }
+
+  const { signIn, signUp, signInWithGoogle, resendVerification, user } = authContext;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,7 +130,7 @@ const Auth: React.FC = () => {
           navigate('/', { replace: true });
         }
       }
-    } catch (err) {
+    } catch (_err) {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);
@@ -148,7 +150,7 @@ const Auth: React.FC = () => {
       if (authError) {
         setError('Google sign-in failed. Please try again.');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to sign in with Google');
     } finally {
       setLoading(false);
@@ -170,7 +172,7 @@ const Auth: React.FC = () => {
       } else {
         setSuccess('Verification email sent! Please check your inbox.');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to resend verification email');
     } finally {
       setResendingVerification(false);

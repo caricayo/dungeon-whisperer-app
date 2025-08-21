@@ -44,7 +44,7 @@ export const MultiplayerSessionCard: React.FC<MultiplayerSessionCardProps> = ({
       whileHover={{ y: -2 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="border-gradient-to-r relative overflow-hidden border-2 bg-gradient-to-br from-card/90 from-primary/30 via-accent/20 via-card to-card/90 to-primary/30 transition-all duration-300 hover:shadow-xl">
+      <Card className="relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-card/90 via-accent/20 to-card/90 transition-all duration-300 hover:shadow-xl">
         {/* Golden glow effect for multiplayer sessions */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
         <div className="absolute right-0 top-0 size-32 rounded-full bg-gradient-to-br from-primary/10 to-transparent blur-2xl" />
@@ -106,12 +106,12 @@ export const MultiplayerSessionCard: React.FC<MultiplayerSessionCardProps> = ({
                 <div key={participant.id} className="flex items-center gap-1">
                   <Avatar className="size-6">
                     <AvatarFallback className="bg-primary/20 text-xs">
-                      {participant.profile?.username?.[0]?.toUpperCase() || 'U'}
+                      {participant.profile?.username?.[0]?.toUpperCase() ?? 'U'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex items-center gap-1">
                     <span className="text-xs text-foreground">
-                      {participant.profile?.displayName || participant.profile?.username || 'Unknown'}
+                      {participant.profile?.displayName ?? participant.profile?.username ?? 'Unknown'}
                     </span>
                     {participant.role === 'dm' && (
                       <Crown className="size-3 text-primary" />
@@ -165,7 +165,7 @@ export const MultiplayerSessionCard: React.FC<MultiplayerSessionCardProps> = ({
               )}
             </Button>
             
-            {(isUserDM || canInvite) && (
+            {(isUserDM ?? canInvite) && (
               <Button
                 variant="outline"
                 size="sm"

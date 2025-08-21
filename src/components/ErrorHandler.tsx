@@ -30,6 +30,40 @@ export interface ErrorInfo {
   timestamp: Date;
 }
 
+interface TTSError {
+  provider: string;
+  audioDataReceived: boolean;
+  audioDataLength: number;
+  browserInfo?: {
+    userAgent?: string;
+  };
+  originalError?: string;
+  fallbackError?: string;
+}
+
+interface AudioError {
+  errorName: string;
+  audioUrlValid: boolean;
+  userInteraction: boolean;
+  documentState?: {
+    hasFocus: boolean;
+  };
+  audioSupport?: {
+    canPlayMP3: boolean;
+  };
+}
+
+interface DebugLog {
+  type: string;
+  args: unknown[];
+}
+
+interface WindowWithDebugInfo extends Window {
+  __tts_mystery_error?: TTSError;
+  __audio_mystery_error?: AudioError;
+  __debug_errors?: DebugLog[];
+}
+
 interface ErrorHandlerProps {
   error: ErrorInfo;
   onRetry?: () => void;
@@ -163,9 +197,10 @@ export const ErrorHandler: React.FC<ErrorHandlerProps> = ({
 
   const getFallbackMessage = () => {
     // Check for comprehensive mystery details
-    const ttsError = (window as any).__tts_mystery_error;
-    const audioError = (window as any).__audio_mystery_error;
-    const debugLogs = (window as any).__debug_errors || [];
+    const windowWithDebug = window as WindowWithDebugInfo;
+    const ttsError = windowWithDebug.__tts_mystery_error;
+    const audioError = windowWithDebug.__audio_mystery_error;
+    const debugLogs = windowWithDebug.__debug_errors ?? [];
     
     // Enhanced D&D message with mystery details
     let mysteryAnalysis = '';
@@ -181,9 +216,9 @@ export const ErrorHandler: React.FC<ErrorHandlerProps> = ({
 • **TTS Spell Components:**
   - Provider: ${ttsError.provider}
   - Audio Data: ${ttsError.audioDataReceived ? 'RECEIVED' : 'MISSING'} (${ttsError.audioDataLength} chars)
-  - Browser Magic: ${ttsError.browserInfo?.userAgent?.split(' ').pop() || 'Unknown'}
-  - Original Curse: ${ttsError.originalError}
-  - Fallback Curse: ${ttsError.fallbackError}`;
+  - Browser Magic: ${ttsError.browserInfo?.userAgent ? String(ttsError.browserInfo.userAgent).split(' ').pop() ?? 'Unknown' : 'Unknown'}
+  - Original Curse: ${ttsError.originalError ?? 'None'}
+  - Fallback Curse: ${ttsError.fallbackError ?? 'None'}`;  
       }
       
       if (audioError) {
@@ -193,16 +228,16 @@ export const ErrorHandler: React.FC<ErrorHandlerProps> = ({
   - URL Valid: ${audioError.audioUrlValid ? 'YES' : 'NO'}
   - User Interaction: ${audioError.userInteraction ? 'DETECTED' : 'MISSING'}
   - Document Focus: ${audioError.documentState?.hasFocus ? 'YES' : 'NO'}
-  - MP3 Support: ${audioError.audioSupport?.canPlayMP3 || 'Unknown'}`;
+  - MP3 Support: ${audioError.audioSupport?.canPlayMP3 ?? 'Unknown'}`;
       }
       
       const recentErrors = debugLogs.slice(-5);
       if (recentErrors.length > 0) {
         mysteryAnalysis += `
 • **Recent Magical Events:**`;
-        recentErrors.forEach((log: any, index: number) => {
+        recentErrors.forEach((log, index: number) => {
           mysteryAnalysis += `
-  ${index + 1}. [${log.type?.toUpperCase()}] ${log.args?.[0]?.substring?.(0, 60) || 'Unknown event'}...`;
+  ${index + 1}. [${String(log.type ?? 'LOG').toUpperCase()}] ${String(log.args?.[0] ?? 'Unknown event').substring(0, 60)}...`;
         });
       }
       
@@ -213,7 +248,7 @@ export const ErrorHandler: React.FC<ErrorHandlerProps> = ({
 • Type 'window.__audio_mystery_error' in console for audio details  
 • Type 'exportAllDebugInfo()' in console for complete analysis
 • Try clicking anywhere on page first (for browser permissions)
-• Check if browser supports MP3: ${audioError?.audioSupport?.canPlayMP3 || 'Unknown'}`;
+• Check if browser supports MP3: ${audioError?.audioSupport?.canPlayMP3 ?? 'Unknown'}`;
     }
     
     return `🎲 *The mystical energies surrounding the ${error.service} seem disrupted...*
@@ -273,12 +308,13 @@ The realm's magic should return shortly...`;
                 onClick={() => {
                   // Export debug information
                   try {
+                    const windowWithDebug = window as WindowWithDebugInfo;
                     const debugInfo = {
                       timestamp: new Date().toISOString(),
                       error: error,
-                      ttsError: (window as any).__tts_mystery_error || null,
-                      audioError: (window as any).__audio_mystery_error || null,
-                      debugLogs: (window as any).__debug_errors || [],
+                      ttsError: windowWithDebug.__tts_mystery_error ?? null,
+                      audioError: windowWithDebug.__audio_mystery_error ?? null,
+                      debugLogs: windowWithDebug.__debug_errors ?? [],
                       browserInfo: {
                         userAgent: navigator.userAgent,
                         platform: navigator.platform,
@@ -315,9 +351,9 @@ The realm's magic should return shortly...`;
                 onClick={() => {
                   // Copy debug commands to clipboard
                   const commands = `// Debug Commands - Copy these to browser console:
-console.log('TTS Error:', window.__tts_mystery_error);
-console.log('Audio Error:', window.__audio_mystery_error);
-console.log('All Debug Logs:', window.__debug_errors);
+console.warn('TTS Error:', window.__tts_mystery_error);
+console.warn('Audio Error:', window.__audio_mystery_error);
+console.warn('All Debug Logs:', window.__debug_errors);
 
 // Export all debug info (if debug helper is loaded):
 exportAllDebugInfo();`;
@@ -372,67 +408,4 @@ exportAllDebugInfo();`;
   );
 };
 
-// Helper function to parse and categorize errors
-export const parseError = (error: any, service: string): ErrorInfo => {
-  const message = error instanceof Error ? error.message : String(error);
-  const timestamp = new Date();
-  
-  // Categorize based on message content
-  if (message.includes('quota') || message.includes('billing') || message.includes('credit')) {
-    return {
-      type: 'quota_exceeded',
-      service,
-      message: `API quota exhausted for ${service}`,
-      technicalDetails: message,
-      timestamp
-    };
-  }
-  
-  if (message.includes('unauthorized') || message.includes('invalid') || message.includes('key')) {
-    return {
-      type: 'invalid_key',
-      service,
-      message: `Authentication failed for ${service}`,
-      technicalDetails: message,
-      timestamp
-    };
-  }
-  
-  if (message.includes('rate limit') || message.includes('too many requests') || message.includes('429')) {
-    return {
-      type: 'rate_limit',
-      service,
-      message: `Rate limit reached for ${service}`,
-      technicalDetails: message,
-      timestamp
-    };
-  }
-  
-  if (message.includes('network') || message.includes('connection') || message.includes('timeout')) {
-    return {
-      type: 'network_error',
-      service,
-      message: `Network connection issue`,
-      technicalDetails: message,
-      timestamp
-    };
-  }
-  
-  if (message.includes('unavailable') || message.includes('maintenance') || message.includes('503')) {
-    return {
-      type: 'service_unavailable',
-      service,
-      message: `${service} is temporarily unavailable`,
-      technicalDetails: message,
-      timestamp
-    };
-  }
-  
-  return {
-    type: 'unknown',
-    service,
-    message: `Unexpected error with ${service}`,
-    technicalDetails: message,
-    timestamp
-  };
-};
+// Types are exported above, parseError is available from '@/utils/errorParser'

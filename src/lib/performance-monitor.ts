@@ -3,12 +3,12 @@ import { performance_monitor } from './performance';
 /**
  * Performance monitoring wrapper for React components
  */
-export function withPerformanceMonitoring<T extends (...args: any[]) => any>(
+export function withPerformanceMonitoring<T extends (...args: unknown[]) => unknown>(
   fn: T,
   name: string,
   threshold = 100
 ): T {
-  return ((...args: any[]) => {
+  return ((...args: Parameters<T>) => {
     const label = `${name}_${Date.now()}`;
     performance_monitor.start(label);
     
@@ -24,9 +24,9 @@ export function withPerformanceMonitoring<T extends (...args: any[]) => any>(
         performance_monitor.end(label, threshold);
         return result;
       }
-    } catch (error) {
+    } catch {
       performance_monitor.end(label, threshold);
-      throw error;
+      throw new Error("Operation failed");
     }
   }) as T;
 }
@@ -34,39 +34,39 @@ export function withPerformanceMonitoring<T extends (...args: any[]) => any>(
 /**
  * Debounce function calls to prevent excessive execution
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number,
   immediate = false
 ): T {
   let timeout: NodeJS.Timeout | null;
   
-  return ((...args: any[]) => {
+  return ((...args: Parameters<T>) => {
     const callNow = immediate && !timeout;
     
     if (timeout) clearTimeout(timeout);
     
     timeout = setTimeout(() => {
       timeout = null;
-      if (!immediate) func.apply(null, args);
+      if (!immediate) func(...args);
     }, wait);
     
-    if (callNow) func.apply(null, args);
+    if (callNow) func(...args);
   }) as T;
 }
 
 /**
  * Throttle function calls to limit execution frequency
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): T {
   let inThrottle: boolean;
   
-  return ((...args: any[]) => {
+  return ((...args: Parameters<T>) => {
     if (!inThrottle) {
-      func.apply(null, args);
+      func(...args);
       inThrottle = true;
       setTimeout(() => inThrottle = false, limit);
     }

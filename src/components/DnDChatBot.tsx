@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { settingsService } from '@/lib/settings';
 import { ttsService } from '@/lib/tts';
 import { sanitizeInput } from '@/lib/validation';
 import { debugLog, debugError } from '@/lib/debug';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -16,24 +16,14 @@ import { Slider } from '@/components/ui/slider';
 import { AnimatedButton, FloatingActionButton } from '@/components/AnimatedElements';
 import { 
   Save, 
-  Upload, 
-  Mic, 
-  Image as ImageIcon, 
-  Video,
-  Clapperboard,
-  Film,
   Send, 
-  Menu,
   Dice6,
-  Scroll,
   Wand2,
   Volume2,
   Loader2,
   Play,
   Pause,
   Square,
-  LogOut,
-  Shield,
   AlertTriangle,
   AlertCircle,
   X,
@@ -41,29 +31,22 @@ import {
   Crown,
   Bot,
   User,
-  Gauge
+  Gauge,
+  Image as ImageIcon
 } from 'lucide-react';
 import dndBackground from '@/assets/dnd-background.jpg';
 import { supabase } from "@/integrations/supabase/client";
-import { SystemStatus } from '@/components/SystemStatus';
-import { UsageTracker } from '@/components/UsageTracker';
-import { ErrorHandler, parseError, type ErrorInfo } from '@/components/ErrorHandler';
-import { useSessionManager, type Message, type Session } from '@/hooks/useSessionManager';
+import { ErrorHandler } from '@/components/ErrorHandler';
+import { parseError } from '@/utils/errorParser';
+import { useSessionManager } from '@/hooks/useSessionManager';
+import type { Message } from '@/types/session';
 import { useMultiplayerRealtimeSync } from '@/hooks/useMultiplayerRealtimeSync';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { UsernameSetupModal } from '@/components/UsernameSetupModal';
-import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useUserProfile } from '@/hooks/use-user-profile';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { guardDemoMode } from '@/lib/demo-mode';
 import DemoModeAPIGuard from '@/lib/demo-mode-guard';
-
-// Helper function for generating system prompts
-const generateSystemPrompt = (customPrompt?: string) => {
-  const basePrompt = "You are a helpful D&D assistant and dungeon master.";
-  return customPrompt ? `${basePrompt} ${customPrompt}` : basePrompt;
-};
-import { VoiceSettings } from '@/components/VoiceSettings';
 
 const DnDChatBot: React.FC = () => {
   const { user } = useAuth();
@@ -72,7 +55,7 @@ const DnDChatBot: React.FC = () => {
   const isMobile = useIsMobile();
   
   // Reduced debug logging to minimize console noise
-  // console.log('🔍 DnDChatBot: needsUsername =', needsUsername, 'user =', !!user);
+  // console.warn('🔍 DnDChatBot: needsUsername =', needsUsername, 'user =', !!user);
   
   // Session management
   const {
@@ -87,10 +70,10 @@ const DnDChatBot: React.FC = () => {
   } = useSessionManager();
 
   // Multiplayer realtime sync
-  const handleSessionUpdate = (sessionData: any) => {
+  const handleSessionUpdate = (sessionData: { id: string; messages?: Message[] }) => {
     if (currentSession?.id === sessionData.id && sessionData.messages) {
       debugLog('🔄 Syncing messages from realtime update');
-      const updatedMessages = (sessionData.messages || []).map((msg: any) => ({
+      const updatedMessages = (sessionData.messages ?? []).map((msg: Message) => ({
         ...msg,
         timestamp: new Date(msg.timestamp)
       }));
@@ -111,12 +94,24 @@ const DnDChatBot: React.FC = () => {
     onSessionUpdate: handleSessionUpdate
   });
 
+  // UI state
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [customPrompt, setCustomPrompt] = useState(`You are the Dungeon Master for an ongoing 5th Edition Dungeons & Dragons campaign...`);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showLogs, setShowLogs] = useState(false);
+  const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [backgroundImage, setBackgroundImage] = useState<string>(dndBackground);
+  const [hasApiKey, setHasApiKey] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+
   // Sync messages with current session - with error handling
   useEffect(() => {
     try {
       if (currentSession) {
         setMessages(currentSession.messages || []);
-        setCustomPrompt(currentSession.customPrompt || '');
+        setCustomPrompt(currentSession.customPrompt ?? '');
       } else {
         setMessages([]);
         setCustomPrompt('');
@@ -126,63 +121,12 @@ const DnDChatBot: React.FC = () => {
       setMessages([]);
       setErrorMessage('Failed to load session. Please refresh.');
     }
-  }, [currentSession?.id]); // Only sync when session changes
-  
-  // Local message state
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  // UI state
-  const [inputMessage, setInputMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [customPrompt, setCustomPrompt] = useState(`You are the Dungeon Master for an ongoing 5th Edition Dungeons & Dragons campaign. 
-Use official 5e rules for all gameplay (combat, actions, spells, skill checks, saving throws, conditions, initiative, inventory, XP). 
-Maintain a persistent log of:
-- Player/NPC names, stats, HP, abilities, inventory, gold
-- Active quests, visited locations, plot threads
-- Rolls made and their results
-- Ongoing effects and consequences
-
-At all times, carry forward relevant information from previous scenes so the world remains consistent.
-
-**GAME FLOW**
-1. Present the world, scene, or combat state.
-2. Offer clear choices or prompt for player actions.
-3. Resolve actions by rules, rolling when needed.
-4. Update logs after each scene/combat with HP, resources, quest progress.
-5. Keep combat in strict initiative order, tracking turns, actions, and conditions.
-
-**STORYTELLING PRIORITY**
-🎭 **Describe scenes cinematically** — engage all five senses, build mood and tension, and let the player feel physically present.  
-📜 Use vivid imagery, metaphors, and pacing changes to make moments dramatic or suspenseful.  
-🗣 Give NPCs distinct personalities, speech patterns, and motivations so they feel alive.  
-🌍 Weave in lore, foreshadowing, and callbacks to past events to reward attentive play.  
-⚖ Balance realism and fantasy — let the dice shape unexpected twists, but narrate them with flair.  
-
-**PLAYER AGENCY**
-- Allow creative, rule-consistent solutions.
-- Show consequences of choices (good and bad).
-- Encourage exploration, diplomacy, and tactics — not just combat.
-
-**SESSION LOOP**
-- Recap the last scene/session.
-- Play through the current scene until a decision point or combat round ends.
-- Provide an updated game state recap (HP, resources, location, quest status).
-- Offer a compelling "What do you do next?" to keep momentum.
-
-**FINAL RULE**
-Be fair, consistent, and immersive. Never forget key events or rolls. Let the rules and the story feed each other so it feels like a living, breathing world.`);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showLogs, setShowLogs] = useState(false);
-  const [rateLimitError, setRateLimitError] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [backgroundImage, setBackgroundImage] = useState<string>(dndBackground);
-  const [hasApiKey, setHasApiKey] = useState(false);
+  }, [currentSession]); // Only depend on currentSession
 
   // Generation states
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const [isGeneratingVideoAlt, setIsGeneratingVideoAlt] = useState(false);
-  const [runwayOutOfAttempts, setRunwayOutOfAttempts] = useState(false);
 
   // Audio states
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(null);
@@ -212,27 +156,27 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
   };
 
   // Auto-scroll preferences state
-  const [autoScrollEnabled, setAutoScrollEnabled] = useState(() => {
+  const [autoScrollEnabled] = useState(() => {
     const saved = localStorage.getItem('dnd-auto-scroll');
     return saved !== null ? JSON.parse(saved) : true;
   });
 
-  const isNearBottom = () => {
-    if (!messagesContainerRef.current) return false;
-    const scrollArea = messagesContainerRef.current.querySelector('[data-radix-scroll-area-viewport]');
-    if (!scrollArea) return false;
-    
-    const { scrollTop, scrollHeight, clientHeight } = scrollArea;
-    return scrollHeight - scrollTop - clientHeight < 100; // Within 100px of bottom
-  };
+  const scrollToBottomWithDelay = useCallback((delay = 0, force = false) => {
+    const isNearBottom = () => {
+      if (!messagesContainerRef.current) return false;
+      const scrollArea = messagesContainerRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (!scrollArea) return false;
+      
+      const { scrollTop, scrollHeight, clientHeight } = scrollArea;
+      return scrollHeight - scrollTop - clientHeight < 100; // Within 100px of bottom
+    };
 
-  const scrollToBottomWithDelay = (delay = 0, force = false) => {
     setTimeout(() => {
       if (messagesContainerRef.current) {
         const scrollArea = messagesContainerRef.current.querySelector('[data-radix-scroll-area-viewport]');
         if (scrollArea) {
           // Only auto-scroll if user is near bottom or force is true
-          if (force || autoScrollEnabled && isNearBottom()) {
+          if ((force ?? autoScrollEnabled) && isNearBottom()) {
             scrollArea.scrollTo({
               top: scrollArea.scrollHeight,
               behavior: 'smooth'
@@ -241,7 +185,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         }
       }
     }, delay);
-  };
+  }, [autoScrollEnabled]);
 
   // Save auto-scroll preference
   useEffect(() => {
@@ -365,12 +309,12 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         { role: 'user', content: userMessage }
       ];
       
-      const { data, error } = await DemoModeAPIGuard.guardSupabaseFunction(
+      const response = await DemoModeAPIGuard.guardSupabaseFunction(
         'dnd-chat-v2',
         () => supabase.functions.invoke('dnd-chat-v2', {
           body: {
             messages: conversationMessages,
-            customPrompt: customPrompt || undefined
+            customPrompt: customPrompt ?? undefined
           }
         }),
         {
@@ -382,13 +326,19 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         }
       );
 
+      if (!response) {
+        throw new Error('No response from AI chat');
+      }
+
+      const { data, error } = response;
+
       if (error) {
-        throw new Error(error.message || 'Failed to generate AI response');
+        throw new Error(error.message ?? 'Failed to generate AI response');
       }
 
       debugLog('AI response received:', data);
       
-      return data.content || data.response || data.message || "I'm having trouble responding right now. Please try again.";
+      return data.content ?? data.response ?? data.message ?? "I'm having trouble responding right now. Please try again.";
     } catch (error) {
       debugError('Error generating AI response:', error);
       if (error instanceof Error && error.message.includes('rate limit')) {
@@ -502,7 +452,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
 
   // Image generation
   const generateImage = async () => {
-    if (isGeneratingImage || isLoading) {
+    if (isGeneratingImage ?? isLoading) {
       debugLog('Image generation blocked: already generating or loading');
       return;
     }
@@ -510,11 +460,10 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
     setIsGeneratingImage(true);
     addLog('🎨 Starting image generation...', 'info');
     
-    try {
-      const lastMessage = messages[messages.length - 1];
-      const prompt = lastMessage?.content || inputMessage || "A fantasy D&D scene";
+    try {const lastMessage = messages[messages.length - 1];
+      const prompt = lastMessage?.content ?? inputMessage ?? "A fantasy D&D scene";
       
-      const { data, error } = await DemoModeAPIGuard.guardSupabaseFunction(
+      const response = await DemoModeAPIGuard.guardSupabaseFunction(
         'dnd-image',
         () => supabase.functions.invoke('dnd-image', {
           body: { prompt }
@@ -525,8 +474,14 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         }
       );
 
+      if (!response) {
+        throw new Error('No response from image generation');
+      }
+
+      const { data, error } = response;
+
       if (error) {
-        throw new Error(error.message || 'Failed to generate image');
+        throw new Error(error.message ?? 'Failed to generate image');
       }
 
       if (data?.imageUrl) {
@@ -560,10 +515,10 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
 
   // Video generation with Runway
   const generateVideoRunway = async () => {
-    console.log('Runway video generation clicked');
+    console.warn('Runway video generation clicked');
     if (!messages?.length || messages.length < 2) {
       toast({ title: "No Messages", description: "Start a conversation first to generate a video from the AI's response." });
-      console.log('Runway generation blocked: no messages');
+      console.warn('Runway generation blocked: no messages');
       return;
     }
     
@@ -577,7 +532,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
     }
 
     try {
-      const { data, error } = await DemoModeAPIGuard.guardSupabaseFunction(
+      const response = await DemoModeAPIGuard.guardSupabaseFunction(
         'dnd-video',
         () => supabase.functions.invoke('dnd-video', {
           body: { prompt: lastAssistantMessage.content }
@@ -588,13 +543,19 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         }
       );
 
+      if (!response) {
+        throw new Error('No response from video generation');
+      }
+
+      const { data, error } = response;
+
       if (error) throw error;
 
       if (data.taskId) {
         // Poll for completion
         const pollInterval = setInterval(async () => {
           try {
-            const { data: statusData, error: statusError } = await DemoModeAPIGuard.guardSupabaseFunction(
+            const response = await DemoModeAPIGuard.guardSupabaseFunction(
               'dnd-video',
               () => supabase.functions.invoke('dnd-video', {
                 body: { taskId: data.taskId }
@@ -606,13 +567,19 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
               }
             );
 
+            if (!response) {
+              throw new Error('No response from video status check');
+            }
+
+            const { data: statusData, error: statusError } = response;
+
             if (statusError) throw statusError;
 
             if (statusData.status === 'completed' && statusData.videoUrl) {
               clearInterval(pollInterval);
               
               // Update message with video using reliable state
-              const sourceMessages = currentSession?.messages || messages;
+              const sourceMessages = currentSession?.messages ?? messages;
               const updatedMessages = sourceMessages.map(msg => 
                 msg.id === lastAssistantMessage.id 
                   ? { ...msg, videoUrl: statusData.videoUrl }
@@ -651,10 +618,10 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
 
   // Video generation with Luma
   const generateVideoAlternative = async () => {
-    console.log('Luma video generation clicked');
+    console.warn('Luma video generation clicked');
     if (!messages?.length || messages.length < 2) {
       toast({ title: "No Messages", description: "Start a conversation first to generate a video from the AI's response." });
-      console.log('Luma generation blocked: no messages');
+      console.warn('Luma generation blocked: no messages');
       return;
     }
     
@@ -668,10 +635,10 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
     }
 
     try {
-      console.log('Calling luma-video edge function with prompt:', lastAssistantMessage.content);
+      console.warn('Calling luma-video edge function with prompt:', lastAssistantMessage.content);
       addLog('🎬 Starting Luma video generation...', 'info');
       
-      const { data, error } = await DemoModeAPIGuard.guardSupabaseFunction(
+      const response = await DemoModeAPIGuard.guardSupabaseFunction(
         'luma-video',
         () => supabase.functions.invoke('luma-video', {
           body: { prompt: lastAssistantMessage.content }
@@ -682,7 +649,13 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         }
       );
 
-      console.log('Luma video response:', { data, error });
+      if (!response) {
+        throw new Error('No response from Luma video generation');
+      }
+
+      const { data, error } = response;
+
+      console.warn('Luma video response:', {data, error});
 
       if (error) {
         console.error('Luma video error:', error);
@@ -696,7 +669,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         } else if (error.message?.includes('Invalid request')) {
           errorMessage = 'Invalid request format. Please try a different prompt.';
         } else {
-          errorMessage = error.message || 'Video generation service unavailable';
+          errorMessage = error.message ?? 'Video generation service unavailable';
         }
         
         addLog(`❌ Luma video error: ${errorMessage}`, 'error');
@@ -709,14 +682,14 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
       }
 
       if (data?.id) {
-        console.log('Luma video generation started with ID:', data.id);
+        console.warn('Luma video generation started with ID:', data.id);
         addLog(`🎬 Video generation started (ID: ${data.id})`, 'info');
         
         // Poll for completion
         const pollInterval = setInterval(async () => {
           try {
-            console.log('Polling Luma video status...');
-            const { data: statusData, error: statusError } = await DemoModeAPIGuard.guardSupabaseFunction(
+            console.warn('Polling Luma video status...');
+            const response = await DemoModeAPIGuard.guardSupabaseFunction(
               'luma-video',
               () => supabase.functions.invoke('luma-video', {
                 body: { taskId: data.id }
@@ -728,7 +701,13 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
               }
             );
 
-            console.log('Luma status response:', { statusData, statusError });
+            if (!response) {
+              throw new Error('No response from Luma video status check');
+            }
+
+            const { data: statusData, error: statusError } = response;
+
+            console.warn('Luma status response:', { statusData, statusError });
 
             if (statusError) {
               console.error('Luma status error:', statusError);
@@ -737,11 +716,11 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
 
             if (statusData?.state === 'completed' && statusData?.assets?.video) {
               clearInterval(pollInterval);
-              console.log('Luma video completed! Video URL:', statusData.assets.video);
+              console.warn('Luma video completed! Video URL:', statusData.assets.video);
               addLog('✅ Luma video generated successfully!', 'success');
               
               // Update message with video using reliable state
-              const sourceMessages = currentSession?.messages || messages;
+              const sourceMessages = currentSession?.messages ?? messages;
               const updatedMessages = sourceMessages.map(msg => 
                 msg.id === lastAssistantMessage.id 
                   ? { ...msg, videoUrl: statusData.assets.video }
@@ -765,12 +744,12 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
               addLog('❌ Luma video generation failed', 'error');
               throw new Error('Video generation failed');
             } else {
-              console.log('Luma video still processing, state:', statusData?.state);
+              console.warn('Luma video still processing, state:', statusData?.state);
             }
-          } catch (error) {
+          } catch (pollingError) {
             clearInterval(pollInterval);
-            console.error('Video polling error:', error);
-            addLog(`❌ Video polling failed: ${error.message || 'Unknown error'}`, 'error');
+            console.error('Video polling error:', pollingError);
+            addLog(`❌ Video polling failed: ${pollingError instanceof Error ? pollingError.message : 'Unknown error'}`, 'error');
             toast({ title: "Error", description: "Failed to check video generation status." });
             setIsGeneratingVideoAlt(false);
           }
@@ -791,8 +770,8 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
       }
     } catch (error) {
       console.error('Error generating Luma video:', error);
-      addLog(`❌ Luma video generation failed: ${error.message || 'Unknown error'}`, 'error');
-      toast({ title: "Error", description: `Failed to generate Luma video: ${error.message || 'Unknown error'}` });
+      addLog(`❌ Luma video generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+      toast({ title: "Error", description: `Failed to generate Luma video: ${error instanceof Error ? error.message : 'Unknown error'}` });
       setIsGeneratingVideoAlt(false);
     }
   };
@@ -800,7 +779,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
   // Settings
   const saveSettings = async () => {
     try {
-      console.log('Saving custom prompt to user settings...');
+      console.warn('Saving custom prompt to user settings...');
       // Save custom prompt to user settings
       await settingsService.saveCustomPrompt(customPrompt);
       
@@ -815,7 +794,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         title: "Settings Saved ✨",
         description: "Your custom D&D prompt has been saved and will be used for all future conversations.",
       });
-      console.log('Custom prompt saved successfully');
+      console.warn('Custom prompt saved successfully');
     } catch (error) {
       console.error('Error saving settings:', error);
       toast({
@@ -858,7 +837,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         // We just need to verify the user is authenticated
         const { data: { user } } = await supabase.auth.getUser();
         setHasApiKey(true); // API key is always available through Supabase edge functions
-        console.log('API key status set to available for user:', user?.id);
+        console.warn('API key status set to available for user:', user?.id);
       } catch (error) {
         console.error('Error checking API key:', error);
         setHasApiKey(true); // Still set to true as edge functions handle API keys
@@ -872,12 +851,12 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
     const loadSettings = async () => {
       // Only load settings if user is authenticated
       if (!user) {
-        console.log('User not authenticated yet, skipping settings load');
+        console.warn('User not authenticated yet, skipping settings load');
         return;
       }
       
       try {
-        console.log('Loading user settings for authenticated user:', user.id);
+        console.warn('Loading user settings for authenticated user:', user.id);
         const [voiceSettings, customPromptFromSettings] = await Promise.all([
           settingsService.getVoiceSettings(),
           settingsService.getCustomPrompt()
@@ -885,14 +864,14 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         
         if (voiceSettings?.speed) {
           setTtsSpeed(voiceSettings.speed);
-          console.log('Loaded TTS speed:', voiceSettings.speed);
+          console.warn('Loaded TTS speed:', voiceSettings.speed);
         }
         
         if (customPromptFromSettings) {
           setCustomPrompt(customPromptFromSettings);
-          console.log('Loaded custom prompt from settings');
+          console.warn('Loaded custom prompt from settings');
         } else {
-          console.log('No custom prompt found in settings, using default');
+          console.warn('No custom prompt found in settings, using default');
         }
       } catch (error) {
         console.error('Failed to load settings:', error);
@@ -909,7 +888,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
       const isNewSession = !currentSession || messages.length <= 2;
       scrollToBottomWithDelay(100, isNewSession);
     }
-  }, [messages, currentSession?.id]);
+  }, [messages, currentSession, scrollToBottomWithDelay, messages.length]);
 
   // Clear chat when no session is selected (after deletion)
   useEffect(() => {
@@ -1006,7 +985,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className={`flex items-center justify-between ${isMobile ? 'p-2' : 'p-4'} border-border-elevated relative z-10 shrink-0 border-b bg-card/50 backdrop-blur-sm`}
+            className={`flex items-center justify-between ${isMobile ? 'p-2' : 'p-4'} relative z-10 shrink-0 border-b border-border bg-card/50 backdrop-blur-sm`}
           >
             <div className="flex items-center gap-4">
               <SidebarTrigger />
@@ -1021,7 +1000,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                 <div>
                   <h1 className="text-gradient-primary font-heading text-xl font-bold">D&D Master</h1>
                   <p className="text-sm text-foreground-muted">
-                    {currentSession?.name || 'Ready for adventure'}
+                    {currentSession?.name ?? 'Ready for adventure'}
                   </p>
                 </div>
               </div>
@@ -1041,7 +1020,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="bg-card-premium border-border-elevated m-4 border p-4 shadow-premium backdrop-blur-sm">
+                <Card className="m-4 border border-border bg-card-premium p-4 shadow-premium backdrop-blur-sm">
                   <h3 className="text-gradient-primary mb-4 font-heading text-lg font-semibold">Settings</h3>
                   <div className="space-y-4">
                     <div>
@@ -1050,7 +1029,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                         value={customPrompt}
                         onChange={(e) => setCustomPrompt(e.target.value)}
                         placeholder="Enter your custom D&D system prompt..."
-                        className="border-border-elevated mt-1 bg-input/50 focus:border-primary/50"
+                        className="mt-1 border-border bg-input/50 focus:border-primary/50"
                         rows={3}
                       />
                     </div>
@@ -1068,7 +1047,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
 
           {/* Chat Container - Mobile Responsive with Fixed Input */}
           <div className={`flex-1 ${isMobile ? 'p-1' : 'p-4'} relative z-10 flex min-h-0 flex-col overflow-hidden`}>
-            <Card className="bg-card-premium/95 border-border-elevated flex min-h-0 flex-1 flex-col overflow-hidden border shadow-premium backdrop-blur-sm">
+            <Card className="flex min-h-0 flex-1 flex-col overflow-hidden border border-border bg-card/95 shadow-premium backdrop-blur-sm">
               {/* Chat Messages */}
               <motion.div
                 initial={{ opacity: 0 }}
@@ -1088,7 +1067,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                     transition={{ duration: 0.8 }}
                     className="py-20 text-center"
                   >
-                      <div className="bg-gradient-primary/10 glow-mystical float-gentle mb-6 inline-flex size-20 items-center justify-center rounded-full">
+                      <div className="glow-mystical float-gentle mb-6 inline-flex size-20 items-center justify-center rounded-full bg-primary/10">
                         <Crown className="size-10 text-primary" />
                       </div>
                     <h3 className="text-gradient-primary mb-3 font-heading text-2xl font-semibold">
@@ -1113,8 +1092,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                       <Sparkles className="mx-auto size-8" />
                     </motion.div>
                   </motion.div>
-                ) : (
-                  <AnimatePresence mode="popLayout">
+                ) : (<AnimatePresence mode="popLayout">
                     {messages.map((message, index) => (
                       <motion.div
                         key={message.id}
@@ -1144,10 +1122,10 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                            <motion.div
                             whileHover={{ y: -2, transition: { duration: 0.2 } }}
                             className={`
-                              group relative backdrop-blur-sm transition-all duration-300 ${isMobile ? 'rounded-lg p-3' : 'rounded-2xl p-4'}
+                              group relative ${isMobile ? 'rounded-lg p-3' : 'rounded-2xl p-4'} backdrop-blur-sm transition-all duration-300
                               ${message.role === 'user'
                                 ? 'bg-gradient-primary text-primary-foreground shadow-glow'
-                                : 'bg-card-premium border-border-elevated border text-card-foreground hover:shadow-elevated'
+                                : 'border border-border bg-card-premium text-card-foreground hover:shadow-elevated'
                               }
                             `}
                           >
@@ -1182,10 +1160,12 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                   transition={{ duration: 0.3 }}
                                   src={message.imageUrl} 
                                   alt="Generated D&D scene" 
-                                  className="border-border-elevated max-w-full cursor-pointer rounded-xl border transition-all duration-300 hover:shadow-magical"
+                                  className="max-w-full cursor-pointer rounded-xl border border-border transition-all duration-300 hover:shadow-magical"
                                   onLoad={() => scrollToBottomWithDelay(100, true)}
                                   onClick={() => {
-                                    setBackgroundImage(message.imageUrl);
+                                    if (message.imageUrl) {
+                                      setBackgroundImage(message.imageUrl);
+                                    }
                                     toast({
                                       title: "Background Updated! ✨",
                                       description: "The scene now serves as your adventure backdrop.",
@@ -1206,7 +1186,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                 <video 
                                   src={message.videoUrl} 
                                   controls
-                                  className="border-border-elevated w-full max-w-full rounded-xl border"
+                                  className="w-full max-w-full rounded-xl border border-border"
                                   style={{ maxHeight: '300px' }}
                                   onLoadedData={() => scrollToBottomWithDelay(100, true)}
                                 >
@@ -1237,21 +1217,21 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                           try {
                                             setMessages(prev => prev.map(msg => 
                                               msg.id === message.id 
-                                                ? { ...msg, isGeneratingAudio: true, ttsError: null }
-                                                : msg
+                                                                                              ? { ...msg, isGeneratingAudio: true, ttsError: undefined }
+                                              : msg
                                             ));
                                             
                                              const audioUrl = await ttsService.generateSpeech(message.content, { speed: ttsSpeed });
                                             
                                             setMessages(prev => prev.map(msg => 
                                               msg.id === message.id 
-                                                ? { ...msg, audioUrl, isGeneratingAudio: false, ttsError: null }
-                                                : msg
+                                                                                              ? { ...msg, audioUrl, isGeneratingAudio: false, ttsError: undefined }
+                                              : msg
                                             ));
-                                          } catch (error) {
+                                          } catch (ttsError) {
                                             setMessages(prev => prev.map(msg => 
                                               msg.id === message.id 
-                                                ? { ...msg, isGeneratingAudio: false, ttsError: error.message }
+                                                ? { ...msg, isGeneratingAudio: false, ttsError: ttsError instanceof Error ? ttsError.message : 'Audio generation failed' }
                                                 : msg
                                             ));
                                           }
@@ -1267,11 +1247,15 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                       <div className="flex items-center gap-3">
                                         <div className="flex items-center gap-2">
                                           <AnimatedButton
-                                            onClick={() => handleAudioControl(
-                                              message.id, 
-                                              message.audioUrl, 
-                                              currentlyPlayingId === message.id ? 'pause' : 'play'
-                                            )}
+                                            onClick={() => {
+                                              if (message.audioUrl) {
+                                                handleAudioControl(
+                                                  message.id, 
+                                                  message.audioUrl, 
+                                                  currentlyPlayingId === message.id ? 'pause' : 'play'
+                                                );
+                                              }
+                                            }}
                                             variant="outline"
                                             size="sm"
                                             className="size-8 p-0"
@@ -1285,7 +1269,11 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                           </AnimatedButton>
                                           
                                           <AnimatedButton
-                                            onClick={() => handleAudioControl(message.id, message.audioUrl, 'stop')}
+                                            onClick={() => {
+                                              if (message.audioUrl) {
+                                                handleAudioControl(message.id, message.audioUrl, 'stop');
+                                              }
+                                            }}
                                             variant="outline"
                                             size="sm"
                                             className="size-8 p-0"
@@ -1303,15 +1291,17 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                               value={[ttsSpeed]}
                                               onValueChange={(value) => {
                                                 const newSpeed = value[0];
-                                                console.log('🎵 Speed slider changed to:', newSpeed);
-                                                setTtsSpeed(newSpeed);
-                                                // Apply speed immediately to current audio
-                                                if (currentAudio.current && currentlyPlayingId === message.id) {
-                                                  console.log('🎵 Applying speed to current audio:', newSpeed);
-                                                  currentAudio.current.playbackRate = newSpeed;
+                                                if (typeof newSpeed === 'number') {
+                                                  console.warn('🎵 Speed slider changed to:', newSpeed);
+                                                  setTtsSpeed(newSpeed);
+                                                  // Apply speed immediately to current audio
+                                                  if (currentAudio.current && currentlyPlayingId === message.id) {
+                                                    console.warn('🎵 Applying speed to current audio:', newSpeed);
+                                                    currentAudio.current.playbackRate = newSpeed;
+                                                  }
+                                                  // Save speed setting
+                                                  settingsService.saveVoiceSettings('auto', 'auto', newSpeed).catch(console.error);
                                                 }
-                                                // Save speed setting
-                                                settingsService.saveVoiceSettings(undefined, undefined, newSpeed).catch(console.error);
                                               }}
                                               min={0.5}
                                               max={2.0}
@@ -1346,10 +1336,10 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                               ? { ...msg, audioUrl, isGeneratingAudio: false }
                                               : msg
                                           ));
-                                        } catch (error) {
+                                        } catch (ttsError) {
                                           setMessages(prev => prev.map(msg => 
                                             msg.id === message.id 
-                                              ? { ...msg, isGeneratingAudio: false, ttsError: error.message }
+                                              ? { ...msg, isGeneratingAudio: false, ttsError: ttsError instanceof Error ? ttsError.message : 'Audio generation failed' }
                                               : msg
                                           ));
                                         }
@@ -1388,7 +1378,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  className={`border-border-elevated border-t ${isMobile ? 'p-2' : 'p-4'} bg-card-premium/95 sticky bottom-0 shrink-0 backdrop-blur-sm`}
+                  className={`border-t border-border ${isMobile ? 'p-2' : 'p-4'} sticky bottom-0 shrink-0 bg-card/95 backdrop-blur-sm`}
                 >
               {rateLimitError && (
                 <motion.div
@@ -1411,7 +1401,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                     onKeyDown={handleKeyPress}
                     placeholder="Whisper your tale to the realm... ✨"
                     disabled={isLoading}
-                    className={`${isMobile ? 'max-h-[80px] min-h-[40px] text-sm' : 'max-h-[120px] min-h-[48px]'} border-border-elevated resize-none bg-input/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 ${isMobile ? 'rounded-lg' : 'rounded-xl'} backdrop-blur-sm transition-all duration-300`}
+                    className={`${isMobile ? 'max-h-[80px] min-h-[40px] text-sm' : 'max-h-[120px] min-h-[48px]'} resize-none border-border bg-input/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 ${isMobile ? 'rounded-lg' : 'rounded-xl'} backdrop-blur-sm transition-all duration-300`}
                     rows={isMobile ? 1 : 1}
                   />
                   
@@ -1424,7 +1414,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                   {!isMobile && (
                     <AnimatedButton
                       onClick={generateImage}
-                      disabled={isGeneratingImage || isLoading}
+                      disabled={isGeneratingImage ?? isLoading}
                       variant="outline"
                       size="md"
                       className="size-12 p-0"
@@ -1486,7 +1476,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setInputMessage(prompt.split(' ').slice(1).join(' '))}
-                    className="border-border-elevated whitespace-nowrap rounded-lg border bg-card/50 px-3 py-1.5 text-xs transition-all duration-300 hover:bg-card-elevated hover:shadow-elevated"
+                    className="whitespace-nowrap rounded-lg border border-border bg-card/50 px-3 py-1.5 text-xs transition-all duration-300 hover:bg-card-elevated hover:shadow-elevated"
                   >
                     {prompt}
                   </motion.button>

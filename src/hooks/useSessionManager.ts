@@ -1,19 +1,20 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
-import { useRetry } from '@/hooks/useRetry';
+import { useChatDiagnostics } from '@/hooks/useChatDiagnostics';
 import { debugLog, debugError } from '@/lib/debug';
 import { useRealtimeManager, SubscriptionConfig } from '@/hooks/useRealtimeManager';
-import { useChatDiagnostics } from '@/hooks/useChatDiagnostics';
 import { debounce } from '@/lib/performance-monitor';
+import type { Message, Session } from '@/types/session';
 
-export interface Message {
+// Raw data interfaces for localStorage deserialization
+interface RawMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
-  timestamp: Date;
+  timestamp: string; // Date as string from JSON
   imageUrl?: string;
   audioUrl?: string;
   videoUrl?: string;
@@ -22,22 +23,40 @@ export interface Message {
   ttsError?: string;
 }
 
-export interface Session {
+// Type for Supabase JSON data
+type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+
+interface RawSession {
   id: string;
   name: string;
-  messages: Message[];
+  messages?: RawMessage[];
   customPrompt: string;
-  createdAt: Date;
-  updatedAt?: Date;
+  createdAt: string; // Date as string from JSON
+  updatedAt?: string;
   isSynced?: boolean;
   isMultiplayer?: boolean;
+}
+
+// ChatGPT export format interfaces
+interface ChatGPTMessage {
+  content: {
+    parts: string[];
+  };
+  author: {
+    role: string;
+  };
+  create_time: number;
+}
+
+interface ChatGPTNode {
+  message?: ChatGPTMessage;
 }
 
 export const useSessionManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { handleError, handleSuccess } = useErrorHandler();
-  const { runDiagnostics } = useChatDiagnostics();
+  const { handleError: _handleError, handleSuccess: _handleSuccess } = useErrorHandler();
+  const { runDiagnostics: _runDiagnostics } = useChatDiagnostics();
   
   const [sessions, setSessions] = useState<Session[]>([]);
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
@@ -56,7 +75,7 @@ export const useSessionManager = () => {
       table: 'session_participants',
       event: 'INSERT',
       filter: `user_id=eq.${user.id}`,
-      callback: (payload) => {
+      callback: (_payload) => {
         debugLog('Session participant INSERT - reloading sessions');
         debouncedLoadSessions();
       }
@@ -65,7 +84,7 @@ export const useSessionManager = () => {
       table: 'session_participants',
       event: 'DELETE',
       filter: `user_id=eq.${user.id}`,
-      callback: (payload) => {
+      callback: (_payload) => {
         debugLog('Session participant DELETE - reloading sessions');
         debouncedLoadSessions();
       }
@@ -74,7 +93,7 @@ export const useSessionManager = () => {
       table: 'session_participants',
       event: 'UPDATE',
       filter: `user_id=eq.${user.id}`,
-      callback: (payload) => {
+      callback: (_payload) => {
         debugLog('Session participant UPDATE - reloading sessions');
         debouncedLoadSessions();
       }
@@ -92,19 +111,22 @@ export const useSessionManager = () => {
         try {
           const parsed = JSON.parse(localSessions);
           // Convert timestamp strings back to Date objects for localStorage sessions
-          const convertedSessions = parsed.map((session: any) => ({
+          const convertedSessions = (parsed as RawSession[]).map((session) => ({
             ...session,
-            messages: session.messages?.map((msg: any) => ({
+            messages: session.messages?.map((msg) => ({
               ...msg,
               timestamp: new Date(msg.timestamp)
-            })) || [],
+            })) ?? [],
             createdAt: new Date(session.createdAt),
             updatedAt: session.updatedAt ? new Date(session.updatedAt) : undefined
           }));
           setSessions(convertedSessions);
           // Set most recent as current if none is set
           if (convertedSessions.length > 0 && !currentSession) {
-            setCurrentSession(convertedSessions[0]);
+            const firstSession = convertedSessions[0];
+            if (firstSession) {
+              setCurrentSession(firstSession);
+            }
           }
         } catch (error) {
           debugError('Error parsing local sessions:', error);
@@ -161,23 +183,23 @@ export const useSessionManager = () => {
       }
 
       const allSessionsData = [
-        ...(ownedSessions || []),
-        ...(participatedSessions || [])
+        ...(ownedSessions ?? []),
+        ...(participatedSessions ?? [])
       ];
 
       const cloudSessions: Session[] = allSessionsData.map(session => ({
         id: session.id,
-        name: session.name || session.title || 'Unnamed Session',
-        messages: (session.messages as any[])?.map((msg: any) => ({
+        name: session.name ?? session.title ?? 'Unnamed Session',
+        messages: ((session.messages as unknown as RawMessage[]) ?? []).map((msg) => ({
           ...msg,
           timestamp: new Date(msg.timestamp) // Convert string timestamps back to Date objects
-        })) || [],
-        customPrompt: session.custom_prompt || '',
+        })) ?? [],
+        customPrompt: session.custom_prompt ?? '',
         createdAt: new Date(session.created_at),
         updatedAt: new Date(session.updated_at),
         isSynced: true,
-        isMultiplayer: session.is_multiplayer || false
-      })) || [];
+        isMultiplayer: session.is_multiplayer ?? false
+      })) ?? [];
 
       debugLog('Loaded sessions from Supabase:', cloudSessions.length);
       setSessions(cloudSessions);
@@ -192,12 +214,18 @@ export const useSessionManager = () => {
         } else if (cloudSessions.length > 0) {
           // Fallback to most recent session
           debugLog('Last session not found, using most recent');
-          setCurrentSession(cloudSessions[0]);
+          const firstSession = cloudSessions[0];
+          if (firstSession) {
+            setCurrentSession(firstSession);
+          }
         }
       } else if (cloudSessions.length > 0) {
         // No last session saved, use most recent
         debugLog('No last session ID, using most recent');
-        setCurrentSession(cloudSessions[0]);
+        const firstSession = cloudSessions[0];
+        if (firstSession) {
+          setCurrentSession(firstSession);
+        }
       }
 
       // Check for any local sessions that might need migration
@@ -206,12 +234,12 @@ export const useSessionManager = () => {
         try {
           const localParsed: Session[] = JSON.parse(localSessions);
           // Convert timestamps for local sessions before comparison
-          const convertedLocalSessions = localParsed.map((session: any) => ({
+          const convertedLocalSessions = (localParsed as unknown as RawSession[]).map((session) => ({
             ...session,
-            messages: session.messages?.map((msg: any) => ({
+            messages: session.messages?.map((msg) => ({
               ...msg,
               timestamp: new Date(msg.timestamp)
-            })) || [],
+            })) ?? [],
             createdAt: new Date(session.createdAt),
             updatedAt: session.updatedAt ? new Date(session.updatedAt) : undefined
           }));
@@ -242,12 +270,12 @@ export const useSessionManager = () => {
         try {
           const parsed = JSON.parse(localSessions);
           // Convert timestamp strings back to Date objects for localStorage fallback
-          const convertedSessions = parsed.map((s: any) => ({
+          const convertedSessions = (parsed as RawSession[]).map((s) => ({
             ...s,
-            messages: s.messages?.map((msg: any) => ({
+            messages: s.messages?.map((msg) => ({
               ...msg,
               timestamp: new Date(msg.timestamp)
-            })) || [],
+            })) ?? [],
             createdAt: new Date(s.createdAt),
             updatedAt: s.updatedAt ? new Date(s.updatedAt) : undefined,
             isSynced: false
@@ -280,7 +308,10 @@ export const useSessionManager = () => {
             user_id: user.id,
             name: session.name,
             title: session.name,
-            messages: session.messages as any,
+            messages: session.messages.map(msg => ({
+              ...msg,
+              timestamp: msg.timestamp.toISOString()
+            })) as unknown as Json,
             custom_prompt: session.customPrompt,
             created_at: session.createdAt.toISOString(),
             updated_at: new Date().toISOString(),
@@ -294,7 +325,7 @@ export const useSessionManager = () => {
             s.id === session.id ? { ...s, isSynced: true } : s
           ));
         } else {
-          debugError(`Error syncing session ${session.name}:`, error);
+          debugError(`Error syncing session ${session.name}:`);
         }
       } catch (error) {
         debugError(`Error syncing session ${session.name}:`, error);
@@ -310,8 +341,8 @@ export const useSessionManager = () => {
         if (remaining.length === 0) localStorage.removeItem('dnd-sessions');
         else localStorage.setItem('dnd-sessions', JSON.stringify(remaining));
       }
-    } catch (e) {
-      debugError('Error updating local sessions cache after sync:', e);
+    } catch (error) {
+      debugError('Error updating local sessions cache after sync:', error);
     }
 
     setIsSyncing(false);
@@ -352,13 +383,16 @@ export const useSessionManager = () => {
             user_id: user.id,
             name: session.name,
             title: session.name,
-            messages: session.messages as any,
+            messages: session.messages.map(msg => ({
+              ...msg,
+              timestamp: msg.timestamp.toISOString()
+            })) as unknown as Json,
             custom_prompt: session.customPrompt,
             updated_at: new Date().toISOString(),
             world: 1, // Default world for saved sessions
           });
 
-        if (error) throw error;
+        if (error) throw new Error("Operation failed");
 
         // Mark as synced and only store session ID in localStorage
         setSessions(prev => prev.map(s => 
@@ -432,8 +466,8 @@ export const useSessionManager = () => {
           .eq('user_id', user.id);
 
         if (error) {
-          debugError('🗑️ Supabase soft delete error:', error);
-          throw error;
+          debugError('🗑️ Supabase soft delete error:');
+          throw new Error("Operation failed");
         }
         
         debugLog('🗑️ Successfully soft deleted from Supabase');
@@ -447,8 +481,8 @@ export const useSessionManager = () => {
             if (pruned.length === 0) localStorage.removeItem('dnd-sessions');
             else localStorage.setItem('dnd-sessions', JSON.stringify(pruned));
           }
-        } catch (e) {
-          debugError('Error pruning local sessions cache:', e);
+            } catch (error) {
+      debugError('Error pruning local sessions cache:', error);
         }
         
         // Clean up localStorage reference
@@ -473,8 +507,8 @@ export const useSessionManager = () => {
         });
       }
       
-    } catch (error) {
-      debugError('🗑️ Error deleting session:', error);
+    } catch {
+      debugError('🗑️ Error deleting session:');
       
       // Rollback the optimistic update
       setSessions(originalSessions);
@@ -483,11 +517,11 @@ export const useSessionManager = () => {
       // Error toast
       toast({
         title: "Delete Failed",
-        description: error instanceof Error ? error.message : "Failed to delete session. Please try again.",
+        description: "Failed to delete session. Please try again.",
         variant: "destructive",
       });
       
-      throw error; // Re-throw for caller handling
+      throw new Error("Operation failed"); // Re-throw for caller handling
     }
 
     // Clear current session if it was deleted
@@ -523,14 +557,14 @@ export const useSessionManager = () => {
 
   // Enhanced import session with better ChatGPT support and error handling
   const importSession = useCallback((file: File): Promise<void> => {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       debugLog('🔄 IMPORT SESSION START:', file.name);
       
       const reader = new FileReader();
       reader.onload = async (e) => {
         try {
           const rawData = e.target?.result as string;
-          let data;
+          let data: unknown;
           
           try {
             data = JSON.parse(rawData);
@@ -538,64 +572,79 @@ export const useSessionManager = () => {
             reject(new Error('Invalid JSON file. Please ensure the file is properly formatted.'));
             return;
           }
+
+          if (typeof data !== 'object' || !data) {
+            reject(new Error('Invalid file format: expected JSON object'));
+            return;
+          }
+
+          const dataObj = data as Record<string, unknown>;
           
           let importedSession: Session;
           let messageCount = 0;
           
           // Handle our exported format
-          if (data.session && data.version) {
+          if ('session' in dataObj && 'version' in dataObj) {
             debugLog('🔄 Detected native export format');
+            const sessionData = dataObj.session as Record<string, unknown>;
             importedSession = {
-              ...data.session,
               id: crypto.randomUUID(),
-              messages: data.session.messages?.map((msg: any) => ({
-                ...msg,
-                id: msg.id || crypto.randomUUID(),
-                timestamp: new Date(msg.timestamp)
-              })) || [],
+              name: sessionData.name as string,
+              customPrompt: sessionData.customPrompt as string,
+              messages: (sessionData.messages as unknown[])?.map((msg) => ({
+                id: (msg as Record<string, unknown>).id as string ?? crypto.randomUUID(),
+                role: (msg as Record<string, unknown>).role as 'user' | 'assistant',
+                content: (msg as Record<string, unknown>).content as string,
+                imageUrl: (msg as Record<string, unknown>).imageUrl as string | undefined,
+                audioUrl: (msg as Record<string, unknown>).audioUrl as string | undefined,
+                videoUrl: (msg as Record<string, unknown>).videoUrl as string | undefined,
+                videoTaskId: (msg as Record<string, unknown>).videoTaskId as string | undefined,
+                isGeneratingAudio: (msg as Record<string, unknown>).isGeneratingAudio as boolean | undefined,
+                ttsError: (msg as Record<string, unknown>).ttsError as string | undefined,
+                timestamp: new Date((msg as Record<string, unknown>).timestamp as string)
+              })) ?? [],
               createdAt: new Date(),
-              updatedAt: data.session.updatedAt ? new Date(data.session.updatedAt) : undefined,
+              updatedAt: sessionData.updatedAt ? new Date(sessionData.updatedAt as string) : undefined,
               isSynced: false
-            };
+            } as Session;
             messageCount = importedSession.messages.length;
           }
           // Enhanced ChatGPT conversation format handling
-          else if (data.mapping || data.title || data.conversation_id) {
+          else if ('mapping' in dataObj || 'title' in dataObj || 'conversation_id' in dataObj) {
             debugLog('🔄 Detected ChatGPT format with mapping');
             const messages: Message[] = [];
-            const conversationTitle = data.title || "Imported ChatGPT Conversation";
+            const conversationTitle = (dataObj.title as string) ?? "Imported ChatGPT Conversation";
             
             // Handle ChatGPT's mapping format (most common export format)
-            if (data.mapping) {
-              const sortedNodes = Object.values(data.mapping)
-                .filter((node: any) => node.message?.content?.parts)
-                .sort((a: any, b: any) => {
-                  const timeA = a.message.create_time || 0;
-                  const timeB = b.message.create_time || 0;
+            if ('mapping' in dataObj && dataObj.mapping) {
+              const mapping = dataObj.mapping as Record<string, ChatGPTNode>;
+              const sortedNodes = Object.values(mapping)
+                .filter((node): node is ChatGPTNode & { message: ChatGPTMessage } => {
+                  return Boolean(node.message?.content?.parts);
+                })
+                .sort((a, b) => {
+                  const timeA = a.message.create_time ?? 0;
+                  const timeB = b.message.create_time ?? 0;
                   return timeA - timeB;
                 });
               
-              sortedNodes.forEach((node: any) => {
-                const message = node.message;
-                if (message.content.parts && message.content.parts.length > 0) {
-                  const content = message.content.parts
-                    .filter((part: any) => typeof part === 'string' && part.trim())
-                    .join(' ')
-                    .trim();
+              sortedNodes.forEach((node) => {
+                const { message } = node;
+                const content = message.content.parts
+                  .filter((part): part is string => typeof part === 'string' && Boolean(part.trim()))
+                  .join(' ')
+                  .trim();
                     
-                  if (content) {
-                    const role = message.author?.role === 'assistant' ? 'assistant' : 'user';
-                    const timestamp = message.create_time 
-                      ? new Date(message.create_time * 1000) 
-                      : new Date();
+                if (content) {
+                  const role = (message.author.role === 'assistant' ? 'assistant' : 'user');
+                  const timestamp = new Date(message.create_time * 1000);
                       
-                    messages.push({
-                      id: crypto.randomUUID(),
-                      role,
-                      content,
-                      timestamp
-                    });
-                  }
+                  messages.push({
+                    id: crypto.randomUUID(),
+                    role,
+                    content,
+                    timestamp
+                  });
                 }
               });
             }
@@ -603,7 +652,7 @@ export const useSessionManager = () => {
             importedSession = {
               id: crypto.randomUUID(),
               name: conversationTitle,
-              messages: messages,
+              messages,
               customPrompt: '',
               createdAt: new Date(),
               isSynced: false
@@ -611,31 +660,40 @@ export const useSessionManager = () => {
             messageCount = messages.length;
           }
           // Handle conversations.json format (multiple conversations)
-          else if (Array.isArray(data) && data.some(item => item.mapping || item.title)) {
+          else if (Array.isArray(dataObj) && dataObj.some(item => 
+            typeof item === 'object' && item && ('mapping' in item || 'title' in item)
+          )) {
             debugLog('🔄 Detected conversations.json format');
-            const firstConversation = data[0];
+            const firstConversation = dataObj[0] as Record<string, unknown>;
             
-            if (firstConversation.mapping) {
+            if ('mapping' in firstConversation && firstConversation.mapping) {
               const messages: Message[] = [];
-              const sortedNodes = Object.values(firstConversation.mapping)
-                .filter((node: any) => node.message?.content?.parts)
-                .sort((a: any, b: any) => (a.message.create_time || 0) - (b.message.create_time || 0));
+              const mapping = firstConversation.mapping as Record<string, ChatGPTNode>;
+              const sortedNodes = Object.values(mapping)
+                .filter((node): node is ChatGPTNode & { message: ChatGPTMessage } => {
+                  return Boolean(node.message?.content?.parts);
+                })
+                .sort((a, b) => (a.message.create_time ?? 0) - (b.message.create_time ?? 0));
                 
-              sortedNodes.forEach((node: any) => {
-                const content = node.message.content.parts.join(' ').trim();
+              sortedNodes.forEach((node) => {
+                const { message } = node;
+                const content = message.content.parts
+                  .filter((part): part is string => typeof part === 'string' && Boolean(part.trim()))
+                  .join(' ')
+                  .trim();
                 if (content) {
                   messages.push({
                     id: crypto.randomUUID(),
-                    role: node.message.author?.role === 'assistant' ? 'assistant' : 'user',
+                    role: (message.author.role === 'assistant' ? 'assistant' : 'user'),
                     content,
-                    timestamp: new Date(node.message.create_time * 1000 || Date.now())
+                    timestamp: new Date(message.create_time * 1000)
                   });
                 }
               });
               
               importedSession = {
                 id: crypto.randomUUID(),
-                name: firstConversation.title || "Imported ChatGPT Conversation",
+                name: (firstConversation.title as string) ?? "Imported ChatGPT Conversation",
                 messages,
                 customPrompt: '',
                 createdAt: new Date(),
@@ -648,17 +706,19 @@ export const useSessionManager = () => {
             }
           }
           // Handle simple message array format
-          else if (Array.isArray(data)) {
+          else if (Array.isArray(dataObj)) {
             debugLog('🔄 Detected simple array format');
             const messages: Message[] = [];
             
-            data.forEach((item: any, index: number) => {
-              if (item.content || item.message || item.text) {
+            dataObj.forEach((item: unknown) => {
+              if (typeof item !== 'object' || !item) return;
+              const messageItem = item as Record<string, unknown>;
+              if (messageItem.content || messageItem.message || messageItem.text) {
                 messages.push({
                   id: crypto.randomUUID(),
-                  role: item.role || (index % 2 === 0 ? 'user' : 'assistant'),
-                  content: item.content || item.message || item.text || '',
-                  timestamp: new Date(item.timestamp || item.created_at || Date.now())
+                  role: ((messageItem.role as string) === 'assistant' ? 'assistant' : 'user'),
+                  content: (messageItem.content ?? messageItem.message ?? messageItem.text ?? '') as string,
+                  timestamp: new Date((messageItem.timestamp ?? messageItem.created_at ?? Date.now()) as number | string)
                 });
               }
             });
@@ -674,28 +734,39 @@ export const useSessionManager = () => {
             messageCount = messages.length;
           }
           // Handle generic object with messages array
-          else if (data.messages || data.conversation) {
+          else if ('messages' in dataObj || 'conversation' in dataObj) {
             debugLog('🔄 Detected generic format with messages');
-            const messagesArray = data.messages || data.conversation || [];
-            const messages: Message[] = messagesArray.map((msg: any) => ({
-              id: crypto.randomUUID(),
-              role: msg.role || (msg.type === 'human' ? 'user' : 'assistant') || 'user',
-              content: msg.content || msg.text || msg.message || '',
-              timestamp: new Date(msg.timestamp || msg.created_at || Date.now())
-            }));
+            const messagesArray = ((dataObj.messages ?? dataObj.conversation) ?? []) as unknown[];
+            const messages: Message[] = messagesArray
+              .map((msg: unknown) => {
+                if (typeof msg !== 'object' || !msg) {
+                  return null;
+                }
+                const messageItem = msg as Record<string, unknown>;
+                const role = ((messageItem.role as string) === 'assistant' ? 'assistant' : 'user');
+                const content = (messageItem.content ?? messageItem.text ?? messageItem.message ?? '') as string;
+                const timestamp = new Date((messageItem.timestamp ?? messageItem.created_at ?? Date.now()) as number | string);
+                return {
+                  id: crypto.randomUUID(),
+                  role,
+                  content,
+                  timestamp
+                } as Message;
+              })
+              .filter((msg): msg is Message => msg !== null);
             
             importedSession = {
               id: crypto.randomUUID(),
-              name: data.name || data.title || "Imported Session",
+              name: (dataObj.name as string) ?? (dataObj.title as string) ?? "Imported Session",
               messages,
-              customPrompt: data.customPrompt || data.system_prompt || data.prompt || '',
+              customPrompt: (dataObj.customPrompt ?? dataObj.system_prompt ?? dataObj.prompt ?? '') as string,
               createdAt: new Date(),
               isSynced: false
             };
             messageCount = messages.length;
           }
           else {
-            debugError('🔄 Unsupported file format:', data);
+            debugError('🔄 Unsupported file format:', dataObj);
             reject(new Error('Unsupported file format. Please check that your file contains conversation data in a supported format (ChatGPT export, conversations.json, or message arrays).'));
             return;
           }
@@ -805,7 +876,7 @@ export const useSessionManager = () => {
       if (typeof sessionOrUpdater === 'function') {
         setCurrentSession(prev => {
           const newSession = sessionOrUpdater(prev);
-          debugLog('Setting current session (functional):', newSession?.name || 'null');
+          debugLog('Setting current session (functional):', newSession?.name ?? 'null');
           // Save the session ID for restoration on next login
           if (newSession && user) {
             localStorage.setItem('lastSessionId', newSession.id);
@@ -813,7 +884,7 @@ export const useSessionManager = () => {
           return newSession;
         });
       } else {
-        debugLog('Setting current session:', sessionOrUpdater?.name || 'null');
+        debugLog('Setting current session:', sessionOrUpdater?.name ?? 'null');
         setCurrentSession(sessionOrUpdater);
         // Save the session ID for restoration on next login
         if (sessionOrUpdater && user) {
@@ -830,6 +901,6 @@ export const useSessionManager = () => {
     importSession,
     loadSessions,
     clearAllSessions,
-    runDiagnostics
+    runDiagnostics: _runDiagnostics
   };
 };

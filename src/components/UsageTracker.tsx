@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +13,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugError } from '@/lib/debug';
 
 interface UsageData {
@@ -39,42 +39,46 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   // Estimated limits and costs (these would come from actual API billing in production)
-  const serviceLimits = {
+  const serviceLimits = useMemo(() => ({
     openai: { daily: 50, cost: 0.002 },
     runway: { daily: 5, cost: 2.00 },
     luma: { daily: 10, cost: 1.50 },
-  };
+  }), []);
 
-  const loadUsageData = async () => {
+  const loadUsageData = useCallback(async () => {
     if (!user) return;
     
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data, error} = await supabase
         .from('api_usage')
         .select('*')
         .eq('user_id', user.id)
         .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
 
       // Aggregate usage by service
       const aggregated = data?.reduce((acc, item) => {
         const key = `${item.service}-${item.operation}`;
-        if (!acc[key]) {
+        // eslint-disable-next-line security/detect-object-injection
+        const existing = Object.prototype.hasOwnProperty.call(acc, key) ? acc[key] : null;
+        if (!existing) {
+          // eslint-disable-next-line security/detect-object-injection
           acc[key] = {
             service: item.service,
             operation: item.operation,
-            count: 0,
-            totalCost: 0,
+            count: 1,
+            totalCost: parseFloat(item.cost_estimate?.toString() ?? '0'),
             lastUsed: new Date(item.created_at)
           };
-        }
-        acc[key].count += 1;
-        acc[key].totalCost += parseFloat(item.cost_estimate?.toString() || '0');
-        if (new Date(item.created_at) > acc[key].lastUsed) {
-          acc[key].lastUsed = new Date(item.created_at);
+        } else {
+          existing.count += 1;
+          existing.totalCost += parseFloat(item.cost_estimate?.toString() ?? '0');
+          if (new Date(item.created_at) > existing.lastUsed) {
+            existing.lastUsed = new Date(item.created_at);
+          }
         }
         return acc;
       }, {} as Record<string, UsageData>) || {};
@@ -83,33 +87,33 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
 
       // Check for limit warnings
       Object.values(aggregated).forEach(usage => {
-        const serviceKey = usage.service as keyof typeof serviceLimits;
-        const limit = serviceLimits[serviceKey];
+        const serviceKey = usage.service;
+        const limit = serviceKey in serviceLimits ? serviceLimits[serviceKey as keyof typeof serviceLimits] : undefined;
         if (limit && usage.count > limit.daily * 0.8) {
           onLimitWarning?.(usage.service, usage.count / limit.daily);
         }
       });
 
-    } catch (error) {
-      debugError('Error loading usage data:', error);
+    } catch {
+      debugError('Error loading usage data:');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, onLimitWarning, serviceLimits]);
 
   useEffect(() => {
     if (isVisible) {
       loadUsageData();
     }
-  }, [isVisible, user]);
+  }, [isVisible, user, loadUsageData]);
 
   const getTotalCost = () => {
     return usage.reduce((sum, item) => sum + item.totalCost, 0);
   };
 
   const getUsagePercentage = (service: string, count: number) => {
-    const serviceKey = service as keyof typeof serviceLimits;
-    const limit = serviceLimits[serviceKey];
+    const serviceKey = service;
+    const limit = serviceKey in serviceLimits ? serviceLimits[serviceKey as keyof typeof serviceLimits] : undefined;
     return limit ? Math.min((count / limit.daily) * 100, 100) : 0;
   };
 

@@ -9,7 +9,7 @@ import { Message, Session } from '@/domains/chat/types';
 import { EnterpriseError } from '@/lib/enterprise/ErrorHandler';
 import { Logger } from '@/lib/enterprise/Logger';
 import { MetricsCollector } from '@/lib/enterprise/MetricsCollector';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 
 interface ChatServiceState {
   messages: Message[];
@@ -31,7 +31,7 @@ export function useChatService(session: Session | null) {
   const chatServiceRef = useRef<ChatService>(new ChatService());
   
   const [state, setState] = useState<ChatServiceState>({
-    messages: session?.messages || [],
+    messages: session?.messages ?? [],
     isLoading: false,
     error: null,
     isGeneratingImage: false,
@@ -43,10 +43,10 @@ export function useChatService(session: Session | null) {
   useEffect(() => {
     setState(prev => ({
       ...prev,
-      messages: session?.messages || [],
+      messages: session?.messages ?? [],
       error: null
     }));
-  }, [session?.id]);
+  }, [session?.id, session?.messages]);
 
   // Optimized send message function
   const sendMessage = useCallback(async (content: string): Promise<void> => {
@@ -80,7 +80,7 @@ export function useChatService(session: Session | null) {
         messageLength: content.length.toString()
       });
 
-    } catch (error) {
+    } catch {
       logger.error('Send message failed', { 
         sessionId: session.id, 
         userId: user.id,
@@ -93,7 +93,7 @@ export function useChatService(session: Session | null) {
         error: error as EnterpriseError
       }));
 
-      throw error;
+      throw new Error("Operation failed");
     }
   }, [session, user, logger, metrics]);
 
@@ -124,14 +124,14 @@ export function useChatService(session: Session | null) {
         isGeneratingImage: false
       }));
 
-      metrics.recordUserEngagement(user?.id || 'anonymous', 'image_generated', {
+      metrics.recordUserEngagement(user?.id ?? 'anonymous', 'image_generated', {
         messageId
       });
 
-    } catch (error) {
-      logger.error('Image generation failed', { messageId, error });
+    } catch {
+      logger.error('Image generation failed', {messageId});
       setState(prev => ({ ...prev, isGeneratingImage: false }));
-      throw error;
+      throw new Error("Operation failed");
     }
   }, [state.messages, user?.id, logger, metrics]);
 
@@ -160,15 +160,15 @@ export function useChatService(session: Session | null) {
         isGeneratingAudio: false
       }));
 
-      metrics.recordUserEngagement(user?.id || 'anonymous', 'audio_generated', {
+      metrics.recordUserEngagement(user?.id ?? 'anonymous', 'audio_generated', {
         messageId,
         textLength: message.content.length.toString()
       });
 
-    } catch (error) {
-      logger.error('Audio generation failed', { messageId, error });
+    } catch {
+      logger.error('Audio generation failed', {messageId});
       setState(prev => ({ ...prev, isGeneratingAudio: false }));
-      throw error;
+      throw new Error("Operation failed");
     }
   }, [state.messages, user?.id, logger, metrics]);
 
@@ -200,15 +200,15 @@ export function useChatService(session: Session | null) {
         isGeneratingVideo: false
       }));
 
-      metrics.recordUserEngagement(user?.id || 'anonymous', 'video_generated', {
+      metrics.recordUserEngagement(user?.id ?? 'anonymous', 'video_generated', {
         messageId,
         textLength: message.content.length.toString()
       });
 
-    } catch (error) {
-      logger.error('Video generation failed', { messageId, error });
+    } catch {
+      logger.error('Video generation failed', {messageId});
       setState(prev => ({ ...prev, isGeneratingVideo: false }));
-      throw error;
+      throw new Error("Operation failed");
     }
   }, [state.messages, user?.id, logger, metrics]);
 

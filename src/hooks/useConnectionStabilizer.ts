@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 
 interface ConnectionHealth {
@@ -48,15 +48,15 @@ export const useConnectionStabilizer = () => {
       }
       
       return true;
-    } catch (error) {
-      console.warn('Connection test error:', error);
+    } catch {
+      console.warn('Connection test error:', _error);
       return false;
     }
   }, [user]);
 
   // Smart reconnection with exponential backoff
   const attemptReconnection = useCallback(async () => {
-    if (health.isReconnecting || health.reconnectAttempts >= 5) return;
+    if (health.isReconnecting ?? health.reconnectAttempts >= 5) return;
 
     setHealth(prev => ({ 
       ...prev, 
@@ -94,8 +94,8 @@ export const useConnectionStabilizer = () => {
           variant: "destructive",
         });
       }
-    } catch (error) {
-      console.error('Reconnection attempt failed:', error);
+    } catch {
+      console.error('Reconnection attempt failed:', _error);
       setHealth(prev => ({ ...prev, isReconnecting: false }));
     }
   }, [health.reconnectAttempts, health.isReconnecting, testConnection, toast]);

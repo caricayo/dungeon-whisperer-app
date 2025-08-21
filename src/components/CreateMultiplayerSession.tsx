@@ -9,6 +9,7 @@ import { Users, Copy, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { debugLog, debugError } from '@/lib/debug';
+import { InputSanitizer, SecurityLogger } from '@/lib/security';
 
 interface CreateMultiplayerSessionProps {
   onSessionCreated?: (sessionId: string, joinUrl: string) => void;
@@ -24,16 +25,44 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
   const [maxPlayers, setMaxPlayers] = useState([6]);
   const [createdSession, setCreatedSession] = useState<{
     sessionId: string;
+    sessionName: string;
     joinUrl: string;
     fullUrl: string;
   } | null>(null);
   const [copied, setCopied] = useState(false);
 
   const handleCreateSession = async () => {
-    if (!sessionName.trim()) {
+    // Enhanced input validation with security
+    try {
+      const sanitizedName = InputSanitizer.sanitizeText(sessionName);
+      
+      if (!sanitizedName || sanitizedName.length < 1) {
+        SecurityLogger.logSecurityEvent('invalid_session_name', { 
+          reason: 'empty_or_dangerous' 
+        });
+        toast({
+          title: "Invalid Session Name",
+          description: "Please enter a valid name for your multiplayer session.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (sanitizedName.length > 100) {
+        toast({
+          title: "Session Name Too Long",
+          description: "Session name must be 100 characters or less.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+    } catch (_error: unknown) {
+      const errorMessage = _error instanceof Error ? _error.message : 'Unknown error';
+      SecurityLogger.logSecurityEvent('session_creation_input_error', { error: errorMessage });
       toast({
-        title: "Session Name Required",
-        description: "Please enter a name for your multiplayer session.",
+        title: "Invalid Input",
+        description: "Please check your input and try again.",
         variant: "destructive",
       });
       return;
@@ -44,18 +73,22 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
     try {
       debugLog('🎮 Creating multiplayer session:', sessionName);
 
-      const { data, error } = await supabase.rpc('create_multiplayer_session', {
-        session_name: sessionName.trim(),
-        custom_prompt: customPrompt.trim() || null,
+      // Re-sanitize inputs before database call (defensive programming)
+      const sanitizedName = InputSanitizer.sanitizeText(sessionName);
+      const sanitizedPrompt = InputSanitizer.sanitizeText(customPrompt);
+      
+      const {data, error} = await supabase.rpc('create_multiplayer_session_fixed', {
+        session_name: sanitizedName,
+        custom_prompt: sanitizedPrompt ?? null,
         max_players: maxPlayers[0]
       });
 
       if (error) {
-        throw error;
+        throw new Error("Operation failed");
       }
 
       if (!data?.success) {
-        throw new Error(data?.error || 'Failed to create session');
+        throw new Error(data?.error ?? 'Failed to create session');
       }
 
       debugLog('✅ Multiplayer session created:', data);
@@ -64,6 +97,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
       
       setCreatedSession({
         sessionId: data.session_id,
+        sessionName: data.session_name ?? sanitizedName,
         joinUrl: data.join_url,
         fullUrl
       });
@@ -111,7 +145,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
       });
 
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
+    } catch {
       toast({
         title: "Copy Failed",
         description: "Could not copy to clipboard",
@@ -143,6 +177,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
                 size="sm"
                 onClick={handleCopyUrl}
                 className="shrink-0"
+                aria-label="Copy join URL"
               >
                 {copied ? (
                   <Check className="size-4 text-green-600" />
@@ -154,8 +189,9 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
           </div>
           
           <div className="rounded-lg bg-muted p-3 text-sm">
+            <p><strong>Session Name:</strong> {createdSession.sessionName}</p>
             <p><strong>Session ID:</strong> {createdSession.sessionId}</p>
-            <p className="text-muted-foreground mt-1">
+            <p className="mt-1 text-muted-foreground">
               Players can join by clicking the link above or visiting the join URL directly.
             </p>
           </div>
@@ -185,7 +221,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
           <Label htmlFor="sessionName">Session Name *</Label>
           <Input
             id="sessionName"
-            placeholder="Epic Dragon Quest Adventure"
+            placeholder="Enter session name"
             value={sessionName}
             onChange={(e) => setSessionName(e.target.value)}
             maxLength={100}
@@ -193,10 +229,10 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="customPrompt">Custom Campaign Setting (Optional)</Label>
+          <Label htmlFor="customPrompt">Custom Prompt</Label>
           <Textarea
             id="customPrompt"
-            placeholder="Describe your campaign world, rules, or special instructions for the AI..."
+            placeholder="Optional custom prompt"
             value={customPrompt}
             onChange={(e) => setCustomPrompt(e.target.value)}
             rows={3}
@@ -208,18 +244,19 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
         </div>
 
         <div className="space-y-2">
-          <Label>Maximum Players: {maxPlayers[0]}</Label>
+          <Label htmlFor="maxPlayers">Max Players: {maxPlayers[0]}</Label>
           <Slider
+            id="maxPlayers"
             value={maxPlayers}
             onValueChange={setMaxPlayers}
-            max={12}
+            max={6}
             min={2}
             step={1}
             className="w-full"
           />
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>2 players</span>
-            <span>12 players</span>
+            <span>6 players</span>
           </div>
         </div>
 
@@ -236,7 +273,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
           ) : (
             <>
               <Users className="mr-2 size-4" />
-              Create Multiplayer Session
+              Create Session
             </>
           )}
         </Button>

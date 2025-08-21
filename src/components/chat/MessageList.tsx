@@ -3,7 +3,7 @@
  * @enterprise High-performance message rendering with virtual scrolling and comprehensive a11y
  */
 
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Virtualizer } from '@tanstack/react-virtual';
 import { MessageBubble } from './MessageBubble';
@@ -40,24 +40,8 @@ export const MessageList = memo<MessageListProps>(({
 }) => {
   const logger = Logger.getInstance('MessageList');
 
-  // Memoized message grouping for date separators
-  const messageGroups = useMemo(() => {
-    const groups: { date: string; messages: typeof messages }[] = [];
-    let currentGroup: { date: string; messages: typeof messages } | null = null;
-
-    messages.forEach(message => {
-      const messageDate = new Date(message.timestamp).toDateString();
-      
-      if (!currentGroup || currentGroup.date !== messageDate) {
-        currentGroup = { date: messageDate, messages: [] };
-        groups.push(currentGroup);
-      }
-      
-      currentGroup.messages.push(message);
-    });
-
-    return groups;
-  }, [messages]);
+  // Note: Message grouping logic preserved for future use
+  // const messageGroups = useMemo(() => { ... }, [messages]);
 
   // Optimized image generation handler
   const handleGenerateImage = useCallback(async (messageId: string) => {
@@ -66,8 +50,8 @@ export const MessageList = memo<MessageListProps>(({
     try {
       logger.info('Generating image for message', { messageId });
       await onGenerateImage(messageId);
-    } catch (error) {
-      logger.error('Image generation failed', { messageId, error });
+    } catch {
+      logger.error('Image generation failed', {messageId});
     }
   }, [onGenerateImage, logger]);
 
@@ -78,8 +62,8 @@ export const MessageList = memo<MessageListProps>(({
     try {
       logger.info('Generating audio for message', { messageId });
       await onGenerateAudio(messageId);
-    } catch (error) {
-      logger.error('Audio generation failed', { messageId, error });
+    } catch {
+      logger.error('Audio generation failed', {messageId});
     }
   }, [onGenerateAudio, logger]);
 
@@ -90,8 +74,8 @@ export const MessageList = memo<MessageListProps>(({
     try {
       logger.info('Generating video for message', { messageId });
       await onGenerateVideo(messageId);
-    } catch (error) {
-      logger.error('Video generation failed', { messageId, error });
+    } catch {
+      logger.error('Video generation failed', {messageId});
     }
   }, [onGenerateVideo, logger]);
 
@@ -173,8 +157,7 @@ export const MessageList = memo<MessageListProps>(({
               }}
             >
               {/* Show date separator for first message of the day */}
-              {virtualItem.index === 0 || 
-               new Date(messages[virtualItem.index - 1].timestamp).toDateString() !== 
+              {virtualItem.index === 0 || new Date(messages[virtualItem.index - 1].timestamp).toDateString() !== 
                new Date(message.timestamp).toDateString() ? (
                 <DateSeparator date={new Date(message.timestamp).toDateString()} />
               ) : null}

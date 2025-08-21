@@ -62,9 +62,9 @@ export const useUserSettingsSecure = (): UseUserSettingsSecure => {
         setSettings(null);
         debugLog('ℹ️ No user settings found');
       }
-    } catch (err) {
+    } catch (_err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load settings';
-      debugError('❌ Error loading user settings', err);
+      debugError('❌ Error loading user settings', _err);
       setError(errorMessage);
       
       toast({
@@ -84,11 +84,11 @@ export const useUserSettingsSecure = (): UseUserSettingsSecure => {
       
       // Use the secure update function with validation
       const { data, error: dbError } = await supabase.rpc('update_user_settings_secure', {
-        p_custom_dnd_prompt: updates.custom_dnd_prompt || null,
-        p_openai_api_key_encrypted: updates.openai_api_key_encrypted || null,
-        p_elevenlabs_voice_id: updates.elevenlabs_voice_id || null,
-        p_tts_speed: updates.tts_speed || null,
-        p_tts_provider: updates.tts_provider || null,
+        p_custom_dnd_prompt: updates.custom_dnd_prompt ?? null,
+        p_openai_api_key_encrypted: updates.openai_api_key_encrypted ?? null,
+        p_elevenlabs_voice_id: updates.elevenlabs_voice_id ?? null,
+        p_tts_speed: updates.tts_speed ?? null,
+        p_tts_provider: updates.tts_provider ?? null,
       });
       
       if (dbError) {
@@ -109,9 +109,9 @@ export const useUserSettingsSecure = (): UseUserSettingsSecure => {
       }
       
       return false;
-    } catch (err) {
+    } catch (_err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update settings';
-      debugError('❌ Error updating user settings', err);
+      debugError('❌ Error updating user settings', _err);
       setError(errorMessage);
       
       toast({
@@ -151,9 +151,9 @@ export const useUserSettingsSecure = (): UseUserSettingsSecure => {
       }
       
       return false;
-    } catch (err) {
+    } catch (_err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete API key';
-      debugError('❌ Error deleting API key', err);
+      debugError('❌ Error deleting API key', _err);
       setError(errorMessage);
       
       toast({

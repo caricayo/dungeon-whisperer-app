@@ -1,40 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { debugLog } from '@/lib/debug';
-
-export interface UserProfile {
-  id: string;
-  username: string;
-  display_name: string | null;
-  created_at: string;
-  updated_at: string;
-  last_seen: string | null;
-  is_online: boolean;
-  username_reset_required?: boolean;
-}
-
-interface UserProfileContextType {
-  profile: UserProfile | null;
-  isLoading: boolean;
-  needsUsername: boolean;
-  checkUsernameAvailability: (username: string) => Promise<boolean>;
-  createProfile: (username: string, displayName?: string) => Promise<boolean>;
-  updatePresence: (isOnline: boolean) => Promise<void>;
-  goOffline: () => Promise<void>;
-  loadProfile: () => Promise<void>;
-}
-
-const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);
-
-export const useUserProfile = () => {
-  const context = useContext(UserProfileContext);
-  if (context === undefined) {
-    throw new Error('useUserProfile must be used within a UserProfileProvider');
-  }
-  return context;
-};
+import { UserProfileContext, type UserProfile } from '@/hooks/use-user-profile';
 
 export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
@@ -45,15 +14,14 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [needsUsername, setNeedsUsername] = useState(false);
 
   // Stabilized profile loading with better state management
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     if (!user) {
       setProfile(null);
       setNeedsUsername(false);
       return;
     }
 
-    try {
-      setIsLoading(true);
+    try {setIsLoading(true);
       
       const { data, error } = await supabase
         .from('profiles')
@@ -63,7 +31,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
       if (error) {
         console.error('Profile loading error:', error);
-        throw error;
+        throw new Error("Operation failed");
       } 
       
       if (!data) {
@@ -108,16 +76,15 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, updatePresence, toast]);
 
   // Check if username is available
-  const checkUsernameAvailability = async (username: string): Promise<boolean> => {
-    try {
+  const checkUsernameAvailability = async (username: string): Promise<boolean> => {try {
       const { data, error } = await supabase.rpc('is_username_available', {
         username_to_check: username
       });
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
       return data;
     } catch (error) {
       console.error('Error checking username availability:', error);
@@ -155,12 +122,12 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
       }
 
       // Create/update profile with proper error handling
-      const { data, error } = await supabase
+      const {data, error} = await supabase
         .from('profiles')
         .upsert({
           id: user.id,
           username: cleanUsername,
-          display_name: displayName?.trim() || null,
+          display_name: displayName?.trim() ?? null,
           is_online: true,
           username_reset_required: false,
           updated_at: new Date().toISOString()
@@ -170,7 +137,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
       if (error) {
         console.error('Profile creation error:', error);
-        throw error;
+        throw new Error("Operation failed");
       }
 
       debugLog('Profile created successfully:', {
@@ -206,7 +173,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   // Update presence status
-  const updatePresence = async (isOnline: boolean) => {
+  const updatePresence = useCallback(async (isOnline: boolean) => {
     if (!user) return;
 
     try {
@@ -217,7 +184,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
     } catch (error) {
       console.error('Error updating presence:', error);
     }
-  };
+  }, [user]);
 
   // Handle going offline
   const goOffline = async () => {
@@ -258,7 +225,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
         window.removeEventListener('beforeunload', handleBeforeUnload);
       };
     }
-  }, [user, profile]);
+  }, [user, profile, updatePresence]);
 
   // Load profile when user changes with debounce to prevent race conditions
   useEffect(() => {
@@ -278,7 +245,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [user]);
+  }, [user, loadProfile]);
 
   // Clean up on unmount
   useEffect(() => {
@@ -287,9 +254,9 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
         updatePresence(false);
       }
     };
-  }, []);
+  }, [user, updatePresence]);
 
-  const value: UserProfileContextType = {
+  const value = {
     profile,
     isLoading,
     needsUsername,

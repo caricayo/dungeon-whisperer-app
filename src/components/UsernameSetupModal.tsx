@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Check, X } from 'lucide-react';
-import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useUserProfile } from '@/hooks/use-user-profile';
 
 interface UsernameSetupModalProps {
   isOpen: boolean;
@@ -16,7 +16,6 @@ export const UsernameSetupModal = ({ isOpen }: UsernameSetupModalProps) => {
   
   const [username, setUsername] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [isChecking, setIsChecking] = useState(false);
   const [usernameStatus, setUsernameStatus] = useState<'none' | 'checking' | 'available' | 'taken'>('none');
   const [error, setError] = useState('');
   
@@ -27,7 +26,6 @@ export const UsernameSetupModal = ({ isOpen }: UsernameSetupModalProps) => {
       setDisplayName('');
       setUsernameStatus('none');
       setError('');
-      setIsChecking(false);
     }
   }, [isOpen]);
 
@@ -51,7 +49,6 @@ export const UsernameSetupModal = ({ isOpen }: UsernameSetupModalProps) => {
       return;
     }
 
-    setIsChecking(true);
     setUsernameStatus('checking');
     
     try {
@@ -60,11 +57,9 @@ export const UsernameSetupModal = ({ isOpen }: UsernameSetupModalProps) => {
       if (!isAvailable) {
         setError('This username is already taken');
       }
-    } catch (error) {
+    } catch {
       setUsernameStatus('none');
       setError('Error checking username availability');
-    } finally {
-      setIsChecking(false);
     }
   };
 
@@ -73,7 +68,7 @@ export const UsernameSetupModal = ({ isOpen }: UsernameSetupModalProps) => {
     
     if (usernameStatus !== 'available') return;
 
-    const success = await createProfile(username, displayName || undefined);
+    await createProfile(username, displayName ?? undefined);
     // The modal will automatically close when needsUsername becomes false in the parent component
   };
 

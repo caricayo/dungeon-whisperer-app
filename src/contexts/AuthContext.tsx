@@ -1,29 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { debugLog } from '@/lib/debug';
-
-interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signInWithGoogle: () => Promise<{ error: AuthError | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signOut: () => Promise<{ error: AuthError | null }>;
-  resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
-  resendVerification: (email: string) => Promise<{ error: AuthError | null }>;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+import { AuthContext } from '@/hooks/use-auth';
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -128,10 +107,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .insert({
           id: user.id,
           username: `user_${user.id.substring(0, 8)}`, // Temporary username that will trigger username setup
-          display_name: user.user_metadata?.display_name || 
-                       user.user_metadata?.full_name ||
-                       user.user_metadata?.name ||
-                       null,
+          display_name: user.user_metadata?.display_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
           avatar_url: user.user_metadata?.avatar_url,
           username_reset_required: true // Mark as requiring username setup
         });
@@ -222,7 +198,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const value: AuthContextType = {
+  const value = {
     user,
     session,
     loading,

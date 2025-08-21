@@ -7,9 +7,9 @@ export const MemoizedComponent = memo(function MemoizedComponent({
   dependencies = [] 
 }: { 
   children: React.ReactNode; 
-  dependencies?: any[];
+  dependencies?: unknown[];
 }) {
-  return useMemo(() => <>{children}</>, dependencies);
+  return useMemo(() => <>{children}</>, [children, ...(dependencies || [])]);
 });
 
 // Virtual list implementation for large datasets
@@ -19,8 +19,8 @@ export function VirtualizedList({
   itemHeight = 64,
   containerHeight = 400 
 }: {
-  items: any[];
-  renderItem: (item: any, index: number) => React.ReactNode;
+  items: unknown[];
+  renderItem: (item: unknown, index: number) => React.ReactNode;
   itemHeight?: number;
   containerHeight?: number;
 }) {
@@ -38,7 +38,7 @@ export function VirtualizedList({
       }}
     >
       <div style={{ height: items.length * itemHeight }}>
-        {visibleItems.map((item, index) => (
+        {visibleItems.map((item, _index) => (
           <div
             key={index}
             style={{
@@ -50,7 +50,7 @@ export function VirtualizedList({
             }}
           >
             <ErrorBoundary>
-              {renderItem(item, index)}
+              {renderItem(item, _index)}
             </ErrorBoundary>
           </div>
         ))}

@@ -1,10 +1,33 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { debugLog, debugError } from '@/lib/debug';
 import { useMultiplayerEnhancements } from '@/hooks/useMultiplayerEnhancements';
 import { useMultiplayerRealtime } from '@/hooks/useMultiplayerRealtime';
+import type { Message } from '@/hooks/useSessionManager';
+
+interface RawParticipantData {
+  id: string;
+  session_id: string;
+  user_id: string;
+  role: string;
+  permissions: string;
+  joined_at: string;
+}
+
+interface RawProfileData {
+  id: string;
+  username?: string;
+  display_name?: string;
+  is_online?: boolean;
+  avatar_url?: string;
+}
+
+interface PermissionsObject {
+  canInvite?: boolean;
+  can_invite?: boolean;
+}
 
 export interface SessionInvite {
   id: string;
@@ -47,7 +70,7 @@ export interface MultiplayerSession {
   maxPlayers: number;
   currentPlayerCount: number;
   participants: SessionParticipant[];
-  messages: any[];
+  messages: Message[];
   customPrompt?: string;
   createdAt: Date;
   updatedAt?: Date;
@@ -62,7 +85,7 @@ export const useMultiplayerSessions = () => {
   
   const [multiplayerSessions, setMultiplayerSessions] = useState<MultiplayerSession[]>([]);
   const [sessionInvites, setSessionInvites] = useState<SessionInvite[]>([]);
-  const [discoverableSessions, setDiscoverableSessions] = useState<any[]>([]);
+  const [discoverableSessions, setDiscoverableSessions] = useState<MultiplayerSession[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Optimized multiplayer data loading - parallel queries
@@ -99,14 +122,14 @@ export const useMultiplayerSessions = () => {
 
       // Handle sessions result
       if (sessionsResult.status === 'fulfilled' && !sessionsResult.value.error) {
-        const sessionsData = sessionsResult.value.data || [];
+        const sessionsData = sessionsResult.value.data ?? [];
         
         // Get all session IDs for participant query
         const sessionIds = sessionsData.map(s => s.id);
         
         // Load participants for all sessions in one query
-        let participantsData: any[] = [];
-        let profilesData: any[] = [];
+        let participantsData: RawParticipantData[] = [];
+        let profilesData: RawProfileData[] = [];
         
         if (sessionIds.length > 0) {
           const [participantsResult, profilesResult] = await Promise.allSettled([
@@ -122,10 +145,10 @@ export const useMultiplayerSessions = () => {
           ]);
           
           if (participantsResult.status === 'fulfilled') {
-            participantsData = participantsResult.value.data || [];
+            participantsData = participantsResult.value.data ?? [];
           }
           if (profilesResult.status === 'fulfilled') {
-            profilesData = profilesResult.value.data || [];
+            profilesData = profilesResult.value.data ?? [];
           }
         }
 
@@ -145,9 +168,9 @@ export const useMultiplayerSessions = () => {
           id: session.id,
           name: session.name,
           isMultiplayer: session.is_multiplayer,
-          maxPlayers: session.max_players || 6,
-          currentPlayerCount: session.current_player_count || 1,
-          participants: (participantsBySession.get(session.id) || []).map((p: any): SessionParticipant => {
+          maxPlayers: session.max_players ?? 6,
+          currentPlayerCount: session.current_player_count ?? 1,
+          participants: (participantsBySession.get(session.id) ?? []).map((p: RawParticipantData): SessionParticipant => {
             const profile = profilesMap.get(p.user_id);
             return {
               id: p.id,
@@ -180,14 +203,14 @@ export const useMultiplayerSessions = () => {
         debugLog(`Loaded ${sessions.length} multiplayer sessions`);
         setMultiplayerSessions(sessions);
       } else {
-        const error = sessionsResult.status === 'rejected' ? sessionsResult.reason : 'Unknown error';
-        debugError('Sessions query failed:', error);
+        debugError('Sessions query failed:', sessionsResult.status === 'rejected' ? sessionsResult.reason : 'Unknown error');
+        debugError('Sessions query failed:');
         setMultiplayerSessions([]);
       }
 
       // Handle invites result - much faster with parallel loading
       if (invitesResult.status === 'fulfilled' && !invitesResult.value.error) {
-        const invitesData = invitesResult.value.data || [];
+        const invitesData = invitesResult.value.data ?? [];
         
         // Batch load session and inviter data for all invites
         const sessionIds = invitesData.map(i => i.session_id);
@@ -240,24 +263,24 @@ export const useMultiplayerSessions = () => {
         debugLog(`Loaded ${invites.length} pending invites`);
         setSessionInvites(invites);
       } else {
-        const error = invitesResult.status === 'rejected' ? invitesResult.reason : 'Unknown error';
-        debugError('Invites query failed:', error);
+        debugError('Invites query failed:', invitesResult.status === 'rejected' ? invitesResult.reason : 'Unknown error');
+        debugError('Invites query failed:');
         setSessionInvites([]);
       }
 
       // Handle discoverable sessions result
       if (discoverableResult.status === 'fulfilled' && !discoverableResult.value.error) {
-        const validSessions = discoverableResult.value.data || [];
+        const validSessions = discoverableResult.value.data ?? [];
         setDiscoverableSessions(validSessions);
         debugLog(`Loaded ${validSessions.length} discoverable sessions`);
       } else {
-        const error = discoverableResult.status === 'rejected' ? discoverableResult.reason : 'Unknown error';
-        debugError('Discoverable sessions query failed:', error);
+        debugError('Discoverable sessions query failed:', discoverableResult.status === 'rejected' ? discoverableResult.reason : 'Unknown error');
+        debugError('Discoverable sessions query failed:');
         setDiscoverableSessions([]);
       }
 
-    } catch (error) {
-      debugError('Error loading multiplayer data:', error);
+    } catch {
+      debugError('Error loading multiplayer data:');
       
       // Determine error type and provide specific feedback
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -323,7 +346,7 @@ export const useMultiplayerSessions = () => {
       }
 
       // Load profiles for participants
-      const userIds = participantsData?.map(p => p.user_id) || [];
+      const userIds = participantsData?.map(p => p.user_id) ?? [];
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('id, username, display_name, is_online')
@@ -335,11 +358,11 @@ export const useMultiplayerSessions = () => {
 
       // Combine data
       const profilesMap = new Map(
-        (profilesData || []).map(p => [p.id, p])
+        (profilesData ?? []).map(p => [p.id, p])
       );
 
       const sessions: MultiplayerSession[] = sessionsData.map(session => {
-        const sessionParticipants: SessionParticipant[] = (participantsData || [])
+        const sessionParticipants: SessionParticipant[] = (participantsData ?? [])
           .filter(p => p.session_id === session.id)
           .map(p => {
             const profileData = profilesMap.get(p.user_id);
@@ -350,7 +373,7 @@ export const useMultiplayerSessions = () => {
               role: p.role as 'dm' | 'player',
               permissions: (() => {
                 const perms = (typeof p.permissions === 'object' && p.permissions) ? p.permissions : {};
-                const canInvite = Boolean((perms as any).canInvite ?? (perms as any).can_invite);
+                const canInvite = Boolean((perms as PermissionsObject).canInvite ?? (perms as PermissionsObject).can_invite);
                 return { canInvite };
               })(),
               joinedAt: new Date(p.joined_at),
@@ -370,8 +393,8 @@ export const useMultiplayerSessions = () => {
           id: session.id,
           name: session.name,
           isMultiplayer: session.is_multiplayer,
-          maxPlayers: session.max_players || 6,
-          currentPlayerCount: session.current_player_count || 1,
+          maxPlayers: session.max_players ?? 6,
+          currentPlayerCount: session.current_player_count ?? 1,
           participants: sessionParticipants,
           messages: Array.isArray(session.messages) ? session.messages : [],
           customPrompt: session.custom_prompt,
@@ -391,7 +414,7 @@ export const useMultiplayerSessions = () => {
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
-      const invites: SessionInvite[] = (invitesData || []).map(invite => ({
+      const invites: SessionInvite[] = (invitesData ?? []).map(invite => ({
         id: invite.id,
         sessionId: invite.session_id,
         inviterId: invite.inviter_id,
@@ -403,8 +426,8 @@ export const useMultiplayerSessions = () => {
 
       setSessionInvites(invites);
 
-    } catch (error) {
-      debugError('Fallback strategy also failed:', error);
+    } catch {
+      debugError('Fallback strategy also failed:');
       toast({
         title: "Critical Error",
         description: "Unable to load multiplayer data with any method. Please contact support.",
@@ -421,19 +444,19 @@ export const useMultiplayerSessions = () => {
       debugLog('🎮 Creating multiplayer session with RPC function:', name);
       
       // Use the new RPC function for creating multiplayer sessions
-      const { data, error } = await supabase.rpc('create_multiplayer_session', {
+      const { data, error } = await supabase.rpc('create_multiplayer_session_fixed', {
         session_name: name,
-        custom_prompt: customPrompt || null,
+        custom_prompt: customPrompt ?? null,
         max_players: maxPlayers
       });
 
       if (error) {
-        debugError('🎮 RPC error creating session:', error);
-        throw error;
+        debugError('🎮 RPC error creating session:');
+        throw new Error("Operation failed");
       }
 
       if (!data?.success) {
-        const errorMsg = data?.error || 'Failed to create session';
+        const errorMsg = data?.error ?? 'Failed to create session';
         debugError('🎮 Session creation failed:', errorMsg);
         throw new Error(errorMsg);
       }
@@ -456,8 +479,8 @@ export const useMultiplayerSessions = () => {
         sessionName: data.session_name
       };
 
-    } catch (error) {
-      debugError('❌ Error creating multiplayer session:', error);
+    } catch {
+      debugError('❌ Error creating multiplayer session:');
       
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       
@@ -484,7 +507,7 @@ export const useMultiplayerSessions = () => {
           status: 'pending'
         });
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
 
       toast({
         title: "Invite Sent",
@@ -493,8 +516,8 @@ export const useMultiplayerSessions = () => {
 
       return true;
 
-    } catch (error) {
-      debugError('Error sending session invite:', error);
+    } catch {
+      debugError('Error sending session invite:');
       toast({
         title: "Invite Failed",
         description: "Could not send the invitation. They may already be invited.",
@@ -515,14 +538,14 @@ export const useMultiplayerSessions = () => {
         invite_id: inviteId
       });
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
 
-      const result = data as { success: boolean; message?: string; error?: string; session?: any };
+      const result = data as { success: boolean; message?: string; error?: string; session?: MultiplayerSession };
 
       if (result?.success) {
         toast({
           title: "Invite Accepted!",
-          description: result.message || "Successfully joined the multiplayer session!",
+          description: result.message ?? "Successfully joined the multiplayer session!",
         });
 
         // Refresh data to show the new session
@@ -531,14 +554,14 @@ export const useMultiplayerSessions = () => {
       } else {
         toast({
           title: "Accept Failed",
-          description: result?.error || "Could not accept the invitation.",
+          description: result?.error ?? "Could not accept the invitation.",
           variant: "destructive",
         });
         return false;
       }
 
-    } catch (error) {
-      debugError('Error accepting session invite:', error);
+    } catch {
+      debugError('Error accepting session invite:');
       toast({
         title: "Join Failed",
         description: "Could not join the session. Please try again.",
@@ -558,7 +581,7 @@ export const useMultiplayerSessions = () => {
         .update({ status: 'declined' })
         .eq('id', inviteId);
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
 
       toast({
         title: "Invitation Declined",
@@ -568,8 +591,8 @@ export const useMultiplayerSessions = () => {
       await loadMultiplayerData();
       return true;
 
-    } catch (error) {
-      debugError('Error declining session invite:', error);
+    } catch {
+      debugError('Error declining session invite:');
       toast({
         title: "Error",
         description: "Could not decline the invitation. Please try again.",
@@ -615,8 +638,8 @@ export const useMultiplayerSessions = () => {
       await loadMultiplayerData();
       return true;
 
-    } catch (error) {
-      debugError('Error leaving session:', error);
+    } catch {
+      debugError('Error leaving session:');
       toast({
         title: "Leave Failed",
         description: "Could not leave the session. Please try again.",

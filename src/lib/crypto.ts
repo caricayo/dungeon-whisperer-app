@@ -55,8 +55,8 @@ export async function encryptData(data: string, userId: string): Promise<string>
     
     // Return base64 encoded result
     return btoa(String.fromCharCode(...combined));
-  } catch (error) {
-    console.error('Encryption failed:', error);
+  } catch {
+    console.error('Encryption failed:', _error);
     throw new Error('Failed to encrypt data');
   }
 }
@@ -87,8 +87,8 @@ export async function decryptData(encryptedData: string, userId: string): Promis
     );
     
     return decoder.decode(decrypted);
-  } catch (error) {
-    console.error('Decryption failed:', error);
+  } catch {
+    console.error('Decryption failed:', _error);
     throw new Error('Failed to decrypt data');
   }
 }

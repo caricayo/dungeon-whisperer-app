@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -40,7 +40,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
           description: "Please complete authentication in the popup window.",
         });
       }
-    } catch (error) {
+    } catch {
       setError('Failed to sign in with Google');
     } finally {
       setIsLoading(false);
@@ -84,7 +84,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
         setEmail('');
         setPassword('');
       }
-    } catch (error) {
+    } catch {
       setError('An unexpected error occurred');
     } finally {
       setIsLoading(false);
@@ -110,7 +110,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
           description: "Check your email for password reset instructions.",
         });
       }
-    } catch (error) {
+    } catch {
       setError('Failed to send reset email');
     } finally {
       setIsLoading(false);

@@ -1,14 +1,21 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
+
+interface RealtimePayload {
+  eventType: 'INSERT' | 'UPDATE' | 'DELETE';
+  new?: Record<string, unknown>;
+  old?: Record<string, unknown>;
+  table: string;
+}
 
 export interface RealtimeConfig {
   roomId: string;
   table: string;
   event: 'INSERT' | 'UPDATE' | 'DELETE' | '*';
   filter?: string;
-  callback: (payload: any) => void;
+  callback: (payload: RealtimePayload) => void;
 }
 
 type ConnectionHealth = Record<string, boolean>;
@@ -19,7 +26,7 @@ type ConnectionHealth = Record<string, boolean>;
  */
 export const useStandardizedRealtime = (configs: RealtimeConfig[]) => {
   const { user, loading } = useAuth();
-  const channelsRef = useRef<any[]>([]);
+  const channelsRef = useRef<ReturnType<typeof supabase.channel>[]>([]);
   const [connectionHealth, setConnectionHealth] = useState<ConnectionHealth>({});
   const [isReconnecting, setIsReconnecting] = useState(false);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
@@ -84,7 +91,7 @@ export const useStandardizedRealtime = (configs: RealtimeConfig[]) => {
       const channel = supabase
         .channel(channelName)
         .on(
-          'postgres_changes' as any,
+          'postgres_changes' as const,
           {
             event: config.event,
             schema: 'public',

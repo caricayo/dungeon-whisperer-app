@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
 import { getDisplayName, createPresencePayload, type UserProfile } from '@/lib/displayNameResolver';
 
@@ -15,16 +15,33 @@ interface UserPresence {
   currentWorld?: number;
 }
 
-type PresenceState = Record<string, any[]>;
+interface RawPresenceData {
+  // New format
+  userId?: string;
+  displayName?: string;
+  username?: string;
+  avatarUrl?: string;
+  lastSeen?: string;
+  status?: string;
+  currentWorld?: number;
+  // Legacy format
+  user_id?: string;
+  display_name?: string;
+  avatar_url?: string;
+  last_seen?: string;
+  current_world?: number;
+}
+
+type PresenceState = Record<string, RawPresenceData[]>;
 
 export const usePresenceManager = (channelName = 'global_presence') => {
   const { user, loading } = useAuth();
   const [presenceState, setPresenceState] = useState<PresenceState>({});
   const [onlineUsers, setOnlineUsers] = useState<UserPresence[]>([]);
   const [isConnected, setIsConnected] = useState(false);
-  const [channel, setChannel] = useState<any>(null);
+  const [channel, setChannel] = useState<ReturnType<typeof supabase.channel> | null>(null);
   const [connectionRetries, setConnectionRetries] = useState(0);
-  const [userProfile, setUserProfile] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
 
   // Update user's online presence in database
@@ -32,7 +49,7 @@ export const usePresenceManager = (channelName = 'global_presence') => {
     if (!user) return;
 
     try {
-      const validStatus = status || (isOnline ? 'online' : 'offline');
+      const validStatus = status ?? (isOnline ? 'online' : 'offline');
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -42,10 +59,10 @@ export const usePresenceManager = (channelName = 'global_presence') => {
         })
         .eq('id', user.id);
 
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
       debugLog('Updated user presence:', { isOnline, status: validStatus });
-    } catch (error) {
-      debugError('Error updating user presence:', error);
+    } catch {
+      debugError('Error updating user presence:');
     }
   }, [user]);
 
@@ -67,9 +84,9 @@ export const usePresenceManager = (channelName = 'global_presence') => {
           setUserProfile(profile);
           debugLog('Loaded user profile:', profile);
         }
-      } catch (error) {
+      } catch {
         if (isMounted) {
-          debugError('Error loading user profile:', error);
+          debugError('Error loading user profile:');
         }
       }
     };
@@ -79,7 +96,7 @@ export const usePresenceManager = (channelName = 'global_presence') => {
     return () => {
       isMounted = false;
     };
-  }, [user, loading, userProfile]); // Add userProfile to deps to prevent reloading
+  }, [user, loading]); // Only depend on user and loading to prevent reloading
 
   // Initialize presence tracking with retry logic
   useEffect(() => {
@@ -87,7 +104,7 @@ export const usePresenceManager = (channelName = 'global_presence') => {
       return;
     }
 
-    console.log('✅ Initializing presence manager for:', user.email);
+    console.warn('✅ Initializing presence manager for:', user.email);
     debugLog('Initializing presence manager for:', user.email);
 
     // Clear any existing reconnection timeout
@@ -112,41 +129,41 @@ export const usePresenceManager = (channelName = 'global_presence') => {
         setPresenceState(newState);
         
         // Flatten presence state to get online users with consistent field names
-        const users = Object.values(newState).flat().filter((p: any) => p && (p.userId || p.user_id)) as unknown as UserPresence[];
+        const users = Object.values(newState).flat().filter((p): p is RawPresenceData => Boolean(p && (p.userId ?? p.user_id)));
         // Normalize legacy presence data to new format
         const normalizedUsers = users.map(u => ({
-          userId: (u as any).userId || (u as any).user_id,
-          displayName: (u as any).displayName || getDisplayName({ 
-            id: (u as any).userId || (u as any).user_id, 
-            username: (u as any).username, 
-            display_name: (u as any).display_name || (u as any).displayName 
+          userId: u.userId ?? u.user_id ?? '',
+          displayName: u.displayName ?? getDisplayName({ 
+            id: u.userId ?? u.user_id ?? '', 
+            username: u.username, 
+            display_name: u.display_name ?? u.displayName 
           }),
-          username: (u as any).username,
-          avatarUrl: (u as any).avatarUrl || (u as any).avatar_url,
+          username: u.username ?? '',
+          avatarUrl: u.avatarUrl ?? u.avatar_url,
           isOnline: true,
-          lastSeen: (u as any).lastSeen || (u as any).last_seen || new Date().toISOString(),
-          status: (u as any).status || 'online',
-          currentWorld: (u as any).currentWorld || (u as any).current_world
+          lastSeen: (u.lastSeen ?? u.last_seen) ?? new Date().toISOString(),
+          status: (u.status as UserPresence['status']) ?? 'online',
+          currentWorld: u.currentWorld ?? u.current_world
         }));
         setOnlineUsers(normalizedUsers);
         debugLog('Presence sync - online users:', normalizedUsers.length);
       })
       .on('presence', { event: 'join' }, ({ key, newPresences }) => {
         debugLog('User joined:', key, newPresences);
-        const validPresences = newPresences.filter((p: any) => p && (p.userId || p.user_id));
+        const validPresences = newPresences.filter((p): p is RawPresenceData => Boolean(p && (p.userId ?? p.user_id)));
         const normalizedPresences = validPresences.map(p => ({
-          userId: p.userId || p.user_id,
-          displayName: p.displayName || getDisplayName({ 
-            id: p.userId || p.user_id, 
+          userId: p.userId ?? p.user_id,
+          displayName: p.displayName ?? getDisplayName({ 
+            id: p.userId ?? p.user_id, 
             username: p.username, 
-            display_name: p.display_name || p.displayName 
+            display_name: p.display_name ?? p.displayName 
           }),
           username: p.username,
-          avatarUrl: p.avatarUrl || p.avatar_url,
+          avatarUrl: p.avatarUrl ?? p.avatar_url,
           isOnline: true,
-          lastSeen: p.lastSeen || p.last_seen || new Date().toISOString(),
-          status: p.status || 'online',
-          currentWorld: p.currentWorld || p.current_world
+          lastSeen: p.lastSeen ?? p.last_seen ?? new Date().toISOString(),
+          status: p.status ?? 'online',
+          currentWorld: p.currentWorld ?? p.current_world
         }));
         setOnlineUsers(prev => {
           const filtered = prev.filter(u => u.userId !== key);
@@ -158,11 +175,11 @@ export const usePresenceManager = (channelName = 'global_presence') => {
         setOnlineUsers(prev => prev.filter(u => u.userId !== key));
       })
       .subscribe(async (status) => {
-        console.log('🔗 Presence channel status:', status);
+        console.warn('🔗 Presence channel status:', status);
         setIsConnected(status === 'SUBSCRIBED');
         
         if (status === 'SUBSCRIBED') {
-          console.log('✅ Connected to presence channel');
+          console.warn('✅ Connected to presence channel');
           debugLog('Connected to presence channel');
           
           // Update database presence
@@ -185,13 +202,13 @@ export const usePresenceManager = (channelName = 'global_presence') => {
               isOnline: true,
               lastSeen: presencePayload.timestamp,
               status: 'online',
-              currentWorld: userProfile?.current_world || 1
+              currentWorld: userProfile?.current_world ?? 1
             };
 
             await presenceChannel.track(presenceData);
           }
         } else if (status === 'CLOSED') {
-          console.log('❌ Disconnected from presence channel');
+          console.warn('❌ Disconnected from presence channel');
           debugLog('Disconnected from presence channel');
           setIsConnected(false);
           
@@ -241,7 +258,7 @@ export const usePresenceManager = (channelName = 'global_presence') => {
           isOnline: true,
           lastSeen: presencePayload.timestamp,
           status: 'online',
-          currentWorld: userProfile?.current_world || 1
+          currentWorld: userProfile?.current_world ?? 1
         };
         presenceChannel.track(presenceData);
       }
@@ -274,7 +291,7 @@ export const usePresenceManager = (channelName = 'global_presence') => {
         supabase.removeChannel(presenceChannel);
       }
     };
-  }, [user, userProfile, channelName, updateUserPresence, connectionRetries]);
+  }, [user, userProfile, channelName, updateUserPresence, connectionRetries, loading, isConnected]);
 
   // Manual status update
   const setUserStatus = useCallback(async (status: 'online' | 'away' | 'busy' | 'offline') => {
@@ -299,13 +316,13 @@ export const usePresenceManager = (channelName = 'global_presence') => {
         isOnline: true,
         lastSeen: presencePayload.timestamp,
         status,
-        currentWorld: userProfile?.current_world || 1
+        currentWorld: userProfile?.current_world ?? 1
       };
       await channel.track(presenceData);
     } else {
       await channel.untrack();
     }
-  }, [user, channel, updateUserPresence]);
+  }, [user, channel, updateUserPresence, userProfile]);
 
   // Get online friends
   const getOnlineFriends = useCallback((friendIds: string[]) => {

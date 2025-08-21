@@ -6,7 +6,8 @@ import React, { memo, useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Loader2, Lock, BookOpen, ExternalLink } from 'lucide-react';
-import { sanitizeInput, validateInput } from '@/lib/validation';
+// Note: sanitizeInput and validateInput available but not currently used
+// import { sanitizeInput, validateInput } from '@/lib/validation';
 import { useTypingIndicators } from '@/hooks/useTypingIndicators';
 import { guardDemoMode, isDemoMode } from '@/lib/demo-mode';
 import { InputSanitizer, SecurityLogger } from '@/lib/security';
@@ -86,10 +87,10 @@ export const ChatInput = memo<ChatInputProps>(({
       // Log successful message send for security monitoring
       SecurityLogger.logSecurityEvent('message_sent', {
         messageLength: cleanMessage.length,
-        sessionId: sessionId || 'unknown',
+        sessionId: sessionId ?? 'unknown',
       });
-    } catch (error) {
-      console.error('Failed to send message:', error);
+    } catch {
+      console.error('Failed to send message:', _error);
       toast({
         variant: 'destructive',
         title: 'Send failed',
@@ -103,7 +104,7 @@ export const ChatInput = memo<ChatInputProps>(({
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e as any);
+      handleSubmit(e as React.FormEvent);
     }
   }, [handleSubmit]);
 

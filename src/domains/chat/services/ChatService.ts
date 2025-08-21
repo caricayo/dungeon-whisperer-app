@@ -7,10 +7,17 @@ import { supabase } from '@/integrations/supabase/client';
 import { Logger } from '@/lib/enterprise/Logger';
 import { ErrorHandler } from '@/lib/enterprise/ErrorHandler';
 import { MetricsCollector } from '@/lib/enterprise/MetricsCollector';
-import { Message, Session, ChatError, ChatEvent } from '../types';
+import { Message } from '../types';
 import { validateInput } from '@/lib/validation';
 import DemoModeAPIGuard from '@/lib/demo-mode-guard';
 import { ttsService } from '@/lib/tts';
+
+interface AIResponse {
+  content: string;
+  usage?: {
+    total_tokens: number;
+  };
+}
 
 export class ChatService {
   private readonly logger = Logger.getInstance('ChatService');
@@ -36,7 +43,7 @@ export class ChatService {
         sessionId,
         userId,
         messageLength: message.length,
-        model: configuration.model || 'default'
+        model: configuration.model ?? 'default'
       });
 
       // Enterprise input validation
@@ -76,8 +83,8 @@ export class ChatService {
         timestamp: new Date(),
         metadata: {
           tokens: aiResponse.usage?.total_tokens,
-          cost: this.calculateCost(aiResponse.usage?.total_tokens || 0),
-          model: configuration.model || 'gpt-4o-mini',
+          cost: this.calculateCost(aiResponse.usage?.total_tokens ?? 0),
+          model: configuration.model ?? 'gpt-4o-mini',
           processingTime: Date.now() - startTime
         }
       };
@@ -86,9 +93,9 @@ export class ChatService {
       this.metrics.recordChatMessage({
         userId,
         sessionId,
-        tokens: aiResponse.usage?.total_tokens || 0,
+        tokens: aiResponse.usage?.total_tokens ?? 0,
         processingTime: Date.now() - startTime,
-        model: configuration.model || 'gpt-4o-mini'
+        model: configuration.model ?? 'gpt-4o-mini'
       });
 
       // Log success
@@ -101,7 +108,7 @@ export class ChatService {
       return { userMessage, assistantMessage };
 
     } catch (error) {
-      const chatError = this.errorHandler.handleChatError(error, {
+      const chatError = this.errorHandler.handleChatError(error instanceof Error ? error : new Error("Operation failed"), {
         correlationId,
         sessionId,
         userId,
@@ -132,15 +139,15 @@ export class ChatService {
     message: string;
     sessionId: string;
     userId: string;
-    configuration: any;
+    configuration: { customPrompt?: string; model?: string };
     correlationId: string;
-  }): Promise<any> {
+  }): Promise<AIResponse> {
     const maxRetries = 3;
-    let lastError: Error;
+    let lastError: Error = new Error("Operation failed");
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        const { data, error } = await DemoModeAPIGuard.guardSupabaseFunction(
+        const response = await DemoModeAPIGuard.guardSupabaseFunction(
           'dnd-chat-v2',
           () => supabase.functions.invoke('dnd-chat-v2', {
             body: {
@@ -160,17 +167,19 @@ export class ChatService {
           }
         );
 
-        if (error) throw new Error(error.message);
-        return data;
+        if (!response?.data) {
+          throw new Error("No response data");
+        }
+        return response.data as AIResponse;
 
       } catch (error) {
-        lastError = error as Error;
+        lastError = error instanceof Error ? error : new Error("Operation failed");
         
         if (attempt < maxRetries) {
           const backoffMs = Math.pow(2, attempt) * 1000; // Exponential backoff
           this.logger.warn(`Retry attempt ${attempt} failed, retrying in ${backoffMs}ms`, {
             correlationId: params.correlationId,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: lastError.message
           });
           await new Promise(resolve => setTimeout(resolve, backoffMs));
         }
@@ -184,13 +193,9 @@ export class ChatService {
    * Rate limiting implementation
    * @private
    */
-  private async checkRateLimit(userId: string): Promise<void> {
+  private async checkRateLimit(_userId: string): Promise<void> {
     // Implementation would check Redis or in-memory store
     // For now, using simple in-memory tracking
-    const now = Date.now();
-    const windowMs = 60000; // 1 minute
-    const maxRequests = 30; // 30 requests per minute
-
     // This would be moved to a proper rate limiting service in production
     // using Redis or similar distributed cache
   }
@@ -222,7 +227,7 @@ export class ChatService {
         correlationId,
         messageId,
         textLength: text.length,
-        provider: options.provider || 'auto'
+        provider: options.provider ?? 'auto'
       });
 
       // Validate text input
@@ -233,14 +238,14 @@ export class ChatService {
       // Use the existing TTS service to generate audio
       const audioUrl = await ttsService.generateSpeech(text, {
         voice: options.voice,
-        provider: options.provider || 'auto'
+        provider: options.provider ?? 'auto'
       });
 
       // Record success metrics
       this.metrics.recordUserEngagement('system', 'audio_generated', {
         messageId,
         textLength: text.length.toString(),
-        provider: options.provider || 'auto',
+        provider: options.provider ?? 'auto',
         processingTime: (Date.now() - startTime).toString()
       });
 
@@ -268,7 +273,7 @@ export class ChatService {
         operation: 'generateAudio'
       });
 
-      throw error;
+      throw new Error("Operation failed");
     }
   }
 
@@ -298,14 +303,14 @@ export class ChatService {
       }
 
       // Call the image generation Supabase function
-      const { data, error } = await DemoModeAPIGuard.guardSupabaseFunction(
+      const response = await DemoModeAPIGuard.guardSupabaseFunction(
         'dnd-image',
         () => supabase.functions.invoke('dnd-image', {
           body: {
             prompt: text.trim(),
-            model: options?.model || 'dall-e-3',
-            size: options?.size || '1792x1024',
-            quality: options?.quality || 'hd'
+            model: options?.model ?? 'dall-e-3',
+            size: options?.size ?? '1792x1024',
+            quality: options?.quality ?? 'hd'
           }
         }),
         {
@@ -314,11 +319,12 @@ export class ChatService {
         }
       );
 
-      if (error) {
-        throw new Error(error.message || 'Image generation service error');
+      if (!response?.data) {
+        throw new Error('Image generation service error');
       }
 
-      if (!data?.imageUrl) {
+      const imageUrl = response.data.imageUrl;
+      if (!imageUrl) {
         throw new Error('No image URL received from image generation service');
       }
 
@@ -333,10 +339,10 @@ export class ChatService {
         correlationId,
         messageId,
         processingTime: Date.now() - startTime,
-        imageUrl: data.imageUrl.substring(0, 50) + '...'
+        imageUrl: imageUrl.substring(0, 50) + '...'
       });
       
-      return data.imageUrl;
+      return imageUrl;
       
     } catch (error) {
       this.logger.error('Image generation failed', {
@@ -353,7 +359,7 @@ export class ChatService {
         operation: 'generateImage'
       });
 
-      throw error;
+      throw new Error("Operation failed");
     }
   }
 
@@ -374,7 +380,7 @@ export class ChatService {
         correlationId,
         messageId,
         textLength: text.length,
-        provider: options?.provider || 'runway',
+        provider: options?.provider ?? 'runway',
         taskId: options?.taskId
       });
 
@@ -383,11 +389,11 @@ export class ChatService {
         throw new Error('Text content is required for video generation');
       }
 
-      const provider = options?.provider || 'runway';
+      const provider = options?.provider ?? 'runway';
       const functionName = provider === 'luma' ? 'luma-video' : 'dnd-video';
 
       // Call the video generation Supabase function
-      const { data, error } = await DemoModeAPIGuard.guardSupabaseFunction(
+      const response = await DemoModeAPIGuard.guardSupabaseFunction(
         functionName,
         () => supabase.functions.invoke(functionName, {
           body: {
@@ -401,11 +407,12 @@ export class ChatService {
         }
       );
 
-      if (error) {
-        throw new Error(error.message || 'Video generation service error');
+      if (!response?.data) {
+        throw new Error('Video generation service error');
       }
 
-      if (!data?.videoUrl && !data?.taskId) {
+      const { videoUrl, taskId } = response.data;
+      if (!videoUrl && !taskId) {
         throw new Error('No video URL or task ID received from video generation service');
       }
 
@@ -422,12 +429,12 @@ export class ChatService {
         messageId,
         processingTime: Date.now() - startTime,
         provider,
-        hasVideoUrl: !!data?.videoUrl,
-        hasTaskId: !!data?.taskId
+        hasVideoUrl: !!videoUrl,
+        hasTaskId: !!taskId
       });
       
       // Return video URL if available, otherwise return a status message
-      return data?.videoUrl || `Video generation in progress (Task ID: ${data?.taskId})`;
+      return videoUrl ?? `Video generation in progress (Task ID: ${taskId})`;
       
     } catch (error) {
       this.logger.error('Video generation failed', {
@@ -444,7 +451,7 @@ export class ChatService {
         operation: 'generateVideo'
       });
 
-      throw error;
+      throw new Error("Operation failed");
     }
   }
 }

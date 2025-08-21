@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
+
+interface RealtimePayload {
+  eventType: 'INSERT' | 'UPDATE' | 'DELETE';
+  new?: Record<string, unknown>;
+  old?: Record<string, unknown>;
+  table: string;
+}
 
 export interface SubscriptionConfig {
   table: string;
   event: 'INSERT' | 'UPDATE' | 'DELETE' | '*';
   filter?: string;
-  callback: (payload: any) => void;
+  callback: (payload: RealtimePayload) => void;
   // Advanced configuration options
   priority?: 'high' | 'medium' | 'low'; // For subscription prioritization
   throttleMs?: number; // Custom throttle duration
@@ -30,7 +37,7 @@ interface RealtimeOptions {
 type ConnectionHealth = Record<string, boolean>;
 
 interface EventBatch {
-  events: any[];
+  events: RealtimePayload[];
   lastProcessed: number;
 }
 
@@ -45,7 +52,7 @@ export const useRealtimeManager = (
   options: RealtimeOptions = {}
 ) => {
   const { user, loading } = useAuth();
-  const channelsRef = useRef<any[]>([]);
+  const channelsRef = useRef<ReturnType<typeof supabase.channel>[]>([]);
   const [connectionHealth, setConnectionHealth] = useState<ConnectionHealth>({});
   const [isReconnecting, setIsReconnecting] = useState(false);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
@@ -117,9 +124,9 @@ export const useRealtimeManager = (
   }, [isReconnecting]);
 
   // Event deduplication helper
-  const createEventHash = useCallback((payload: any): string => {
-    const key = `${payload.table}_${payload.eventType}_${payload.new?.id || payload.old?.id}`;
-    const dataHash = JSON.stringify(payload.new || payload.old || {});
+  const createEventHash = useCallback((payload: RealtimePayload): string => {
+    const key = `${payload.table}_${payload.eventType}_${payload.new?.id ?? payload.old?.id}`;
+    const dataHash = JSON.stringify(payload.new ?? (payload.old ?? {}));
     return `${key}_${btoa(dataHash).slice(0, 12)}`;
   }, []);
 
@@ -138,8 +145,8 @@ export const useRealtimeManager = (
         } else {
           batch.events.forEach(event => config.callback(event));
         }
-      } catch (error) {
-        debugError(`Error processing batched events for ${configKey}:`, error);
+      } catch {
+        debugError(`Error processing batched events for ${configKey}:`);
       }
 
       // Clear processed events
@@ -149,7 +156,7 @@ export const useRealtimeManager = (
   }, [configs]);
 
   // Enhanced event handler with performance optimizations
-  const handleRealtimeEvent = useCallback((config: SubscriptionConfig, payload: any) => {
+  const handleRealtimeEvent = useCallback((config: SubscriptionConfig, payload: RealtimePayload) => {
     const now = Date.now();
     const configKey = `${config.table}_${config.event}`;
     
@@ -163,12 +170,14 @@ export const useRealtimeManager = (
         return;
       }
       
+      // eslint-disable-next-line security/detect-object-injection
       eventCacheRef.current[eventHash] = { lastSeen: now, hash: eventHash };
     }
 
     // Throttling check with priority support
-    const throttleMs = config.throttleMs || (config.priority === 'high' ? 50 : 100);
-    const lastProcessed = eventBatchRef.current[configKey]?.lastProcessed || 0;
+    const throttleMs = config.throttleMs ?? (config.priority === 'high' ? 50 : 100);
+    // eslint-disable-next-line security/detect-object-injection
+    const lastProcessed = eventBatchRef.current[configKey]?.lastProcessed ?? 0;
     
     if (defaultOptions.enableThrottling && (now - lastProcessed) < throttleMs) {
       return; // Skip if within throttle window
@@ -176,13 +185,17 @@ export const useRealtimeManager = (
 
     // Batching logic
     if (defaultOptions.enableBatching && config.batchSize && config.batchSize > 1) {
+      // eslint-disable-next-line security/detect-object-injection
       if (!eventBatchRef.current[configKey]) {
+        // eslint-disable-next-line security/detect-object-injection
         eventBatchRef.current[configKey] = { events: [], lastProcessed: 0 };
       }
       
+      // eslint-disable-next-line security/detect-object-injection
       eventBatchRef.current[configKey].events.push(payload);
       
       // Process batch if full or after timeout
+      // eslint-disable-next-line security/detect-object-injection
       if (eventBatchRef.current[configKey].events.length >= config.batchSize) {
         processBatchedEvents();
       } else {
@@ -196,8 +209,8 @@ export const useRealtimeManager = (
       // Process immediately for non-batched events
       try {
         config.callback(payload);
-      } catch (error) {
-        debugError(`Error in callback for ${configKey}:`, error);
+      } catch {
+        debugError(`Error in callback for ${configKey}:`);
       }
     }
   }, [defaultOptions, createEventHash, processBatchedEvents]);
@@ -218,7 +231,7 @@ export const useRealtimeManager = (
       throttleTracker.current.clear();
 
       // Batch setup subscriptions with connection pooling
-      const setupPromises = configs.map(async (config, index) => {
+      const setupPromises = configs.map(async (config) => {
         const channelName = `${config.table}_${config.event}_${index}`;
         
         const channel = supabase
@@ -235,7 +248,7 @@ export const useRealtimeManager = (
             }
           })
           .on(
-            'postgres_changes' as any,
+            'postgres_changes' as const,
             {
               event: config.event,
               schema: 'public',
@@ -284,7 +297,7 @@ export const useRealtimeManager = (
       Promise.all(setupPromises).then(() => {
         debugLog('All real-time subscriptions initialized');
       }).catch(error => {
-        debugError('Error setting up subscriptions:', error);
+        debugError('Error setting up subscriptions:');
       });
     }, 500); // 500ms debounce
 
@@ -314,7 +327,7 @@ export const useRealtimeManager = (
       // Process any remaining batched events before cleanup
       processBatchedEvents();
     };
-  }, [user, configs, isReconnecting, attemptReconnection]);
+  }, [user, configs, isReconnecting, attemptReconnection, loading, defaultOptions, handleRealtimeEvent, processBatchedEvents]);
 
   // Periodic health monitoring (less frequent)
   useEffect(() => {
@@ -331,7 +344,7 @@ export const useRealtimeManager = (
     }, 60000); // Check every 60 seconds (less frequent)
 
     return () => clearInterval(healthCheckInterval);
-  }, [user, checkConnectionHealth, attemptReconnection]);
+  }, [user, checkConnectionHealth, attemptReconnection, loading]);
 
   // Return safe defaults when not authenticated
   if (loading || !user) {

@@ -36,7 +36,7 @@ class Logger {
 
   private getUserId(): string | undefined {
     try {
-      return localStorage.getItem('user-id') || undefined;
+      return localStorage.getItem('user-id') ?? undefined;
     } catch {
       return undefined;
     }
@@ -44,7 +44,7 @@ class Logger {
 
   private getSessionId(): string | undefined {
     try {
-      return sessionStorage.getItem('current-session-id') || undefined;
+      return sessionStorage.getItem('current-session-id') ?? undefined;
     } catch {
       return undefined;
     }
@@ -56,7 +56,7 @@ class Logger {
     
     // Extract component name from stack trace
     const componentMatch = stack.match(/at (\w+)/g);
-    return componentMatch?.[2]?.replace('at ', '') || undefined;
+    return componentMatch?.[2]?.replace('at ', '') ?? undefined;
   }
 
   private shouldLog(level: LogLevel): boolean {
@@ -68,12 +68,11 @@ class Logger {
     const style = this.getConsoleStyle(entry.level);
 
     if (entry.context) {
-      console.groupCollapsed(`%c${prefix} ${entry.message}`, style);
-      console.table(entry.context);
-      if (entry.userId) console.log('User ID:', entry.userId);
-      if (entry.sessionId) console.log('Session ID:', entry.sessionId);
-      if (entry.component) console.log('Component:', entry.component);
-      console.groupEnd();
+      console.warn(`%c${prefix} ${entry.message}`, style);
+      console.warn('Context:', entry.context);
+      if (entry.userId) console.warn('User ID:', entry.userId);
+      if (entry.sessionId) console.warn('Session ID:', entry.sessionId);
+      if (entry.component) console.warn('Component:', entry.component);
     } else {
       switch (entry.level) {
         case LogLevel.ERROR:
@@ -83,7 +82,7 @@ class Logger {
           console.warn(`%c${prefix} ${entry.message}`, style);
           break;
         default:
-          console.log(`%c${prefix} ${entry.message}`, style);
+          console.warn(`%c${prefix} ${entry.message}`, style);
       }
     }
   }

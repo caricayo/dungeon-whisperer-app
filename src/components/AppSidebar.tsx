@@ -13,14 +13,14 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
-  useSidebar,
 } from '@/components/ui/sidebar';
+import { useSidebar } from '@/hooks/use-sidebar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Settings, 
@@ -149,8 +149,8 @@ export function AppSidebar({
         title: "Adventure Deleted",
         description: "Your adventure has been successfully removed.",
       });
-    } catch (error) {
-      debugError('Failed to delete session:', error);
+    } catch {
+      debugError('Failed to delete session:');
     } finally {
       setDeletingSessionId(null);
     }

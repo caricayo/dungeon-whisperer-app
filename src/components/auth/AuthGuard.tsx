@@ -1,6 +1,6 @@
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -8,7 +8,6 @@ interface AuthGuardProps {
 
 export function AuthGuard({ children }: AuthGuardProps): React.ReactElement | null {
   const navigate = useNavigate();
-  const _location = useLocation();
   
   // Add error boundary for auth context
   let user, loading, authError = false;
@@ -16,7 +15,7 @@ export function AuthGuard({ children }: AuthGuardProps): React.ReactElement | nu
     const auth = useAuth();
     user = auth.user;
     loading = auth.loading;
-  } catch (_err) {
+  } catch {
     // If auth context fails, set error flag
     authError = true;
     user = null;

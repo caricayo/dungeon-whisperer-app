@@ -6,11 +6,11 @@ import React, { memo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Session } from '@/domains/chat/types';
 import { MessageSquare, Settings, Users } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { usePresenceManager } from '@/hooks/usePresenceManager';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 
 interface ChatHeaderProps {
   session: Session | null;
@@ -20,7 +20,7 @@ interface ChatHeaderProps {
 
 export const ChatHeader = memo<ChatHeaderProps>(({ 
   session, 
-  onSessionChange, 
+  onSessionChange: _onSessionChange, 
   className = '' 
 }) => {
   const { user } = useAuth();
@@ -37,7 +37,7 @@ export const ChatHeader = memo<ChatHeaderProps>(({
   const onlineParticipants = onlineUsers.filter(u => u.userId !== user?.id);
   const totalParticipants = onlineParticipants.length + (user ? 1 : 0);
 
-  console.log(`✅ Presence channel ${channelName} - ${onlineUsers.length} online users`);
+  console.warn(`✅ Presence channel ${channelName} - ${onlineUsers.length} online users`);
 
   return (
     <header className={`flex items-center justify-between p-4 ${className}`}>
@@ -57,17 +57,17 @@ export const ChatHeader = memo<ChatHeaderProps>(({
             <PopoverTrigger asChild>
               <Button variant="ghost" size="sm" className="flex items-center gap-2">
                 <div className="flex -space-x-1">
-                  {onlineParticipants.slice(0, 3).map((participant, index) => (
+                  {onlineParticipants.slice(0, 3).map((participant, _index) => (
                     <Avatar key={participant.user_id} className="size-6 border border-background">
                       <AvatarFallback className="text-xs">
-                        {participant.username?.charAt(0)?.toUpperCase() || 'U'}
+                        {participant.username?.charAt(0)?.toUpperCase() ?? 'U'}
                       </AvatarFallback>
                     </Avatar>
                   ))}
                   {user && (
                     <Avatar className="size-6 border border-background">
                       <AvatarFallback className="bg-primary text-xs text-primary-foreground">
-                        {user.user_metadata?.username?.charAt(0)?.toUpperCase() || 'Me'}
+                        {user.user_metadata?.username?.charAt(0)?.toUpperCase() ?? 'Me'}
                       </AvatarFallback>
                     </Avatar>
                   )}
@@ -86,7 +86,7 @@ export const ChatHeader = memo<ChatHeaderProps>(({
                     <div className="flex items-center gap-2">
                       <Avatar className="size-8">
                         <AvatarFallback className="bg-primary text-primary-foreground">
-                          {user.user_metadata?.username?.charAt(0)?.toUpperCase() || 'Me'}
+                          {user.user_metadata?.username?.charAt(0)?.toUpperCase() ?? 'Me'}
                         </AvatarFallback>
                       </Avatar>
                       <div>
@@ -99,11 +99,11 @@ export const ChatHeader = memo<ChatHeaderProps>(({
                     <div key={participant.user_id} className="flex items-center gap-2">
                       <Avatar className="size-8">
                         <AvatarFallback>
-                          {participant.username?.charAt(0)?.toUpperCase() || 'U'}
+                          {participant.username?.charAt(0)?.toUpperCase() ?? 'U'}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium">{participant.username || 'Unknown'}</p>
+                        <p className="text-sm font-medium">{participant.username ?? 'Unknown'}</p>
                         <Badge variant="secondary" className="text-xs">Online</Badge>
                       </div>
                     </div>

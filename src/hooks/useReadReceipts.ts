@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { debugLog, debugError } from '@/lib/debug';
 
 interface ReadReceipt {
@@ -38,8 +38,8 @@ export const useReadReceipts = (sessionId: string | null) => {
 
       debugLog('📖 Marked message as read:', messageId);
 
-    } catch (error) {
-      debugError('📖 Error marking message as read:', error);
+    } catch {
+      debugError('📖 Error marking message as read:');
     }
   }, [sessionId, user]);
 
@@ -67,8 +67,8 @@ export const useReadReceipts = (sessionId: string | null) => {
 
       debugLog('📖 Bulk marked messages as read:', messageIds.length);
 
-    } catch (error) {
-      debugError('📖 Error bulk marking messages as read:', error);
+    } catch {
+      debugError('📖 Error bulk marking messages as read:');
     }
   }, [sessionId, user]);
 

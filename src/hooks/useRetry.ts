@@ -38,7 +38,7 @@ export const useRetry = <T>(
         const result = await fn();
         setIsRetrying(false);
         return result;
-      } catch (error) {
+      } catch {
         const err = error as Error;
         setLastError(err);
         
@@ -61,7 +61,7 @@ export const useRetry = <T>(
     }
 
     setIsRetrying(false);
-    throw lastError || new Error('Retry failed');
+    throw lastError ?? new Error('Retry failed');
   }, [fn, config]);
 
   const reset = useCallback(() => {

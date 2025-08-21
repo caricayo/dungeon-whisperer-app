@@ -1,19 +1,20 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useMultiplayerSessionManager } from '@/hooks/useMultiplayerSessionManager';
 import { useMultiplayerRealtimeSync } from '@/hooks/useMultiplayerRealtimeSync';
 import { usePresenceManager } from '@/hooks/usePresenceManager';
 import { debugLog, debugError } from '@/lib/debug';
-import { Session } from '@/hooks/useSessionManager';
+import { Session, type Message } from '@/hooks/useSessionManager';
+import type { SessionParticipant } from '@/hooks/useMultiplayerSessions';
 
 export interface RoomJoinResult {
   success: boolean;
   session?: Session;
   error?: string;
-  participants?: any[];
+  participants?: SessionParticipant[];
 }
 
 export const useRoomJoinOrchestrator = () => {
@@ -89,11 +90,11 @@ export const useRoomJoinOrchestrator = () => {
       return {
         success: true,
         session: multiplayerSession,
-        participants: participants || []
+        participants: participants ?? []
       };
 
-    } catch (error) {
-      debugError('🚪 Room join orchestration failed:', error);
+    } catch {
+      debugError('🚪 Room join orchestration failed:');
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       
       toast({
@@ -110,7 +111,7 @@ export const useRoomJoinOrchestrator = () => {
   const deltaSyncMessages = useCallback(async (
     sessionId: string,
     lastCursor?: string
-  ): Promise<any[]> => {
+  ): Promise<Message[]> => {
     if (!user) return [];
 
     try {
@@ -123,11 +124,11 @@ export const useRoomJoinOrchestrator = () => {
         .eq('id', sessionId)
         .single();
 
-      const { data, error } = await query;
+      const {data, _error} = await query;
       
-      if (error) throw error;
+      if (error) throw new Error("Operation failed");
       
-      const messages = (data.messages as any[]) || [];
+      const messages = (data.messages as Message[]) ?? [];
       
       // If we have a cursor, filter to messages after that timestamp
       if (lastCursor) {
@@ -138,8 +139,8 @@ export const useRoomJoinOrchestrator = () => {
       // Return latest 30 messages for cold start
       return messages.slice(-30);
       
-    } catch (error) {
-      debugError('🔄 Delta sync failed:', error);
+    } catch {
+      debugError('🔄 Delta sync failed:');
       return [];
     }
   }, [user]);
@@ -162,7 +163,7 @@ export const useRoomJoinOrchestrator = () => {
         .eq('user_id', user.id);
 
       if (error) {
-        debugError('🚪 Error leaving session:', error);
+        debugError('🚪 Error leaving session:');
       } else {
         debugLog('🚪 Successfully left session');
         toast({
@@ -170,8 +171,8 @@ export const useRoomJoinOrchestrator = () => {
           description: "You have left the session",
         });
       }
-    } catch (error) {
-      debugError('🚪 Leave room failed:', error);
+    } catch {
+      debugError('🚪 Leave room failed:');
     }
   }, [user, setUserStatus, toast]);
 

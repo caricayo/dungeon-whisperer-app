@@ -1,18 +1,11 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { useEffect, useState, ReactNode } from 'react';
+import { CompatibilityContext } from '@/hooks/use-compatibility';
 
 interface CompatibilityState {
   isCompatible: boolean;
   issues: string[];
   warnings: string[];
 }
-
-const CompatibilityContext = createContext<CompatibilityState>({
-  isCompatible: true,
-  issues: [],
-  warnings: [],
-});
-
-export const useCompatibility = (): CompatibilityState => useContext(CompatibilityContext);
 
 interface CompatibilityProviderProps {
   children: ReactNode;
@@ -58,15 +51,14 @@ export const CompatibilityProvider: React.FC<CompatibilityProviderProps> = ({ ch
   }, []);
 
   if (!compatibility.isCompatible) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    return (<div className="flex min-h-screen items-center justify-center bg-background p-4">
         <div className="w-full max-w-md space-y-4 text-center">
           <h1 className="text-xl font-bold text-destructive">Browser Not Compatible</h1>
           <div className="space-y-2">
             <p className="text-muted-foreground">Your browser doesn't support all required features:</p>
             <ul className="list-inside list-disc space-y-1 text-sm">
-              {compatibility.issues.map((issue, index) => (
-                <li key={index}>{issue}</li>
+              {compatibility.issues.map((issue, _index) => (
+                <li key={_index}>{issue}</li>
               ))}
             </ul>
             <p className="mt-4 text-sm">
