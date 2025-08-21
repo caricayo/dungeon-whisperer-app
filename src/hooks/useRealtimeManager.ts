@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { debugLog, debugError } from '@/lib/debug';
@@ -56,8 +56,8 @@ export const useRealtimeManager = (
   const eventCacheRef = useRef<EventCache>({});
   const batchTimeoutRef = useRef<NodeJS.Timeout>();
   
-  // Default options with performance focus
-  const defaultOptions: RealtimeOptions = {
+  // Default options with performance focus - memoized to prevent dependency changes
+  const defaultOptions: RealtimeOptions = useMemo(() => ({
     timeout: 15000, // Reduced from 20s
     heartbeatIntervalMs: 25000, // Reduced from 30s
     reconnectAfterMs: 2000, // Faster reconnection
@@ -66,7 +66,7 @@ export const useRealtimeManager = (
     enableBatching: true,
     enableDeduplication: true,
     ...options
-  };
+  }), [options]);
 
   // Health check function (less noisy)
   const checkConnectionHealth = useCallback(() => {
