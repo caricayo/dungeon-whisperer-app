@@ -18,6 +18,9 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "analyze": "npx vite-bundle-analyzer dist/stats.html",
+    "audit": "npm audit --audit-level=high",
     "clean": "rm -rf dist node_modules/.vite",
     "prepare": "husky install"
   },

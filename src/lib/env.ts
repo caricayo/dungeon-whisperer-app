@@ -42,7 +42,7 @@ function validateEnv() {
     });
     
     return env;
-  } catch {
+  } catch (error) {
     if (error instanceof z.ZodError) {
       // Environment validation failed - throwing error
       error.errors.forEach((err) => {

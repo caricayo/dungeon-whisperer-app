@@ -10,6 +10,11 @@ vi.mock('@/lib/env', () => ({
   }
 }));
 
+// Mock toast
+vi.mock('@/hooks/use-toast', () => ({
+  toast: vi.fn()
+}));
+
 describe('InputSanitizer', () => {
   describe('sanitizeHtml', () => {
     it('should remove script tags', () => {
@@ -101,12 +106,6 @@ describe('SecurityLogger', () => {
 
 describe('Demo Mode', () => {
   it('should guard operations in demo mode', () => {
-    // Mock toast
-    const mockToast = vi.fn();
-    vi.mock('@/hooks/use-toast', () => ({
-      toast: mockToast
-    }));
-
     // Test will depend on VITE_DEMO_MODE env var
     const isGuarded = guardDemoMode('Test Feature');
     expect(typeof isGuarded).toBe('boolean');
