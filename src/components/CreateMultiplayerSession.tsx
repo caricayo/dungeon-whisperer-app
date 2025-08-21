@@ -244,8 +244,9 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
         </div>
 
         <div className="space-y-2">
-          <Label>Max Players: {maxPlayers[0]}</Label>
+          <Label htmlFor="maxPlayers">Max Players: {maxPlayers[0]}</Label>
           <Slider
+            id="maxPlayers"
             value={maxPlayers}
             onValueChange={setMaxPlayers}
             max={6}
