@@ -98,7 +98,7 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, onLimitWarning, serviceLimits]);
 
   useEffect(() => {
     if (isVisible) {

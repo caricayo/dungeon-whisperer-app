@@ -40,24 +40,8 @@ export const MessageList = memo<MessageListProps>(({
 }) => {
   const logger = Logger.getInstance('MessageList');
 
-  // Memoized message grouping for date separators
-  const _messageGroups = useMemo(() => {
-    const groups: { date: string; messages: typeof messages }[] = [];
-    let currentGroup: { date: string; messages: typeof messages } | null = null;
-
-    messages.forEach(message => {
-      const messageDate = new Date(message.timestamp).toDateString();
-      
-      if (!currentGroup || currentGroup.date !== messageDate) {
-        currentGroup = { date: messageDate, messages: [] };
-        groups.push(currentGroup);
-      }
-      
-      currentGroup.messages.push(message);
-    });
-
-    return groups;
-  }, [messages]);
+  // Note: Message grouping logic preserved for future use
+  // const messageGroups = useMemo(() => { ... }, [messages]);
 
   // Optimized image generation handler
   const handleGenerateImage = useCallback(async (messageId: string) => {
