@@ -155,7 +155,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
           
           <div className="rounded-lg bg-muted p-3 text-sm">
             <p><strong>Session ID:</strong> {createdSession.sessionId}</p>
-            <p className="text-muted-foreground mt-1">
+            <p className="mt-1 text-muted-foreground">
               Players can join by clicking the link above or visiting the join URL directly.
             </p>
           </div>
