@@ -25,6 +25,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
   const [maxPlayers, setMaxPlayers] = useState([6]);
   const [createdSession, setCreatedSession] = useState<{
     sessionId: string;
+    sessionName: string;
     joinUrl: string;
     fullUrl: string;
   } | null>(null);
@@ -96,6 +97,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
       
       setCreatedSession({
         sessionId: data.session_id,
+        sessionName: data.session_name || sanitizedName,
         joinUrl: data.join_url,
         fullUrl
       });
@@ -187,6 +189,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
           </div>
           
           <div className="rounded-lg bg-muted p-3 text-sm">
+            <p><strong>Session Name:</strong> {createdSession.sessionName}</p>
             <p><strong>Session ID:</strong> {createdSession.sessionId}</p>
             <p className="mt-1 text-muted-foreground">
               Players can join by clicking the link above or visiting the join URL directly.
