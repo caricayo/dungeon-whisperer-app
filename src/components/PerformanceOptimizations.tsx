@@ -9,7 +9,7 @@ export const MemoizedComponent = memo(function MemoizedComponent({
   children: React.ReactNode; 
   dependencies?: unknown[];
 }) {
-  return useMemo(() => <>{children}</>, [children, ...dependencies]);
+  return useMemo(() => <>{children}</>, [children, ...(dependencies || [])]);
 });
 
 // Virtual list implementation for large datasets

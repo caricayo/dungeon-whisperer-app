@@ -77,7 +77,7 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
 					elevated: 'hsl(var(--card-elevated))',
-					premium: 'hsl(var(--card-elevated))'
+					premium: 'hsl(var(--card-premium))'
 				},
 				info: 'hsl(var(--primary))',
 				sidebar: {
@@ -103,6 +103,7 @@ export default {
 				'gradient-mystical': 'var(--gradient-mystical)', 
 				'gradient-background': 'var(--gradient-background)',
 				'gradient-card': 'var(--gradient-card)',
+				'gradient-to-r': 'linear-gradient(to right, var(--tw-gradient-stops))',
 				'premium-pattern': `
 					radial-gradient(circle at 25% 25%, hsl(270 50% 25% / 0.1) 0%, transparent 50%),
 					radial-gradient(circle at 75% 75%, hsl(45 100% 70% / 0.05) 0%, transparent 50%),
@@ -207,7 +208,8 @@ export default {
 				'mystical-pulse': 'mystical-pulse 3s ease-in-out infinite',
 				'float': 'float 6s ease-in-out infinite',
 				'shimmer': 'shimmer 2s linear infinite',
-				'caret-blink': 'caret-blink 1.25s ease-out infinite'
+				'caret-blink': 'caret-blink 1.25s ease-out infinite',
+				'animate-caret-blink': 'caret-blink 1.25s ease-out infinite'
 			},
 			spacing: {
 				'18': '4.5rem',

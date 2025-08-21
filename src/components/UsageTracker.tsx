@@ -104,7 +104,7 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
     if (isVisible) {
       loadUsageData();
     }
-  }, [isVisible, user]);
+  }, [isVisible, user, loadUsageData]);
 
   const getTotalCost = () => {
     return usage.reduce((sum, item) => sum + item.totalCost, 0);

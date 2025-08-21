@@ -74,7 +74,7 @@ export const SystemStatus: React.FC<SystemStatusProps> = React.memo(({ onRetry, 
 
   useEffect(() => {
     checkServiceHealth();
-  }, []);
+  }, [checkServiceHealth]);
 
   const getStatusIcon = (status: ServiceStatus['status']) => {
     switch (status) {

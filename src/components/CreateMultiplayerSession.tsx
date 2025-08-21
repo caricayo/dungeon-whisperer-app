@@ -115,10 +115,10 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
         onSessionCreated(data.session_id, data.join_url);
       }
 
-    } catch (err) {
-      debugError('❌ Error creating multiplayer session:', err);
+    } catch (error) {
+      debugError('❌ Error creating multiplayer session:', error);
       
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       
       toast({
         title: "Session Creation Failed",
