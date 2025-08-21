@@ -175,6 +175,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
                 size="sm"
                 onClick={handleCopyUrl}
                 className="shrink-0"
+                aria-label="Copy join URL"
               >
                 {copied ? (
                   <Check className="size-4 text-green-600" />
@@ -217,7 +218,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
           <Label htmlFor="sessionName">Session Name *</Label>
           <Input
             id="sessionName"
-            placeholder="Epic Dragon Quest Adventure"
+            placeholder="Enter session name"
             value={sessionName}
             onChange={(e) => setSessionName(e.target.value)}
             maxLength={100}
@@ -225,10 +226,10 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="customPrompt">Custom Campaign Setting (Optional)</Label>
+          <Label htmlFor="customPrompt">Custom Prompt</Label>
           <Textarea
             id="customPrompt"
-            placeholder="Describe your campaign world, rules, or special instructions for the AI..."
+            placeholder="Optional custom prompt"
             value={customPrompt}
             onChange={(e) => setCustomPrompt(e.target.value)}
             rows={3}
@@ -240,18 +241,18 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
         </div>
 
         <div className="space-y-2">
-          <Label>Maximum Players: {maxPlayers[0]}</Label>
+          <Label>Max Players: {maxPlayers[0]}</Label>
           <Slider
             value={maxPlayers}
             onValueChange={setMaxPlayers}
-            max={12}
+            max={6}
             min={2}
             step={1}
             className="w-full"
           />
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>2 players</span>
-            <span>12 players</span>
+            <span>6 players</span>
           </div>
         </div>
 
@@ -268,7 +269,7 @@ export const CreateMultiplayerSession: React.FC<CreateMultiplayerSessionProps> =
           ) : (
             <>
               <Users className="mr-2 size-4" />
-              Create Multiplayer Session
+              Create Session
             </>
           )}
         </Button>
