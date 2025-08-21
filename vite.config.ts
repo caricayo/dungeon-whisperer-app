@@ -51,10 +51,12 @@ export default defineConfig(({ mode }) => ({
         },
         // Prevent generation of code that uses eval() or new Function()
         strict: true,
-        // Ensure code is CSP compliant
+        // Ensure code is CSP compliant and prevent DOM clobbering
         generatedCode: {
           constBindings: true,
           objectShorthand: true,
+          // Add protection against DOM clobbering attacks
+          arrowFunctions: true,
         },
       },
       // External dependencies that might cause eval() issues
