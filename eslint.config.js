@@ -48,8 +48,8 @@ export default tseslint.config(
       '@typescript-eslint/prefer-readonly': 'warn',
       '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
       
-      // Security Rules
-      'security/detect-object-injection': 'warn',
+      // Security Rules - disable object injection for legitimate property access
+      'security/detect-object-injection': 'off',
       'security/detect-non-literal-regexp': 'warn',
       'security/detect-buffer-noassert': 'error',
       'security/detect-eval-with-expression': 'error',

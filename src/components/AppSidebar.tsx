@@ -45,6 +45,7 @@ import {
   Mail
 } from 'lucide-react';
 import { SocialPanel } from '@/components/SocialPanel';
+import { isFeatureEnabled } from '@/lib/features';
 
 import { debugLog, debugError } from '@/lib/debug';
 import { logger } from '@/lib/logger';
@@ -387,7 +388,13 @@ export function AppSidebar({
               {open && (
                 <CollapsibleContent>
                   <SidebarGroupContent className="px-2">
-                    <SocialPanel isOpen={showSocial} />
+                    {isFeatureEnabled('SOCIAL_FEATURES') ? (
+                      <SocialPanel isOpen={showSocial} />
+                    ) : (
+                      <div className="p-4 text-sm text-muted-foreground text-center">
+                        Social features are currently disabled to improve performance.
+                      </div>
+                    )}
                   </SidebarGroupContent>
                 </CollapsibleContent>
               )}

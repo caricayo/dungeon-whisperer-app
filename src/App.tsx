@@ -13,6 +13,7 @@ import { ConnectionStatus } from "@/components/ConnectionStatus";
 import { lazy, Suspense } from 'react';
 import { ChunkLoadErrorBoundary } from '@/components/ChunkLoadErrorBoundary';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { isFeatureEnabled } from '@/lib/features';
 
 // Lazy load all route components for better performance
 const Index = lazy(() => import('./pages/Index'));
@@ -118,15 +119,17 @@ const App = () => {
                         </AuthGuard>
                       </LazyRoute>
                     } />
-                    <Route path="/friends" element={
-                      <LazyRoute>
-                        <AuthGuard>
-                          <Layout>
-                            <Friends />
-                          </Layout>
-                        </AuthGuard>
-                      </LazyRoute>
-                    } />
+                    {isFeatureEnabled('SOCIAL_FEATURES') && (
+                      <Route path="/friends" element={
+                        <LazyRoute>
+                          <AuthGuard>
+                            <Layout>
+                              <Friends />
+                            </Layout>
+                          </AuthGuard>
+                        </LazyRoute>
+                      } />
+                    )}
                      <Route path="/inbox" element={
                        <LazyRoute>
                          <AuthGuard>

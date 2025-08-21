@@ -44,16 +44,10 @@ export function AnimatedButton({
     lg: "px-8 py-4 text-lg"
   };
 
+  // Simplified animations - removed complex transitions
   const motionProps = {
-    whileHover: hoverLift ? { 
-      scale: 1.02, 
-      y: -2,
-      transition: { duration: 0.2 }
-    } : { scale: 1.02 },
-    whileTap: { 
-      scale: 0.98,
-      transition: { duration: 0.1 }
-    }
+    whileHover: hoverLift ? { scale: 1.02 } : {},
+    whileTap: { scale: 0.98 }
   };
 
   return (
@@ -64,8 +58,13 @@ export function AnimatedButton({
       title={title}
       className={`
         ${baseClasses}
-        ${variantClasses[variant]}
-        ${sizeClasses[size]}
+        ${variant === 'primary' ? variantClasses.primary : 
+          variant === 'secondary' ? variantClasses.secondary :
+          variant === 'outline' ? variantClasses.outline :
+          variantClasses.ghost}
+        ${size === 'sm' ? sizeClasses.sm :
+          size === 'md' ? sizeClasses.md :
+          sizeClasses.lg}
         ${glowEffect ? 'glow-magical' : ''}
         ${className}
       `}
@@ -135,34 +134,26 @@ export function FloatingActionButton({
 
   return (
     <motion.button
-      initial={{ scale: 0, rotate: -180 }}
-      animate={{ scale: 1, rotate: 0 }}
-      whileHover={{ 
-        scale: 1.1, 
-        rotate: 15,
-        boxShadow: color === 'primary' ? '0 0 30px hsl(var(--primary) / 0.5)' : undefined
-      }}
-      whileTap={{ scale: 0.9 }}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
       onClick={onClick}
       className={`
         fixed z-50 flex size-14 items-center justify-center rounded-2xl backdrop-blur-sm
         transition-all duration-300 hover:shadow-2xl
-        ${positionClasses[position]}
-        ${colorClasses[color]}
+        ${position === 'top-right' ? positionClasses['top-right'] :
+          position === 'top-left' ? positionClasses['top-left'] :
+          position === 'bottom-right' ? positionClasses['bottom-right'] :
+          positionClasses['bottom-left']}
+        ${color === 'primary' ? colorClasses.primary :
+          color === 'secondary' ? colorClasses.secondary :
+          color === 'accent' ? colorClasses.accent :
+          colorClasses.muted}
       `}
       title={tooltip}
     >
       <Icon className="size-6" />
-      
-      {/* Pulse ring effect */}
-      <motion.div
-        animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className={`absolute inset-0 rounded-2xl border-2 ${
-          color === 'primary' ? 'border-primary' : 
-          color === 'secondary' ? 'border-secondary' : 'border-accent'
-        }`}
-      />
     </motion.button>
   );
 }
@@ -191,7 +182,10 @@ export function InteractiveCard({
 
   return (
     <motion.div
-      whileHover={hoverEffects[hoverEffect]}
+      whileHover={hoverEffect === 'lift' ? hoverEffects.lift :
+                  hoverEffect === 'glow' ? hoverEffects.glow :
+                  hoverEffect === 'scale' ? hoverEffects.scale :
+                  hoverEffects.none}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className={`

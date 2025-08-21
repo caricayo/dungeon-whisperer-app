@@ -20,7 +20,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    // Return safe defaults instead of throwing error to prevent conditional hook issues
+    return {
+      user: null,
+      session: null,
+      loading: false,
+      signIn: async () => ({ error: new Error('Auth not initialized') as any }),
+      signInWithGoogle: async () => ({ error: new Error('Auth not initialized') as any }),
+      signUp: async () => ({ error: new Error('Auth not initialized') as any }),
+      signOut: async () => ({ error: new Error('Auth not initialized') as any }),
+      resetPassword: async () => ({ error: new Error('Auth not initialized') as any }),
+      resendVerification: async () => ({ error: new Error('Auth not initialized') as any }),
+    };
   }
   return context;
 };

@@ -21,7 +21,7 @@ export function sanitizeInput(input: string): string {
   }
   
   // Aggressively remove dangerous content and tags
-  let cleaned = input
+  const cleaned = input
     // Remove script tags and their content first
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
     // Remove all other HTML/XML tags

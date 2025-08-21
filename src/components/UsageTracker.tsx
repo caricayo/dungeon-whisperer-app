@@ -62,7 +62,7 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
       // Aggregate usage by service
       const aggregated = data?.reduce((acc, item) => {
         const key = `${item.service}-${item.operation}`;
-        if (!acc[key]) {
+        if (!Object.prototype.hasOwnProperty.call(acc, key)) {
           acc[key] = {
             service: item.service,
             operation: item.operation,
@@ -71,10 +71,11 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
             lastUsed: new Date(item.created_at)
           };
         }
-        acc[key].count += 1;
-        acc[key].totalCost += parseFloat(item.cost_estimate?.toString() || '0');
-        if (new Date(item.created_at) > acc[key].lastUsed) {
-          acc[key].lastUsed = new Date(item.created_at);
+        const currentItem = acc[key];
+        currentItem.count += 1;
+        currentItem.totalCost += parseFloat(item.cost_estimate?.toString() || '0');
+        if (new Date(item.created_at) > currentItem.lastUsed) {
+          currentItem.lastUsed = new Date(item.created_at);
         }
         return acc;
       }, {} as Record<string, UsageData>) || {};
@@ -83,8 +84,12 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
 
       // Check for limit warnings
       Object.values(aggregated).forEach(usage => {
-        const serviceKey = usage.service as keyof typeof serviceLimits;
-        const limit = serviceLimits[serviceKey];
+        const serviceKey = usage.service;
+        const limit = serviceKey === 'chat' ? serviceLimits.chat :
+                     serviceKey === 'tts' ? serviceLimits.tts :
+                     serviceKey === 'image' ? serviceLimits.image :
+                     serviceKey === 'video' ? serviceLimits.video :
+                     null;
         if (limit && usage.count > limit.daily * 0.8) {
           onLimitWarning?.(usage.service, usage.count / limit.daily);
         }
@@ -108,8 +113,11 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
   };
 
   const getUsagePercentage = (service: string, count: number) => {
-    const serviceKey = service as keyof typeof serviceLimits;
-    const limit = serviceLimits[serviceKey];
+    const limit = service === 'chat' ? serviceLimits.chat :
+                  service === 'tts' ? serviceLimits.tts :
+                  service === 'image' ? serviceLimits.image :
+                  service === 'video' ? serviceLimits.video :
+                  null;
     return limit ? Math.min((count / limit.daily) * 100, 100) : 0;
   };
 

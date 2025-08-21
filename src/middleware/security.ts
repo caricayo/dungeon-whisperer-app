@@ -62,13 +62,13 @@ class ClientRateLimit {
 /**
  * Request interceptor for API calls with security checks
  */
-export class SecureRequest {
-  private static readonly rateLimiter = ClientRateLimit.getInstance();
+export const SecureRequest = {
+  rateLimiter: ClientRateLimit.getInstance(),
 
   /**
    * Make a secure API request with rate limiting and validation
    */
-  static async request<T>(
+  async request<T>(
     url: string,
     options: RequestInit = {},
     rateLimit: { maxRequests: number; windowMs: number } = RATE_LIMITS.api
@@ -114,22 +114,22 @@ export class SecureRequest {
     }
 
     return response.json();
-  }
+  },
 
   /**
    * Generate request identifier for rate limiting
    */
-  private static getRequestIdentifier(url: string): string {
+  getRequestIdentifier(url: string): string {
     // Use combination of URL path and user session
     const urlPath = new URL(url, window.location.origin).pathname;
     const sessionId = sessionStorage.getItem('session_id') || 'anonymous';
     return `${urlPath}:${sessionId}`;
-  }
+  },
 
   /**
    * Get or generate CSRF token
    */
-  private static getCSRFToken(): string | null {
+  getCSRFToken(): string | null {
     // In a real app, this would be set by the server
     let token = sessionStorage.getItem('csrf_token');
     
@@ -139,18 +139,18 @@ export class SecureRequest {
     }
     
     return token;
-  }
+  },
 
   /**
    * Generate a simple CSRF token
    */
-  private static generateCSRFToken(): string {
+  generateCSRFToken(): string {
     return btoa(
       Date.now().toString() + 
       Math.random().toString(36).substr(2, 9)
     );
   }
-}
+};
 
 /**
  * Security event handlers

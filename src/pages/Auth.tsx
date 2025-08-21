@@ -23,28 +23,8 @@ const Auth: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   
-  // Add error boundary for auth context
-  let authContext;
-  try {
-    authContext = useAuth();
-  } catch (err) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6">
-            <Alert variant="destructive">
-              <AlertTriangle className="size-4" />
-              <AlertDescription>
-                Authentication system unavailable. Please refresh the page.
-              </AlertDescription>
-            </Alert>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  const { signIn, signUp, signInWithGoogle, resendVerification, user } = authContext;
+  // Always call hooks at the top level - useAuth now returns safe defaults
+  const { signIn, signUp, signInWithGoogle, resendVerification, user } = useAuth();
 
   // Redirect if already authenticated
   useEffect(() => {

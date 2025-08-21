@@ -139,7 +139,7 @@ const ChartTooltipContent = React.forwardRef<
       const itemConfig = getPayloadConfigFromPayload(config, item, key)
       const value =
         !labelKey && typeof label === "string"
-          ? config[label]?.label || label
+          ? (Object.prototype.hasOwnProperty.call(config, label) ? config[label]?.label : undefined) || label
           : itemConfig?.label
 
       if (labelFormatter) {
@@ -346,9 +346,9 @@ function getPayloadConfigFromPayload(
     ] as string
   }
 
-  return configLabelKey in config
+  return Object.prototype.hasOwnProperty.call(config, configLabelKey)
     ? config[configLabelKey]
-    : config[key]
+    : Object.prototype.hasOwnProperty.call(config, key) ? config[key] : undefined
 }
 
 export {
