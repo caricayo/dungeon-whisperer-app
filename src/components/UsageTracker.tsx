@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -45,7 +45,7 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
     luma: { daily: 10, cost: 1.50 },
   };
 
-  const loadUsageData = async () => {if (!user) return;
+  const loadUsageData = useCallback(async () => {if (!user) return;
     
     setIsLoading(true);
     try {
@@ -98,7 +98,7 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (isVisible) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -42,7 +42,7 @@ export const SystemStatus: React.FC<SystemStatusProps> = React.memo(({ onRetry, 
   // Get compatibility data
   const { isCompatible, issues, warnings } = useCompatibility();
 
-  const checkServiceHealth = async () => {
+  const checkServiceHealth = useCallback(async () => {
     setIsRefreshing(true);
     const newServices: ServiceStatus[] = [];
 
@@ -70,7 +70,7 @@ export const SystemStatus: React.FC<SystemStatusProps> = React.memo(({ onRetry, 
 
     setServices(newServices);
     setIsRefreshing(false);
-  };
+  }, [services]);
 
   useEffect(() => {
     checkServiceHealth();

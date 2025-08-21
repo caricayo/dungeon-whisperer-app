@@ -33,7 +33,7 @@ export const MessageBubble = memo<MessageBubbleProps>(({
   className = '' 
 }) => {
   const isUser = message.role === 'user';
-  const { markMessageAsRead } = useReadReceipts(sessionId);
+  const { markMessageAsRead: _markMessageAsRead } = useReadReceipts(sessionId);
   
   // Break content into paragraphs for better mobile readability
   const formatMessageContent = (content: string) => {

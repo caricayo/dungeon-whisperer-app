@@ -41,7 +41,7 @@ export const MessageList = memo<MessageListProps>(({
   const logger = Logger.getInstance('MessageList');
 
   // Memoized message grouping for date separators
-  const messageGroups = useMemo(() => {
+  const _messageGroups = useMemo(() => {
     const groups: { date: string; messages: typeof messages }[] = [];
     let currentGroup: { date: string; messages: typeof messages } | null = null;
 
