@@ -119,7 +119,7 @@ export function useSecurityMonitor() {
   }, []);
 
   useEffect(() => {
-    const cleanupFunctions: ((() => void) | void)[] = [
+    const cleanupFunctions: ((() => void) | undefined)[] = [
       monitorClipboard(),
       monitorConsole(),
       monitorStorageAccess(),

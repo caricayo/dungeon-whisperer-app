@@ -20,7 +20,7 @@ interface ErrorReport {
 class GlobalErrorHandler {
   private static instance: GlobalErrorHandler;
   private errorQueue: ErrorReport[] = [];
-  private maxQueueSize = 50;
+  private readonly maxQueueSize = 50;
   private isInitialized = false;
 
   static getInstance(): GlobalErrorHandler {
