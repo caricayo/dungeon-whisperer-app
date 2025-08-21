@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
@@ -14,7 +14,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [needsUsername, setNeedsUsername] = useState(false);
 
   // Stabilized profile loading with better state management
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     if (!user) {
       setProfile(null);
       setNeedsUsername(false);
@@ -76,7 +76,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, updatePresence, toast]);
 
   // Check if username is available
   const checkUsernameAvailability = async (username: string): Promise<boolean> => {try {
@@ -173,7 +173,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   // Update presence status
-  const updatePresence = async (isOnline: boolean) => {
+  const updatePresence = useCallback(async (isOnline: boolean) => {
     if (!user) return;
 
     try {
@@ -184,7 +184,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
     } catch (error) {
       console.error('Error updating presence:', error);
     }
-  };
+  }, [user]);
 
   // Handle going offline
   const goOffline = async () => {

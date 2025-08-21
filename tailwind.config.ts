@@ -219,4 +219,9 @@ export default {
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
+	safelist: [
+		'toaster',
+		'destructive',
+		'toast',
+	],
 } satisfies Config;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -39,13 +39,14 @@ export const UsageTracker: React.FC<UsageTrackerProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   // Estimated limits and costs (these would come from actual API billing in production)
-  const serviceLimits = {
+  const serviceLimits = useMemo(() => ({
     openai: { daily: 50, cost: 0.002 },
     runway: { daily: 5, cost: 2.00 },
     luma: { daily: 10, cost: 1.50 },
-  };
+  }), []);
 
-  const loadUsageData = useCallback(async () => {if (!user) return;
+  const loadUsageData = useCallback(async () => {
+    if (!user) return;
     
     setIsLoading(true);
     try {

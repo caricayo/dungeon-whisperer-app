@@ -14,10 +14,7 @@ interface WindowDebug {
 }
 
 declare global {
-  interface Window extends WindowDebug {
-    [key: string]: unknown;
-  }
-}
+  interface Window extends WindowDebug, Record<string, unknown> {}
 
 // Global error collector for mystery analysis
 window.__debug_errors = window.__debug_errors ?? [];
