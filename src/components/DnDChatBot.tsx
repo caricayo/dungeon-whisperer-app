@@ -38,7 +38,8 @@ import dndBackground from '@/assets/dnd-background.jpg';
 import { supabase } from "@/integrations/supabase/client";
 import { ErrorHandler } from '@/components/ErrorHandler';
 import { parseError } from '@/utils/errorParser';
-import { useSessionManager, type Message } from '@/hooks/useSessionManager';
+import { useSessionManager } from '@/hooks/useSessionManager';
+import type { Message } from '@/types/session';
 import { useMultiplayerRealtimeSync } from '@/hooks/useMultiplayerRealtimeSync';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
@@ -93,6 +94,18 @@ const DnDChatBot: React.FC = () => {
     onSessionUpdate: handleSessionUpdate
   });
 
+  // UI state
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [customPrompt, setCustomPrompt] = useState(`You are the Dungeon Master for an ongoing 5th Edition Dungeons & Dragons campaign...`);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showLogs, setShowLogs] = useState(false);
+  const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [backgroundImage, setBackgroundImage] = useState<string>(dndBackground);
+  const [hasApiKey, setHasApiKey] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+
   // Sync messages with current session - with error handling
   useEffect(() => {
     try {
@@ -108,57 +121,7 @@ const DnDChatBot: React.FC = () => {
       setMessages([]);
       setErrorMessage('Failed to load session. Please refresh.');
     }
-  }, [currentSession]); // Only sync when session changes
-  
-  // Local message state
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  // UI state
-  const [inputMessage, setInputMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [customPrompt, setCustomPrompt] = useState(`You are the Dungeon Master for an ongoing 5th Edition Dungeons & Dragons campaign. 
-Use official 5e rules for all gameplay (combat, actions, spells, skill checks, saving throws, conditions, initiative, inventory, XP). 
-Maintain a persistent log of:
-- Player/NPC names, stats, HP, abilities, inventory, gold
-- Active quests, visited locations, plot threads
-- Rolls made and their results
-- Ongoing effects and consequences
-
-At all times, carry forward relevant information from previous scenes so the world remains consistent.
-
-**GAME FLOW**
-1. Present the world, scene, or combat state.
-2. Offer clear choices or prompt for player actions.
-3. Resolve actions by rules, rolling when needed.
-4. Update logs after each scene/combat with HP, resources, quest progress.
-5. Keep combat in strict initiative order, tracking turns, actions, and conditions.
-
-**STORYTELLING PRIORITY**
-🎭 **Describe scenes cinematically** — engage all five senses, build mood and tension, and let the player feel physically present.  
-📜 Use vivid imagery, metaphors, and pacing changes to make moments dramatic or suspenseful.  
-🗣 Give NPCs distinct personalities, speech patterns, and motivations so they feel alive.  
-🌍 Weave in lore, foreshadowing, and callbacks to past events to reward attentive play.  
-⚖ Balance realism and fantasy — let the dice shape unexpected twists, but narrate them with flair.  
-
-**PLAYER AGENCY**
-- Allow creative, rule-consistent solutions.
-- Show consequences of choices (good and bad).
-- Encourage exploration, diplomacy, and tactics — not just combat.
-
-**SESSION LOOP**
-- Recap the last scene/session.
-- Play through the current scene until a decision point or combat round ends.
-- Provide an updated game state recap (HP, resources, location, quest status).
-- Offer a compelling "What do you do next?" to keep momentum.
-
-**FINAL RULE**
-Be fair, consistent, and immersive. Never forget key events or rolls. Let the rules and the story feed each other so it feels like a living, breathing world.`);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showLogs, setShowLogs] = useState(false);
-  const [rateLimitError, setRateLimitError] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [backgroundImage, setBackgroundImage] = useState<string>(dndBackground);
-  const [hasApiKey, setHasApiKey] = useState(false);
+  }, [currentSession]); // Only depend on currentSession
 
   // Generation states
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
@@ -222,7 +185,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         }
       }
     }, delay);
-  }, [autoScrollEnabled]);
+  }, [autoScrollEnabled, isNearBottom]);
 
   // Save auto-scroll preference
   useEffect(() => {
@@ -346,7 +309,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         { role: 'user', content: userMessage }
       ];
       
-      const {data, error} = await DemoModeAPIGuard.guardSupabaseFunction(
+      const response = await DemoModeAPIGuard.guardSupabaseFunction(
         'dnd-chat-v2',
         () => supabase.functions.invoke('dnd-chat-v2', {
           body: {
@@ -362,6 +325,12 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
           }
         }
       );
+
+      if (!response) {
+        throw new Error('No response from AI chat');
+      }
+
+      const { data, error } = response;
 
       if (error) {
         throw new Error(error.message ?? 'Failed to generate AI response');
@@ -494,7 +463,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
     try {const lastMessage = messages[messages.length - 1];
       const prompt = lastMessage?.content ?? inputMessage ?? "A fantasy D&D scene";
       
-      const { data, error} = await DemoModeAPIGuard.guardSupabaseFunction(
+      const response = await DemoModeAPIGuard.guardSupabaseFunction(
         'dnd-image',
         () => supabase.functions.invoke('dnd-image', {
           body: { prompt }
@@ -504,6 +473,12 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
           fallbackData: null
         }
       );
+
+      if (!response) {
+        throw new Error('No response from image generation');
+      }
+
+      const { data, error } = response;
 
       if (error) {
         throw new Error(error.message ?? 'Failed to generate image');
@@ -557,7 +532,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
     }
 
     try {
-      const { data, error} = await DemoModeAPIGuard.guardSupabaseFunction(
+      const response = await DemoModeAPIGuard.guardSupabaseFunction(
         'dnd-video',
         () => supabase.functions.invoke('dnd-video', {
           body: { prompt: lastAssistantMessage.content }
@@ -568,13 +543,19 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         }
       );
 
+      if (!response) {
+        throw new Error('No response from video generation');
+      }
+
+      const { data, error } = response;
+
       if (error) throw error;
 
       if (data.taskId) {
         // Poll for completion
         const pollInterval = setInterval(async () => {
           try {
-            const { data: statusData, error: statusError } = await DemoModeAPIGuard.guardSupabaseFunction(
+            const response = await DemoModeAPIGuard.guardSupabaseFunction(
               'dnd-video',
               () => supabase.functions.invoke('dnd-video', {
                 body: { taskId: data.taskId }
@@ -585,6 +566,12 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                 fallbackData: null
               }
             );
+
+            if (!response) {
+              throw new Error('No response from video status check');
+            }
+
+            const { data: statusData, error: statusError } = response;
 
             if (statusError) throw statusError;
 
@@ -651,7 +638,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
       console.warn('Calling luma-video edge function with prompt:', lastAssistantMessage.content);
       addLog('🎬 Starting Luma video generation...', 'info');
       
-      const {data, error} = await DemoModeAPIGuard.guardSupabaseFunction(
+      const response = await DemoModeAPIGuard.guardSupabaseFunction(
         'luma-video',
         () => supabase.functions.invoke('luma-video', {
           body: { prompt: lastAssistantMessage.content }
@@ -661,6 +648,12 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
           fallbackData: null
         }
       );
+
+      if (!response) {
+        throw new Error('No response from Luma video generation');
+      }
+
+      const { data, error } = response;
 
       console.warn('Luma video response:', {data, error});
 
@@ -696,7 +689,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
         const pollInterval = setInterval(async () => {
           try {
             console.warn('Polling Luma video status...');
-            const { data: statusData, error: statusError } = await DemoModeAPIGuard.guardSupabaseFunction(
+            const response = await DemoModeAPIGuard.guardSupabaseFunction(
               'luma-video',
               () => supabase.functions.invoke('luma-video', {
                 body: { taskId: data.id }
@@ -707,6 +700,12 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                 fallbackData: null
               }
             );
+
+            if (!response) {
+              throw new Error('No response from Luma video status check');
+            }
+
+            const { data: statusData, error: statusError } = response;
 
             console.warn('Luma status response:', { statusData, statusError });
 
@@ -889,7 +888,7 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
       const isNewSession = !currentSession || messages.length <= 2;
       scrollToBottomWithDelay(100, isNewSession);
     }
-  }, [messages, currentSession, scrollToBottomWithDelay]);
+  }, [messages, currentSession, scrollToBottomWithDelay, messages.length]);
 
   // Clear chat when no session is selected (after deletion)
   useEffect(() => {
@@ -1164,7 +1163,9 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                   className="max-w-full cursor-pointer rounded-xl border border-border transition-all duration-300 hover:shadow-magical"
                                   onLoad={() => scrollToBottomWithDelay(100, true)}
                                   onClick={() => {
-                                    setBackgroundImage(message.imageUrl);
+                                    if (message.imageUrl) {
+                                      setBackgroundImage(message.imageUrl);
+                                    }
                                     toast({
                                       title: "Background Updated! ✨",
                                       description: "The scene now serves as your adventure backdrop.",
@@ -1216,16 +1217,16 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                           try {
                                             setMessages(prev => prev.map(msg => 
                                               msg.id === message.id 
-                                                ? { ...msg, isGeneratingAudio: true, ttsError: null }
-                                                : msg
+                                                                                              ? { ...msg, isGeneratingAudio: true, ttsError: undefined }
+                                              : msg
                                             ));
                                             
                                              const audioUrl = await ttsService.generateSpeech(message.content, { speed: ttsSpeed });
                                             
                                             setMessages(prev => prev.map(msg => 
                                               msg.id === message.id 
-                                                ? { ...msg, audioUrl, isGeneratingAudio: false, ttsError: null }
-                                                : msg
+                                                                                              ? { ...msg, audioUrl, isGeneratingAudio: false, ttsError: undefined }
+                                              : msg
                                             ));
                                           } catch (ttsError) {
                                             setMessages(prev => prev.map(msg => 
@@ -1246,11 +1247,15 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                       <div className="flex items-center gap-3">
                                         <div className="flex items-center gap-2">
                                           <AnimatedButton
-                                            onClick={() => handleAudioControl(
-                                              message.id, 
-                                              message.audioUrl, 
-                                              currentlyPlayingId === message.id ? 'pause' : 'play'
-                                            )}
+                                            onClick={() => {
+                                              if (message.audioUrl) {
+                                                handleAudioControl(
+                                                  message.id, 
+                                                  message.audioUrl, 
+                                                  currentlyPlayingId === message.id ? 'pause' : 'play'
+                                                );
+                                              }
+                                            }}
                                             variant="outline"
                                             size="sm"
                                             className="size-8 p-0"
@@ -1264,7 +1269,11 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                           </AnimatedButton>
                                           
                                           <AnimatedButton
-                                            onClick={() => handleAudioControl(message.id, message.audioUrl, 'stop')}
+                                            onClick={() => {
+                                              if (message.audioUrl) {
+                                                handleAudioControl(message.id, message.audioUrl, 'stop');
+                                              }
+                                            }}
                                             variant="outline"
                                             size="sm"
                                             className="size-8 p-0"
@@ -1282,15 +1291,17 @@ Be fair, consistent, and immersive. Never forget key events or rolls. Let the ru
                                               value={[ttsSpeed]}
                                               onValueChange={(value) => {
                                                 const newSpeed = value[0];
-                                                console.warn('🎵 Speed slider changed to:', newSpeed);
-                                                setTtsSpeed(newSpeed);
-                                                // Apply speed immediately to current audio
-                                                if (currentAudio.current && currentlyPlayingId === message.id) {
-                                                  console.warn('🎵 Applying speed to current audio:', newSpeed);
-                                                  currentAudio.current.playbackRate = newSpeed;
+                                                if (typeof newSpeed === 'number') {
+                                                  console.warn('🎵 Speed slider changed to:', newSpeed);
+                                                  setTtsSpeed(newSpeed);
+                                                  // Apply speed immediately to current audio
+                                                  if (currentAudio.current && currentlyPlayingId === message.id) {
+                                                    console.warn('🎵 Applying speed to current audio:', newSpeed);
+                                                    currentAudio.current.playbackRate = newSpeed;
+                                                  }
+                                                  // Save speed setting
+                                                  settingsService.saveVoiceSettings('auto', 'auto', newSpeed).catch(console.error);
                                                 }
-                                                // Save speed setting
-                                                settingsService.saveVoiceSettings(undefined, undefined, newSpeed).catch(console.error);
                                               }}
                                               min={0.5}
                                               max={2.0}

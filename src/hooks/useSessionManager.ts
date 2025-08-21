@@ -7,30 +7,7 @@ import { useChatDiagnostics } from '@/hooks/useChatDiagnostics';
 import { debugLog, debugError } from '@/lib/debug';
 import { useRealtimeManager, SubscriptionConfig } from '@/hooks/useRealtimeManager';
 import { debounce } from '@/lib/performance-monitor';
-
-export interface Message {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-  imageUrl?: string;
-  audioUrl?: string;
-  videoUrl?: string;
-  videoTaskId?: string;
-  isGeneratingAudio?: boolean;
-  ttsError?: string;
-}
-
-export interface Session {
-  id: string;
-  name: string;
-  messages: Message[];
-  customPrompt: string;
-  createdAt: Date;
-  updatedAt?: Date;
-  isSynced?: boolean;
-  isMultiplayer?: boolean;
-}
+import type { Message, Session } from '@/types/session';
 
 // Raw data interfaces for localStorage deserialization
 interface RawMessage {

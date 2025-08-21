@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { CreateMultiplayerSession } from './CreateMultiplayerSession';
 import { toast } from '@/hooks/use-toast';
 
@@ -254,16 +254,21 @@ describe('CreateMultiplayerSession', () => {
       fireEvent.change(sessionNameInput, { target: { value: 'Test Session' } });
       
       const createButton = screen.getByRole('button', { name: /create session/i });
-      fireEvent.click(createButton);
+      
+      await act(async () => {
+        fireEvent.click(createButton);
+      });
 
       // Should show loading state
       expect(screen.getByText(/creating session/i)).toBeInTheDocument();
       expect(createButton).toBeDisabled();
       
       // Resolve the promise
-      resolveRpc!({
-        data: { success: true, session_id: 'test', join_url: 'test' },
-        error: null
+      await act(async () => {
+        resolveRpc!({
+          data: { success: true, session_id: 'test', join_url: 'test' },
+          error: null
+        });
       });
     });
   });

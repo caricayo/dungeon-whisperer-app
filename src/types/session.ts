@@ -1,71 +1,27 @@
-// Session-related TypeScript interfaces
-
-export interface SessionMessage {
+export interface Message {
   id: string;
+  role: 'user' | 'assistant';
   content: string;
-  role: 'user' | 'assistant' | 'system';
   timestamp: Date;
-  userId?: string;
-  username?: string;
+  imageUrl?: string;
+  audioUrl?: string;
+  videoUrl?: string;
+  videoTaskId?: string;
+  isGeneratingAudio?: boolean;
+  ttsError?: string;
 }
 
-export interface GameSession {
+export interface Session {
   id: string;
   name: string;
-  messages: SessionMessage[];
-  participants?: SessionParticipant[];
-  isMultiplayer?: boolean;
-  isSynced?: boolean;
+  messages: Message[];
+  customPrompt: string;
   createdAt: Date;
   updatedAt: Date;
-  ownerId?: string;
-  isPublic?: boolean;
-  settings?: SessionSettings;
+  isSynced?: boolean;
+  isMultiplayer?: boolean;
 }
 
-export interface SessionParticipant {
-  id: string;
-  userId: string;
-  username?: string;
-  displayName?: string;
-  role: 'player' | 'dm' | 'observer';
-  joinedAt: Date;
-  isOnline?: boolean;
-  avatar?: string;
-}
-
-export interface SessionSettings {
-  systemPrompt?: string;
-  voiceEnabled?: boolean;
-  imageGeneration?: boolean;
-  videoGeneration?: boolean;
-  maxParticipants?: number;
-  allowSpectators?: boolean;
-}
-
-export interface SessionJoinResult {
-  success: boolean;
-  message?: string;
-  error?: string;
-  session?: GameSession;
-  last30Messages?: SessionMessage[];
-}
-
-export interface UserPresence {
-  userId: string;
-  username?: string;
-  displayName?: string;
-  isOnline: boolean;
-  lastSeen: Date;
-  sessionId?: string;
-  avatar?: string;
-}
-
-export interface WorldUser {
-  id: string;
-  username?: string;
-  displayName?: string;
-  avatar?: string;
-  lastSeen: Date;
-  isOnline: boolean;
+export interface GameSession extends Session {
+  // Additional game-specific properties can be added here in the future
 }
